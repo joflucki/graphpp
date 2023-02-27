@@ -1,0 +1,52 @@
+@startuml Graph++ Class Diagram
+
+class Graph {
+    +name : string
+    #vertices : list<Vertex>
+    #edges : list<Edge>
+    +addVertex(Vertex vertex) : void
+    +removeVertex(Vertex vertex) : void
+    +addEdge(Vertex vertex, Vertex vertex) : void
+    +removeEdge(Edge edge) : void
+    +isEulerian() : boolean
+    +isHamiltonian() : boolean
+    +Graph() : Graph
+}
+
+class Edge {
+    +source : Vertex
+    +target : Vertex
+    +weight : int = 1
+    +Edge(Vertex source, Vertex target) : Edge
+}
+
+class Vertex{
+    +Vertex() : Vertex
+}
+
+class DisplayableVertex {
+    +name : string = ""
+    +x : float
+    +y : float
+    +textColor : QColor
+    +backgroundColor : QColor
+    +borderColor : QColor
+}
+class DisplayableGraph {
+    +name : string = ""
+}
+class DisplayableEdge {
+    +name : string = ""
+    +textColor : QColor
+    +borderColor : QColor
+}
+
+Vertex o-- Edge
+Edge *-- Graph
+Vertex *-- Graph
+
+Vertex <-- DisplayableVertex
+Edge <-- DisplayableEdge
+Graph <-- DisplayableGraph
+
+@enduml
