@@ -1,0 +1,20 @@
+image: gcc
+
+build:
+  stage: build
+  script:
+    - g++ helloworld.cpp -o mybinary
+  artifacts:
+    paths:
+      - mybinary
+
+test:
+  stage: test
+  needs: ["build"]
+  script: echo "https://hub.docker.com/r/vookimedlo/ubuntu-qt"
+
+deploy:
+  stage: deploy
+  needs: ["test"]
+  script: echo "https://gitlab.com/kosadev/example-gitlab-ci-cd-for-qt-project"
+  environment: production
