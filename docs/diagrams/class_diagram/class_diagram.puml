@@ -1,0 +1,60 @@
+@startuml Graph++ Class Diagram
+package "C++ library" {
+    class Graph {
+        +name : string
+        #vertices : list<Vertex>
+        #edges : list<Edge>
+        +addVertex(Vertex vertex) : void
+        +removeVertex(Vertex vertex) : void
+        +addEdge(Vertex vertex, Vertex vertex) : void
+        +removeEdge(Edge edge) : void
+        +isEulerian() : boolean
+        +isHamiltonian() : boolean
+        +Graph() : Graph
+    }
+
+    class Edge {
+        +source : Vertex
+        +target : Vertex
+        +weight : int = 1
+        +Edge(Vertex source, Vertex target) : Edge
+    }
+
+    class Vertex{
+        +Vertex() : Vertex
+    }
+
+    Vertex -left-o Edge
+    Edge -up-* Graph
+    Vertex -up-* Graph
+}
+
+package "GUI related classes"{
+    class DisplayableVertex {
+        +name : string = ""
+        +x : float
+        +y : float
+        +textColor : QColor
+        +backgroundColor : QColor
+        +borderColor : QColor
+    }
+    class DisplayableGraph {
+        +name : string = ""
+    }
+    class DisplayableEdge {
+        +name : string = ""
+        +textColor : QColor
+        +borderColor : QColor
+    }
+
+}
+
+
+
+Vertex <|-down- DisplayableVertex
+Edge <|-down- DisplayableEdge
+Graph <|-down- DisplayableGraph
+
+
+
+@enduml
