@@ -3,7 +3,8 @@ image: gcc
 build:
   stage: build
   script:
-    - g++ helloworld.cpp -o mybinary
+    - echo "To update"
+    #- g++ helloworld.cpp -o mybinary
   artifacts:
     paths:
       - mybinary
