@@ -1,4 +1,8 @@
 @startuml Graph++ Class Diagram
+skinparam {
+    classAttributeIconSize 0
+    RoundCorner 10
+}
 package "C++ library" {
     class Graph {
         +name : string
@@ -10,6 +14,8 @@ package "C++ library" {
         +removeEdge(Edge edge) : void
         +isEulerian() : boolean
         +isHamiltonian() : boolean
+        +isConnected() : boolean
+        +isStronglyConnected() : boolean
         +Graph() : Graph
     }
 
@@ -24,9 +30,9 @@ package "C++ library" {
         +Vertex() : Vertex
     }
 
-    Vertex -left-o Edge
-    Edge -up-* Graph
-    Vertex -up-* Graph
+    Vertex "2" -l-o "0..*" Edge
+    Edge "0..*" --l--* "1" Graph
+    Vertex "0..* " -l-* "1" Graph
 }
 
 package "GUI related classes"{
@@ -51,9 +57,10 @@ package "GUI related classes"{
 
 
 
-Vertex <|-down- DisplayableVertex
-Edge <|-down- DisplayableEdge
-Graph <|-down- DisplayableGraph
+Vertex <|-d- DisplayableVertex
+Edge <|-d- DisplayableEdge
+Graph <|-d- DisplayableGraph
+
 
 
 
