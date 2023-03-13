@@ -53,13 +53,13 @@ package "C++ library" {
 package "GUI related classes"{
     class DisplayableVertex {
         -name : QString
-        -position : GPointF
+        -position : QPointF
         -textColor : QColor
         -backgroundColor : QColor
         -borderColor : QColor
         --getters--
         -getName() : QString
-        -getPosition() : GPointF
+        -getPosition() : QPointF
         -getTextColor() : QColor
         -getBackgroundColor() : QColor
         -getBorderColor() : QColor
