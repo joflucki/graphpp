@@ -16,7 +16,8 @@ private:
     QAction *newGraphAct, *openGraphAct, *saveGraphAct,
     *exitAct, *undoAct, *redoAct, *aboutAct, *selectToolAct,
     *newVertexAct, *linkVertexAct, *eraserAct, *moveToolAct,
-    *cycleGrapheAct, *completeGrapheAct, *bipartiteGrapheAct;
+    *cycleGrapheAct, *completeGrapheAct, *bipartiteGrapheAct,
+    *closeCurrentGrapheAct, *closeAllGrapheAct, *nextAct, *prevAct;
     QMdiArea *mdi;
     QActionGroup *toolsActGroup;
 
@@ -30,6 +31,9 @@ private slots:
     void undo();
     void redo();
     void about();
+
+    void updateSelectedTool(QAction* action);
+    /*
     void selectTool();
     void newVertex();
     void linkVertex();
@@ -37,7 +41,12 @@ private slots:
     void moveTool();
     void cycleGraphe();
     void completeGraphe();
-    void bipartiteGraphe();
+    void bipartiteGraphe();*/
+
+    void closeCurrentGraphe();
+    void closeAllGraphe();
+    void next();
+    void prev();
 
 private:
     void createActions();

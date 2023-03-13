@@ -1,5 +1,6 @@
 #include <QtWidgets>
 #include "mainwindow.h"
+#include "board.h"
 
 MainWindow::MainWindow() : QMainWindow()
 {
@@ -22,32 +23,32 @@ MainWindow::MainWindow() : QMainWindow()
 void MainWindow::createActions()
 {
     newGraphAct = new QAction(tr("&Nouveau"), this);
-    newGraphAct->setShortcut(tr("Ctrl+Shift+N"));
+    newGraphAct->setShortcut(QKeySequence(QKeySequence::New));
     newGraphAct->setStatusTip(tr("Créer un nouveau graphe..."));
     connect(newGraphAct, &QAction::triggered, this, &MainWindow::newGraph);
 
     openGraphAct = new QAction(tr("&Ouvrir..."), this);
-    openGraphAct->setShortcut(tr("Ctrl+O"));
+    openGraphAct->setShortcut(QKeySequence(QKeySequence::Open));
     openGraphAct->setStatusTip(tr("Ouvir un fichier graphe++"));
     connect(openGraphAct, &QAction::triggered, this, &MainWindow::openGraph);
 
     saveGraphAct = new QAction(tr("&Enregistrer"), this);
-    saveGraphAct->setShortcut(tr("Ctrl+S"));
+    saveGraphAct->setShortcut(QKeySequence(QKeySequence::Save));
     saveGraphAct->setStatusTip(tr("Enregistrer le travail"));
     connect(saveGraphAct, &QAction::triggered, this, &MainWindow::saveGraph);
 
     exitAct = new QAction(tr("&Quitter"), this);
-    exitAct->setShortcut(tr("Ctrl+Q"));
+    exitAct->setShortcut(QKeySequence(QKeySequence::Quit));
     exitAct->setStatusTip(tr("Quitter l'application"));
     connect(exitAct, &QAction::triggered, this, &MainWindow::close);
 
     undoAct = new QAction(QIcon(":/img/undo.png"), tr("&Annuler"), this);
-    undoAct->setShortcut(tr("Ctrl+Z"));
+    undoAct->setShortcut(QKeySequence(QKeySequence::Undo));
     undoAct->setStatusTip(tr("Annuler la dernière action"));
     connect(undoAct, &QAction::triggered, this, &MainWindow::undo);
 
     redoAct = new QAction(QIcon(":/img/redo.png"), tr("&Rétablir"), this);
-    redoAct->setShortcut(tr("Ctrl+Y"));
+    redoAct->setShortcut(QKeySequence(QKeySequence::Redo));
     redoAct->setStatusTip(tr("Rétablir la dernière modification"));
     connect(redoAct, &QAction::triggered, this, &MainWindow::redo);
 
@@ -60,49 +61,49 @@ void MainWindow::createActions()
     selectToolAct->setCheckable(true);
     selectToolAct->setChecked(true);
     selectToolAct->setStatusTip(tr("Outil de sélection/édition"));
-    connect(selectToolAct, &QAction::triggered, this, &MainWindow::selectTool);
+    //connect(selectToolAct, &QAction::triggered, this, &MainWindow::updateSelectedTool);
 
     newVertexAct = new QAction(QIcon(":/img/vertex.png"), tr("&Nouveau sommet"), this);
     newVertexAct->setShortcut(tr("Ctrl+2"));
     newVertexAct->setCheckable(true);
     newVertexAct->setStatusTip(tr("Créer un sommet"));
-    connect(newVertexAct, &QAction::triggered, this, &MainWindow::newVertex);
+    //connect(newVertexAct, &QAction::triggered, this, &MainWindow::updateSelectedTool);
 
     linkVertexAct = new QAction(QIcon(":/img/link.png"), tr("&Lier deux sommets"), this);
     linkVertexAct->setShortcut(tr("Ctrl+3"));
     linkVertexAct->setCheckable(true);
     linkVertexAct->setStatusTip(tr("Lier deux sommets entres-eux"));
-    connect(linkVertexAct, &QAction::triggered, this, &MainWindow::linkVertex);
+    //connect(linkVertexAct, &QAction::triggered, this, &MainWindow::updateSelectedTool);
 
     eraserAct = new QAction(QIcon(":/img/eraser.png"), tr("&Gomme"), this);
     eraserAct->setShortcut(tr("Ctrl+4"));
     eraserAct->setCheckable(true);
     eraserAct->setStatusTip(tr("Outil de gomme"));
-    connect(eraserAct, &QAction::triggered, this, &MainWindow::eraser);
+    //connect(eraserAct, &QAction::triggered, this, &MainWindow::updateSelectedTool);
 
     moveToolAct = new QAction(QIcon(":/img/hand.png"), tr("&Main"), this);
     moveToolAct->setShortcut(tr("Ctrl+5"));
     moveToolAct->setCheckable(true);
     moveToolAct->setStatusTip(tr("Outil de main"));
-    connect(moveToolAct, &QAction::triggered, this, &MainWindow::moveTool);
+    //connect(moveToolAct, &QAction::triggered, this, &MainWindow::updateSelectedTool);
 
     cycleGrapheAct = new QAction(QIcon(":/img/cycle.png"), tr("&Graphe cyclique"), this);
     cycleGrapheAct->setShortcut(tr("Ctrl+6"));
     cycleGrapheAct->setCheckable(true);
     cycleGrapheAct->setStatusTip(tr("Outil de création de graphe cyclique"));
-    connect(cycleGrapheAct, &QAction::triggered, this, &MainWindow::cycleGraphe);
+    //connect(cycleGrapheAct, &QAction::triggered, this, &MainWindow::updateSelectedTool);
 
     completeGrapheAct = new QAction(QIcon(":/img/complete.png"), tr("&Graphe complet"), this);
     completeGrapheAct->setShortcut(tr("Ctrl+7"));
     completeGrapheAct->setCheckable(true);
     completeGrapheAct->setStatusTip(tr("Outil de création de graphe complet"));
-    connect(completeGrapheAct, &QAction::triggered, this, &MainWindow::completeGraphe);
+    //connect(completeGrapheAct, &QAction::triggered, this, &MainWindow::updateSelectedTool);
 
     bipartiteGrapheAct = new QAction(QIcon(":/img/bipartite.png"), tr("&Graphe bi parties"), this);
     bipartiteGrapheAct->setShortcut(tr("Ctrl+8"));
     bipartiteGrapheAct->setCheckable(true);
     bipartiteGrapheAct->setStatusTip(tr("Outil de création de graphe bi parties"));
-    connect(bipartiteGrapheAct, &QAction::triggered, this, &MainWindow::bipartiteGraphe);
+    //connect(bipartiteGrapheAct, &QAction::triggered, this, &MainWindow::updateSelectedTool);
 
     // groupe with tools. exclusiv each other
     toolsActGroup = new QActionGroup(this);
@@ -114,6 +115,24 @@ void MainWindow::createActions()
     toolsActGroup->addAction(cycleGrapheAct);
     toolsActGroup->addAction(completeGrapheAct);
     toolsActGroup->addAction(bipartiteGrapheAct);
+    connect(toolsActGroup, &QActionGroup::triggered, this, &MainWindow::updateSelectedTool);
+
+    closeCurrentGrapheAct = new QAction(tr("&Fermer le graphe actif"), this);
+    closeCurrentGrapheAct->setShortcut(QKeySequence(QKeySequence::Close));
+    closeCurrentGrapheAct->setStatusTip(tr("Ferme le graphe qui est actuellement ouvert et visible"));
+    connect(closeCurrentGrapheAct, &QAction::triggered, this, &MainWindow::closeCurrentGraphe);
+
+    closeAllGrapheAct = new QAction(tr("&Fermer tous les graphes"), this);
+    closeAllGrapheAct->setStatusTip(tr("Ferme tous les graphes qui sont actuellement ouverts SANS les enregistrer"));
+    connect(closeAllGrapheAct, &QAction::triggered, this, &MainWindow::closeAllGraphe);
+
+    nextAct = new QAction(tr("&Graphe suivant"), this);
+    nextAct->setShortcut(QKeySequence(QKeySequence::NextChild));
+    connect(nextAct, &QAction::triggered, this, &MainWindow::next);
+
+    prevAct = new QAction(tr("&Graphe suivant"), this);
+    prevAct->setShortcut(QKeySequence(QKeySequence::PreviousChild));
+    connect(prevAct, &QAction::triggered, this, &MainWindow::prev);
 }
 
 void MainWindow::createMenus()
@@ -122,6 +141,9 @@ void MainWindow::createMenus()
     fileMenu->addAction(newGraphAct);
     fileMenu->addAction(openGraphAct);
     fileMenu->addAction(saveGraphAct);
+    fileMenu->addSeparator();
+    fileMenu->addAction(closeCurrentGrapheAct);
+    fileMenu->addAction(closeAllGrapheAct);
     fileMenu->addSeparator();
     fileMenu->addAction(exitAct);
 
@@ -156,6 +178,10 @@ void MainWindow::createToolBars()
 
 void MainWindow::newGraph()
 {
+    Board *board = new Board();
+    mdi->addSubWindow(board);
+    board->setWindowTitle("Graphe");
+    board->show();
 
 }
 
@@ -185,40 +211,69 @@ void MainWindow::about()
                        tr("Graph++, Banger international"));
 }
 
-void MainWindow::selectTool()
+void MainWindow::updateSelectedTool(QAction* action)
 {
+    QMdiSubWindow* qMDISubWindow = this->mdi->activeSubWindow();
+    if (action != nullptr && qMDISubWindow != nullptr)
+    {
+        Board* board = (Board*)qMDISubWindow->widget();
 
+        if (action == selectToolAct)
+        {
+            board->setSelectedTool(Tool::SELECTOR);
+            qDebug() << "updateSelectedTool: SELECTOR";
+        }
+        else if (action == newVertexAct)
+        {
+            board->setSelectedTool(Tool::CREATE_VERTEX);
+            qDebug() << "updateSelectedTool: CREATE_VERTEX";
+        }
+        else if (action == linkVertexAct)
+        {
+            board->setSelectedTool(Tool::CREATE_EDGE);
+            qDebug() << "updateSelectedTool: CREATE_EDGE";
+        }
+        else if (action == eraserAct)
+        {
+            board->setSelectedTool(Tool::ERASER);
+            qDebug() << "updateSelectedTool: ERASER";
+        }
+        else if (action == moveToolAct)
+        {
+            board->setSelectedTool(Tool::HAND);
+            qDebug() << "updateSelectedTool: HAND";
+        }
+        else if (action == cycleGrapheAct)
+        {
+            board->setSelectedTool(Tool::CYCLE_GRAPH);
+            qDebug() << "updateSelectedTool: CYCLE_GRAPH";
+        }
+        else if (action == completeGrapheAct)
+        {
+            board->setSelectedTool(Tool::COMPLETE_GRAPH);
+            qDebug() << "updateSelectedTool: COMPLETE_GRAPH";
+        }
+        else if (action == bipartiteGrapheAct)
+        {
+            board->setSelectedTool(Tool::BIPARTITE_GRAPH);
+            qDebug() << "updateSelectedTool: BIPARTITE_GRAPH";
+        }
+    }
 }
 
-void MainWindow::newVertex()
+void MainWindow::closeCurrentGraphe()
 {
-
+    mdi->closeActiveSubWindow();
 }
-
-void MainWindow::linkVertex()
+void MainWindow::closeAllGraphe()
 {
-
+    mdi->closeAllSubWindows();
 }
-
-void MainWindow::eraser()
+void MainWindow::next()
 {
-
+    mdi->activateNextSubWindow();
 }
-
-void MainWindow::moveTool()
+void MainWindow::prev()
 {
-
-}
-
-void MainWindow::cycleGraphe()
-{
-
-}
-void MainWindow::completeGraphe()
-{
-
-}
-void MainWindow::bipartiteGraphe()
-{
-
+    mdi->activatePreviousSubWindow();
 }
