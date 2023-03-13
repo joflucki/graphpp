@@ -10,15 +10,24 @@ CONFIG += c++17
 
 SOURCES += \
     board.cpp \
+    displayableedge.cpp \
+    displayablegraph.cpp \
+    displayablevertex.cpp \
     main.cpp \
-    mainwindow.cpp
+    mainwindow.cpp \
 
 HEADERS += \
     board.h \
     mainwindow.h
+    displayableedge.h \
+    displayablegraph.h \
+    displayablevertex.h \
+    mainwindow.h \
 
 FORMS += \
     mainwindow.ui
+
+include($$PWD/core/Core.pri)
 
 # Default rules for deployment.
 qnx: target.path = /tmp/$${TARGET}/bin
