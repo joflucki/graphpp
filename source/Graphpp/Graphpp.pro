@@ -9,16 +9,22 @@ CONFIG += c++17
 #DEFINES += QT_DISABLE_DEPRECATED_BEFORE=0x060000    # disables all the APIs deprecated before Qt 6.0.0
 
 SOURCES += \
+    displayableedge.cpp \
+    displayablegraph.cpp \
+    displayablevertex.cpp \
     main.cpp \
     mainwindow.cpp \
 
 HEADERS += \
+    displayableedge.h \
+    displayablegraph.h \
+    displayablevertex.h \
     mainwindow.h \
 
 FORMS += \
     mainwindow.ui
 
-include($$PWD/core/core.pri)
+include($$PWD/core/Core.pri)
 
 # Default rules for deployment.
 qnx: target.path = /tmp/$${TARGET}/bin
