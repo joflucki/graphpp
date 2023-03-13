@@ -1,33 +1,41 @@
-@startuml Graph++ Class Diagram
+@startuml class_diagram
 skinparam {
     classAttributeIconSize 0
     RoundCorner 10
 }
 package "C++ library" {
     class Graph {
-        +name : string
         #vertices : list<Vertex>
         #edges : list<Edge>
+        --getters--
+        +list<Vertex> getVertices()
+        +list<Edge> getEdges()
+        --modifiers--
         +addVertex(Vertex vertex) : void
-        +removeVertex(Vertex vertex) : void
         +addEdge(Vertex vertex, Vertex vertex) : void
+        +removeVertex(Vertex vertex) : void
         +removeEdge(Edge edge) : void
+        --Analysis--
         +isEulerian() : boolean
         +isHamiltonian() : boolean
         +isConnected() : boolean
         +isStronglyConnected() : boolean
-        +Graph() : Graph
+        +getChromaticNumber : int
+        +isOriented() : bool 
+        +isWeighted() : bool
     }
 
     class Edge {
-        +source : Vertex
-        +target : Vertex
-        +weight : int = 1
-        +Edge(Vertex source, Vertex target) : Edge
+        -source : Vertex
+        -target : Vertex
+        -weight : int
+        --getters--
+        +getSource() : Vertex
+        +getTarget() : Vertex
+        +getWeight() : int
     }
 
     class Vertex{
-        +Vertex() : Vertex
     }
 
     Vertex "2" -l-o "0..*" Edge
@@ -37,20 +45,40 @@ package "C++ library" {
 
 package "GUI related classes"{
     class DisplayableVertex {
-        +name : string = ""
-        +x : float
-        +y : float
-        +textColor : QColor
-        +backgroundColor : QColor
-        +borderColor : QColor
+        -name : QString
+        -position : GPointF
+        -textColor : QColor
+        -backgroundColor : QColor
+        -borderColor : QColor
+        --getters--
+        -getName() : QString
+        -getPosition() : GPointF
+        -getTextColor() : QColor
+        -getBackgroundColor() : QColor
+        -getBorderColor() : QColor
+        --setters--
+        -setName() : QString
+        -setPosition() : GPointF
+        -setTextColor() : QColor
+        -setBackgroundColor() : QColor
+        -setBorderColor() : QColor
+
     }
     class DisplayableGraph {
-        +name : string = ""
+        -name : QString
+        --getters--
+        +getName() : QString
+        --setters--
+        +setName() : QString
     }
     class DisplayableEdge {
-        +name : string = ""
-        +textColor : QColor
-        +borderColor : QColor
+        -name : QString
+        -textColor : QColor
+        -borderColor : QColor
+        --getters--
+        +getName() : QString
+        +getTextColor() : QColor
+        +getBorderColor() : QColor
     }
 
 }
