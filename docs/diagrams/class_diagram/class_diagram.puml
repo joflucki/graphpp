@@ -15,14 +15,19 @@ package "C++ library" {
         +addEdge(Vertex vertex, Vertex vertex) : void
         +removeVertex(Vertex vertex) : void
         +removeEdge(Edge edge) : void
-        --Analysis--
-        +isEulerian() : boolean
-        +isHamiltonian() : boolean
-        +isConnected() : boolean
-        +isStronglyConnected() : boolean
-        +getChromaticNumber : int
-        +isOriented() : bool 
+        --analysis--
+        +isEulerian() : bool
+        +isHamiltonian() : bool
+        +isConnected() : bool
+        +isStronglyConnected() : bool
+        +isOriented() : bool
         +isWeighted() : bool
+        +isPlanar() : bool
+        +getChromaticNumber : int
+        +getNbFaces() : int
+        +getNbEdges() : int
+        +getNbVertices() : int
+        +getVertexDegree(Vertex vertex) : int
     }
 
     class Edge {
@@ -33,6 +38,8 @@ package "C++ library" {
         +getSource() : Vertex
         +getTarget() : Vertex
         +getWeight() : int
+        --setters--
+        +setWeight(int weight) : void
     }
 
     class Vertex{
@@ -57,11 +64,11 @@ package "GUI related classes"{
         -getBackgroundColor() : QColor
         -getBorderColor() : QColor
         --setters--
-        -setName() : QString
-        -setPosition() : GPointF
-        -setTextColor() : QColor
-        -setBackgroundColor() : QColor
-        -setBorderColor() : QColor
+        -setName(QString name) : void
+        -setPosition(QPointF position) : void
+        -setTextColor(QColor color) : void
+        -setBackgroundColor(QColor color) : void
+        -setBorderColor(QColor color) : void
 
     }
     class DisplayableGraph {
@@ -69,7 +76,7 @@ package "GUI related classes"{
         --getters--
         +getName() : QString
         --setters--
-        +setName() : QString
+        +setName(QString name) : void
     }
     class DisplayableEdge {
         -name : QString
@@ -79,6 +86,10 @@ package "GUI related classes"{
         +getName() : QString
         +getTextColor() : QColor
         +getBorderColor() : QColor
+        --setters--
+        +setName(QString name) : void
+        +setTextColor(QColor color) : void
+        +setBorderColor(QColor color) : void
     }
 
 }
