@@ -14,18 +14,17 @@ SOURCES += \
     displayablegraph.cpp \
     displayablevertex.cpp \
     main.cpp \
-    mainwindow.cpp \
+    mainwindow.cpp
 
 HEADERS += \
     board.h \
-    mainwindow.h
     displayableedge.h \
     displayablegraph.h \
     displayablevertex.h \
-    mainwindow.h \
+    mainwindow.h
 
-FORMS += \
-    mainwindow.ui
+#FORMS += \
+#    mainwindow.ui
 
 include($$PWD/core/Core.pri)
 
