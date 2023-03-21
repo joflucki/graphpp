@@ -2,16 +2,26 @@
 #define DISPLAYABLEEDGE_H
 #include <QString>
 #include <QColor>
+#include "displayablevertex.h"
 
 class DisplayableEdge
 {
 public:
-    DisplayableEdge();
+    DisplayableEdge(QString name,
+                    DisplayableVertex* source,
+                    DisplayableVertex* target,
+                    QColor textColor = Qt::black,
+                    QColor borderColor = Qt::black);
+
+    // only for dev
+    DisplayableVertex* source;
+    DisplayableVertex* target;
 
     //getters
     QString getName();
     QColor getTextColor();
     QColor getBorderColor();
+
 
     //setters
     void setName(QString name);

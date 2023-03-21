@@ -7,7 +7,11 @@
 class DisplayableVertex
 {
 public:
-    DisplayableVertex();
+    DisplayableVertex(QString name,
+                      QPointF position,
+                      QColor textColor = Qt::black,
+                      QColor backgroundColor = Qt::black,
+                      QColor borderColor = Qt::black);
 
     //getters
     QString getName();
@@ -15,6 +19,7 @@ public:
     QColor getTextColor();
     QColor getBackgroundColor();
     QColor getBorderColor();
+    bool isSelected();
 
     //setters
     void setName(QString name);
@@ -22,6 +27,7 @@ public:
     void setTextColor(QColor color);
     void setBackgroundColor(QColor color);
     void setBorderColor(QColor color);
+    void setSelected(bool selected);
 
 private:
     QString name = "";
@@ -29,6 +35,7 @@ private:
     QColor textColor;
     QColor backgroundColor;
     QColor borderColor;
+    bool selected = false;
 };
 
 #endif // DISPLAYABLEVERTEX_H
