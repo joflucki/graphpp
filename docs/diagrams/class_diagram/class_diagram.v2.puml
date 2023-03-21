@@ -1,0 +1,80 @@
+@startuml class_diagram.v2
+skinparam {
+    classAttributeIconSize 0
+    RoundCorner 10
+}
+package "C++ library" {
+    class "Graph< T >" as Graph {
+        #vertices : list<T>
+        #adjacencyList : list<list<Edge<T>>>
+        --getters--
+        +list<T> getVertices()
+        +list<Edge<T>> getEdges()
+        --modifiers-- 
+        +addVertex(T vertex) : void
+        +addEdge(T vertex, T vertex) : void
+        +removeVertex(T vertex) : void
+        +removeEdge(Edge<T> edge) : void
+        --analysis--
+        +isEulerian() : bool
+        +isHamiltonian() : bool
+        +isConnected() : bool
+        +isStronglyConnected() : bool
+        +isOriented() : bool
+        +isWeighted() : bool
+        +isPlanar() : bool
+        +getChromaticNumber : int
+        +getNbFaces() : int
+        +getNbEdges() : int
+        +getNbVertices() : int
+        +getVertexDegree(Vertex vertex) : int
+    }
+
+    struct Edge< T > {
+        +target : T
+        +weight : int
+    }
+
+    Edge "0..*" ---l---* "1" Graph
+}
+
+package "GUI related classes"{
+    class DisplayableVertex {
+        -name : QString
+        -position : QPointF
+        -textColor : QColor
+        -backgroundColor : QColor
+        -borderColor : QColor
+        --getters--
+        -getName() : QString
+        -getPosition() : QPointF
+        -getTextColor() : QColor
+        -getBackgroundColor() : QColor
+        -getBorderColor() : QColor
+        --setters--
+        -setName(QString name) : void
+        -setPosition(QPointF position) : void
+        -setTextColor(QColor color) : void
+        -setBackgroundColor(QColor color) : void
+        -setBorderColor(QColor color) : void
+
+    }
+    class DisplayableGraph {
+        -name : QString
+        -graph: Graph<DisplayableVertex>
+        --getters--
+        +getName() : QString
+        --setters--
+        +setName(QString name) : void
+    }
+
+}
+
+
+
+Graph <|-d- DisplayableGraph
+
+
+
+
+@enduml

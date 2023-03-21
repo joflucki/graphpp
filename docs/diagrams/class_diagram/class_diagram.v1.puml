@@ -1,4 +1,4 @@
-@startuml class_diagram
+@startuml class_diagram.v1
 skinparam {
     classAttributeIconSize 0
     RoundCorner 10
