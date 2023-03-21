@@ -3,6 +3,8 @@
 
 #include <QWidget>
 #include <QtWidgets>
+#include "displayablevertex.h"
+#include "displayableedge.h"
 
 enum Tool
 {
@@ -24,14 +26,23 @@ public:
     void setSelectedTool(Tool selectedTool);
 
 private:
-    QList<QPointF> listVertex;
+    QList<DisplayableVertex*> listVertex;
+    QList<DisplayableEdge*> listEdge;
+    int vertexRadius = 5;
+
     Tool selectedTool = Tool::SELECTOR;
+    bool hitVertex(QPointF position, DisplayableVertex*& hittedVertex);
 
 protected:
     void paintEvent(QPaintEvent *);
     void mousePressEvent(QMouseEvent *event);
     void mouseMoveEvent(QMouseEvent *event);
     void mouseReleaseEvent(QMouseEvent *event);
+
+    void unselectVertices();
+    void clickCreateVertex(QMouseEvent *event);
+    void clickSelector(QMouseEvent *event);
+    void clickCreateEdge(QMouseEvent *event);
 };
 
 #endif // BOARD_H

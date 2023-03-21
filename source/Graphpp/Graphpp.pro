@@ -23,8 +23,8 @@ HEADERS += \
     displayablevertex.h \
     mainwindow.h
 
-#FORMS += \
-#    mainwindow.ui
+FORMS += \
+    mainwindow.ui
 
 include($$PWD/core/Core.pri)
 
