@@ -35,6 +35,10 @@ package "C++ library" {
         +weight : int
     }
 
+    note left of Graph::vertices
+        indices must match adjacencyList
+    end note
+
     Edge "0..*" ---l---* "1" Graph
 }
 
