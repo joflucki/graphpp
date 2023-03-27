@@ -5,15 +5,13 @@ skinparam {
 }
 package "C++ library" {
     class "Graph< T >" as Graph {
-        #vertices : list<T>
-        #adjacencyList : list<list<Edge<T>>>
-        --getters--
-        +list<T> getVertices()
-        +list<Edge<T>> getEdges()
-        --modifiers-- 
-        +addVertex(T vertex) : void
+        {static} -vertexCounter : int
+        #vertices : map<int, T>
+        #adjacencyList : map<int, list<Edge>>
+        --modifiers--
+        +addVertex(T vertex) : int
         +addEdge(T vertex, T vertex) : void
-        +removeVertex(T vertex) : void
+        +removeVertex(int vertexId) : void
         +removeEdge(Edge<T> edge) : void
         --analysis--
         +isEulerian() : bool
@@ -30,14 +28,10 @@ package "C++ library" {
         +getVertexDegree(Vertex vertex) : int
     }
 
-    struct Edge< T > {
-        +target : T
+    struct Edge {
+        +target : int
         +weight : int
     }
-
-    note left of Graph::vertices
-        indices must match adjacencyList
-    end note
 
     Edge "0..*" ---l---* "1" Graph
 }
