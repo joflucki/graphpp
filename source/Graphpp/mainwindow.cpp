@@ -1,6 +1,6 @@
 #include <QtWidgets>
 #include "mainwindow.h"
-#include "board.h"
+#include "qboard.h"
 
 MainWindow::MainWindow() : QMainWindow()
 {
@@ -178,10 +178,10 @@ void MainWindow::createToolBars()
 
 void MainWindow::newGraph()
 {
-    Board *board = new Board();
-    mdi->addSubWindow(board);
-    board->setWindowTitle("Graphe");
-    board->show();
+    QBoard *qBoard= new QBoard();
+    mdi->addSubWindow(QBoard);
+    qBoard->setWindowTitle("Graphe");
+    qBoard->show();
 
 }
 
@@ -216,46 +216,46 @@ void MainWindow::updateSelectedTool(QAction* action)
     QMdiSubWindow* qMDISubWindow = this->mdi->activeSubWindow();
     if (action != nullptr && qMDISubWindow != nullptr)
     {
-        Board* board = (Board*)qMDISubWindow->widget();
+        QBoard* QBoard = (QBoard*)qMDISubWindow->widget();
 
         if (action == selectToolAct)
         {
-            board->setSelectedTool(Tool::SELECTOR);
+            QBoard->setSelectedTool(Tool::SELECTOR);
             qDebug() << "updateSelectedTool: SELECTOR";
         }
         else if (action == newVertexAct)
         {
-            board->setSelectedTool(Tool::CREATE_VERTEX);
+            QBoard->setSelectedTool(Tool::CREATE_VERTEX);
             qDebug() << "updateSelectedTool: CREATE_VERTEX";
         }
         else if (action == linkVertexAct)
         {
-            board->setSelectedTool(Tool::CREATE_EDGE);
+            QBoard->setSelectedTool(Tool::CREATE_EDGE);
             qDebug() << "updateSelectedTool: CREATE_EDGE";
         }
         else if (action == eraserAct)
         {
-            board->setSelectedTool(Tool::ERASER);
+            QBoard->setSelectedTool(Tool::ERASER);
             qDebug() << "updateSelectedTool: ERASER";
         }
         else if (action == moveToolAct)
         {
-            board->setSelectedTool(Tool::HAND);
+            QBoard->setSelectedTool(Tool::HAND);
             qDebug() << "updateSelectedTool: HAND";
         }
         else if (action == cycleGrapheAct)
         {
-            board->setSelectedTool(Tool::CYCLE_GRAPH);
+            QBoard->setSelectedTool(Tool::CYCLE_GRAPH);
             qDebug() << "updateSelectedTool: CYCLE_GRAPH";
         }
         else if (action == completeGrapheAct)
         {
-            board->setSelectedTool(Tool::COMPLETE_GRAPH);
+            QBoard->setSelectedTool(Tool::COMPLETE_GRAPH);
             qDebug() << "updateSelectedTool: COMPLETE_GRAPH";
         }
         else if (action == bipartiteGrapheAct)
         {
-            board->setSelectedTool(Tool::BIPARTITE_GRAPH);
+            QBoard->setSelectedTool(Tool::BIPARTITE_GRAPH);
             qDebug() << "updateSelectedTool: BIPARTITE_GRAPH";
         }
     }

@@ -1,10 +1,9 @@
-#ifndef BOARD_H
-#define BOARD_H
+#ifndef QBOARD_H
+#define QBOARD_H
 
 #include <QWidget>
 #include <QtWidgets>
-#include "displayablevertex.h"
-#include "displayableedge.h"
+#include "qvertex.h"
 
 enum Tool
 {
@@ -18,20 +17,20 @@ enum Tool
     BIPARTITE_GRAPH
 };
 
-class Board : public QWidget
+class QBoard : public QWidget
 {
 public:
-    Board(QWidget *parent = nullptr);
-    virtual ~Board();
+    QBoard(QWidget *parent = nullptr);
+    virtual ~QBoard();
     void setSelectedTool(Tool selectedTool);
 
 private:
-    QList<DisplayableVertex*> listVertex;
-    QList<DisplayableEdge*> listEdge;
-    int vertexRadius = 5;
+    Graph<QVertex> graph;
+    QList<QVertex*> listVertex;
 
+    int vertexRadius = 5;
     Tool selectedTool = Tool::SELECTOR;
-    bool hitVertex(QPointF position, DisplayableVertex*& hittedVertex);
+    bool hitVertex(QPointF position, QVertex*& hittedVertex);
 
 protected:
     void paintEvent(QPaintEvent *);
@@ -43,6 +42,8 @@ protected:
     void clickCreateVertex(QMouseEvent *event);
     void clickSelector(QMouseEvent *event);
     void clickCreateEdge(QMouseEvent *event);
+
+    void moveEraser(QMouseEvent *event);
 };
 
-#endif // BOARD_H
+#endif // QBOARD_H

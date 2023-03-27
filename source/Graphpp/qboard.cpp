@@ -1,17 +1,17 @@
-#include "board.h"
+#include "qboard.h"
 #include <QPainter>
 #include <cstdlib>
 
-Board::Board(QWidget *parent)
+QBoard::QBoard(QWidget *parent)
     : QWidget(parent)
 {
 }
 
-Board::~Board()
+QBoard::~QBoard()
 {
 }
 
-void Board::paintEvent(QPaintEvent *)
+void QBoard::paintEvent(QPaintEvent *)
 {
     QPainter painter(this);
 
@@ -20,11 +20,12 @@ void Board::paintEvent(QPaintEvent *)
 
     if (!listVertex.empty())
     {
+        /*
         for (const auto edge : listEdge)
         {
             painter.setPen(QPen(edge->getBorderColor(), 2));
             painter.drawLine(edge->source->getPosition().toPoint(), edge->target->getPosition().toPoint());
-        }
+        }*/
         for (const auto vertex : listVertex)
         {
             painter.setBrush(vertex->getBackgroundColor());
@@ -34,12 +35,32 @@ void Board::paintEvent(QPaintEvent *)
     }
 }
 
-void Board::setSelectedTool(Tool selectedTool)
+void QBoard::setSelectedTool(Tool selectedTool)
 {
     this->unselectVertices();
     this->selectedTool = selectedTool;
 }
-void Board::mousePressEvent(QMouseEvent *event)
+
+bool QBoard::hitVertex(QPointF position, QVertex*& hittedVertex)
+{
+    hittedVertex = nullptr;
+    if (!listVertex.empty())
+    {
+        for (const auto vertex : listVertex)
+        {
+            QPoint vertexPos = vertex->getPosition().toPoint();
+            if (abs(vertexPos.x()-position.toPoint().x()) < this->vertexRadius + 10 // adding a bit of margin
+                    && abs(vertexPos.y()-position.toPoint().y()) < this->vertexRadius + 10)
+            {
+                hittedVertex = vertex;
+                return true;
+            }
+        }
+    }
+    return false;
+}
+
+void QBoard::mousePressEvent(QMouseEvent *event)
 {
     switch (this->selectedTool)
     {
@@ -49,10 +70,10 @@ void Board::mousePressEvent(QMouseEvent *event)
         break;
         case CREATE_EDGE: clickCreateEdge(event);
         break;
-        default: qDebug() << "Not implemented" << Qt::endl;
+        default: qDebug() << "click: Not implemented" << Qt::endl;
     }
 }
-void Board::unselectVertices()
+void QBoard::unselectVertices()
 {
     for (const auto vertex : listVertex)
     {
@@ -61,32 +82,32 @@ void Board::unselectVertices()
     }
     this->update();
 }
-void Board::clickCreateVertex(QMouseEvent *event)
+void QBoard::clickCreateVertex(QMouseEvent *event)
 {
-    listVertex.append(new DisplayableVertex("A", QPointF(event->pos().x(), event->pos().y())));
+    listVertex.append(new QVertex("A", QPointF(event->pos().x(), event->pos().y())));
     //this->update();
 }
-void Board::clickSelector(QMouseEvent *event)
+void QBoard::clickSelector(QMouseEvent *event)
 {
     this->unselectVertices();
-    DisplayableVertex* hittedVertex = nullptr;
+    QVertex* hittedVertex = nullptr;
     if (hitVertex(QPointF(event->pos().x(), event->pos().y()), hittedVertex))
     {
         hittedVertex->setBackgroundColor(Qt::red); // Debug purpose
         hittedVertex->setSelected(true);
     }
 }
-void Board::clickCreateEdge(QMouseEvent *event)
+void QBoard::clickCreateEdge(QMouseEvent *event)
 {
-    DisplayableVertex* hittedVertex = nullptr;
+    QVertex* hittedVertex = nullptr;
     if (hitVertex(QPointF(event->pos().x(), event->pos().y()), hittedVertex))
     {
         hittedVertex->setSelected(true);
         hittedVertex->setBackgroundColor(Qt::green);
     }
     int selectedVertices = 0;
-    DisplayableVertex* firstVertex = nullptr;
-    DisplayableVertex* secondVertex = nullptr;
+    QVertex* firstVertex = nullptr;
+    QVertex* secondVertex = nullptr;
 
     for (const auto vertex : listVertex)
     {
@@ -105,49 +126,47 @@ void Board::clickCreateEdge(QMouseEvent *event)
     }
     if (selectedVertices == 2)
     {
+        /*
         // create edge
         DisplayableEdge* newEdge = new DisplayableEdge("ouai", firstVertex, secondVertex);
         newEdge->source = firstVertex;
         newEdge->target = secondVertex;
         listEdge.append(newEdge);
         qDebug() << "Creating edge";
-        this->unselectVertices();
+        this->unselectVertices();*/
     }
 }
 
-void Board::mouseReleaseEvent(QMouseEvent *event)
+void QBoard::mouseReleaseEvent(QMouseEvent *event)
 {
     this->update();
 }
 
-void Board::mouseMoveEvent(QMouseEvent *event)
+void QBoard::mouseMoveEvent(QMouseEvent *event)
 {
     switch (this->selectedTool)
     {
-        case CREATE_VERTEX:
-        listVertex.last()->getPosition().setX(event->pos().x());
-        listVertex.last()->getPosition().setY(event->pos().y());
-        this->update();
+        case ERASER: moveEraser(event);
         break;
-        default: qDebug() << "Not implemented" << Qt::endl;
+        default: qDebug() << "move: Not implemented" << Qt::endl;
     }
-
+    this->update();
 }
-bool Board::hitVertex(QPointF position, DisplayableVertex*& hittedVertex)
+void QBoard::moveEraser(QMouseEvent *event)
 {
-    hittedVertex = nullptr;
-    if (!listVertex.empty())
+    QVertex* hittedVertex = nullptr;
+    if (hitVertex(QPointF(event->pos().x(), event->pos().y()), hittedVertex))
     {
+        /*
+        listVertex.remove
         for (const auto vertex : listVertex)
         {
-            QPoint vertexPos = vertex->getPosition().toPoint();
-            if (abs(vertexPos.x()-position.toPoint().x()) < this->vertexRadius + 10 // adding a bit of margin
-                    && abs(vertexPos.y()-position.toPoint().y()) < this->vertexRadius + 10)
+            if (vertex == hittedVertex)
             {
-                hittedVertex = vertex;
-                return true;
+
             }
         }
+        hittedVertex->setBackgroundColor(Qt::lightGray);
+        hittedVertex->setBorderColor(Qt::lightGray);*/
     }
-    return false;
 }

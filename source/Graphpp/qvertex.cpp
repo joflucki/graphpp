@@ -1,6 +1,6 @@
-#include "displayablevertex.h"
+#include "qvertex.h"
 
-DisplayableVertex::DisplayableVertex(QString name,
+QVertex::QVertex(QString name,
                                      QPointF position,
                                      QColor textColor,
                                      QColor backgroundColor,
@@ -14,54 +14,54 @@ DisplayableVertex::DisplayableVertex(QString name,
 }
 
 // GETTERS
-QString DisplayableVertex::getName()
+QString QVertex::getName()
 {
     return this->name;
 }
-QPointF DisplayableVertex::getPosition()
+QPointF QVertex::getPosition()
 {
     return this->position;
 }
-QColor DisplayableVertex::getTextColor()
+QColor QVertex::getTextColor()
 {
     return this->textColor;
 }
-QColor DisplayableVertex::getBackgroundColor()
+QColor QVertex::getBackgroundColor()
 {
     return this->backgroundColor;
 }
-QColor DisplayableVertex::getBorderColor()
+QColor QVertex::getBorderColor()
 {
     return this->borderColor;
 }
-bool DisplayableVertex::isSelected()
+bool QVertex::isSelected()
 {
     return this->selected;
 }
 
 
 // SETTERS
-void DisplayableVertex::setName(QString name)
+void QVertex::setName(QString name)
 {
     this->name = name;
 }
-void DisplayableVertex::setPosition(QPointF position)
+void QVertex::setPosition(QPointF position)
 {
     this->position = position;
 }
-void DisplayableVertex::setTextColor(QColor color)
+void QVertex::setTextColor(QColor color)
 {
     this->textColor = color;
 }
-void DisplayableVertex::setBackgroundColor(QColor color)
+void QVertex::setBackgroundColor(QColor color)
 {
     this->backgroundColor = color;
 }
-void DisplayableVertex::setBorderColor(QColor color)
+void QVertex::setBorderColor(QColor color)
 {
     this->borderColor = color;
 }
-void DisplayableVertex::setSelected(bool selected)
+void QVertex::setSelected(bool selected)
 {
     this->selected = selected;
 }

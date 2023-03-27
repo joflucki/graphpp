@@ -1,13 +1,13 @@
-#ifndef DISPLAYABLEVERTEX_H
-#define DISPLAYABLEVERTEX_H
+#ifndef QVERTEX_H
+#define QVERTEX_H
 #include <QString>
 #include <QColor>
 #include <QPointF>
 
-class DisplayableVertex
+class QVertex
 {
 public:
-    DisplayableVertex(QString name,
+    QVertex(QString name,
                       QPointF position,
                       QColor textColor = Qt::black,
                       QColor backgroundColor = Qt::black,
@@ -38,4 +38,4 @@ private:
     bool selected = false;
 };
 
-#endif // DISPLAYABLEVERTEX_H
+#endif // QVERTEX_H
