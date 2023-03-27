@@ -1,24 +1,15 @@
 #ifndef EDGE_H
 #define EDGE_H
-#include "vertex.h"
 
-class Edge
-{
-public:
-    Edge(Vertex* source, Vertex* target);
-
-    //getters
-    Vertex getSource();
-    Vertex getTarget();
-    int getWeight();
-
-    //setters
-    void setWeight(int weight);
-
+template <typename T> class Edge {
 private:
-    Vertex* source;
-    Vertex* target;
+    T* target;
     int weight;
-};
 
+public:
+    Edge(T target, int weight = 1);
+    T* getTarget();
+    int getWeight();
+    void setWeight(int weight);
+};
 #endif // EDGE_H

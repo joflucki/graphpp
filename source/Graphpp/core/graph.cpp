@@ -1,6 +1,6 @@
 #include "graph.h"
 
-Graph::Graph()
+template <typename T> Graph<T>::Graph()
 {
 
 }
