@@ -179,7 +179,7 @@ void MainWindow::createToolBars()
 void MainWindow::newGraph()
 {
     QBoard *qBoard= new QBoard();
-    mdi->addSubWindow(QBoard);
+    mdi->addSubWindow(qBoard);
     qBoard->setWindowTitle("Graphe");
     qBoard->show();
 

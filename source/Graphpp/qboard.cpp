@@ -5,6 +5,8 @@
 QBoard::QBoard(QWidget *parent)
     : QWidget(parent)
 {
+    this->graph = new Graph<QVertex>();
+
 }
 
 QBoard::~QBoard()
@@ -16,24 +18,34 @@ void QBoard::paintEvent(QPaintEvent *)
     QPainter painter(this);
 
     painter.setBrush(Qt::black);
-    painter.setPen(Qt::black);
+    painter.setPen(QPen(Qt::black, 2));
 
-    if (!listVertex.empty())
+    if (!graph->adjacencyList.empty())
     {
-        /*
-        for (const auto edge : listEdge)
+        // NOT CONST
+        for (auto & mapRow : graph->adjacencyList)
         {
-            painter.setPen(QPen(edge->getBorderColor(), 2));
-            painter.drawLine(edge->source->getPosition().toPoint(), edge->target->getPosition().toPoint());
-        }*/
-        for (const auto vertex : listVertex)
+            QPointF sourceVertexPos = mapRow.first->getPosition().toPoint();
+            for (auto & edge : mapRow.second)
+            {
+                QVertex* targetVertex = edge.getTarget();
+                QPointF targetVertexPos = targetVertex->getPosition().toPoint();
+                painter.drawLine(sourceVertexPos, targetVertexPos);
+            }
+        }
+        for (auto const& mapRow : graph->adjacencyList)
         {
+            QVertex* vertex = mapRow.first;
             painter.setBrush(vertex->getBackgroundColor());
             painter.setPen(vertex->getBorderColor());
             painter.drawEllipse(vertex->getPosition().toPoint(),this->vertexRadius,this->vertexRadius);
         }
     }
 }
+
+/***************************************************\
+ * USEFUL METHODS                                  *
+\***************************************************/
 
 void QBoard::setSelectedTool(Tool selectedTool)
 {
@@ -44,10 +56,11 @@ void QBoard::setSelectedTool(Tool selectedTool)
 bool QBoard::hitVertex(QPointF position, QVertex*& hittedVertex)
 {
     hittedVertex = nullptr;
-    if (!listVertex.empty())
+    if (!graph->adjacencyList.empty())
     {
-        for (const auto vertex : listVertex)
+        for (auto const& mapRow : graph->adjacencyList)
         {
+            QVertex* vertex = mapRow.first;
             QPoint vertexPos = vertex->getPosition().toPoint();
             if (abs(vertexPos.x()-position.toPoint().x()) < this->vertexRadius + 10 // adding a bit of margin
                     && abs(vertexPos.y()-position.toPoint().y()) < this->vertexRadius + 10)
@@ -60,6 +73,21 @@ bool QBoard::hitVertex(QPointF position, QVertex*& hittedVertex)
     return false;
 }
 
+void QBoard::unselectVertices()
+{
+    for (auto const& mapRow : graph->adjacencyList)
+    {
+        QVertex* vertex = mapRow.first;
+        vertex->setSelected(false);
+        vertex->setBackgroundColor(Qt::black); // Debug purpose
+    }
+    this->update();
+}
+
+/***************************************************\
+ * MOUSE EVENTS                                    *
+\***************************************************/
+
 void QBoard::mousePressEvent(QMouseEvent *event)
 {
     switch (this->selectedTool)
@@ -71,69 +99,6 @@ void QBoard::mousePressEvent(QMouseEvent *event)
         case CREATE_EDGE: clickCreateEdge(event);
         break;
         default: qDebug() << "click: Not implemented" << Qt::endl;
-    }
-}
-void QBoard::unselectVertices()
-{
-    for (const auto vertex : listVertex)
-    {
-        vertex->setSelected(false);
-        vertex->setBackgroundColor(Qt::black); // Debug purpose
-    }
-    this->update();
-}
-void QBoard::clickCreateVertex(QMouseEvent *event)
-{
-    listVertex.append(new QVertex("A", QPointF(event->pos().x(), event->pos().y())));
-    //this->update();
-}
-void QBoard::clickSelector(QMouseEvent *event)
-{
-    this->unselectVertices();
-    QVertex* hittedVertex = nullptr;
-    if (hitVertex(QPointF(event->pos().x(), event->pos().y()), hittedVertex))
-    {
-        hittedVertex->setBackgroundColor(Qt::red); // Debug purpose
-        hittedVertex->setSelected(true);
-    }
-}
-void QBoard::clickCreateEdge(QMouseEvent *event)
-{
-    QVertex* hittedVertex = nullptr;
-    if (hitVertex(QPointF(event->pos().x(), event->pos().y()), hittedVertex))
-    {
-        hittedVertex->setSelected(true);
-        hittedVertex->setBackgroundColor(Qt::green);
-    }
-    int selectedVertices = 0;
-    QVertex* firstVertex = nullptr;
-    QVertex* secondVertex = nullptr;
-
-    for (const auto vertex : listVertex)
-    {
-        if (vertex->isSelected())
-        {
-            ++selectedVertices;
-            if (firstVertex == nullptr)
-            {
-                firstVertex = vertex;
-            }
-            else if (secondVertex == nullptr)
-            {
-                secondVertex = vertex;
-            }
-        }
-    }
-    if (selectedVertices == 2)
-    {
-        /*
-        // create edge
-        DisplayableEdge* newEdge = new DisplayableEdge("ouai", firstVertex, secondVertex);
-        newEdge->source = firstVertex;
-        newEdge->target = secondVertex;
-        listEdge.append(newEdge);
-        qDebug() << "Creating edge";
-        this->unselectVertices();*/
     }
 }
 
@@ -151,22 +116,4 @@ void QBoard::mouseMoveEvent(QMouseEvent *event)
         default: qDebug() << "move: Not implemented" << Qt::endl;
     }
     this->update();
-}
-void QBoard::moveEraser(QMouseEvent *event)
-{
-    QVertex* hittedVertex = nullptr;
-    if (hitVertex(QPointF(event->pos().x(), event->pos().y()), hittedVertex))
-    {
-        /*
-        listVertex.remove
-        for (const auto vertex : listVertex)
-        {
-            if (vertex == hittedVertex)
-            {
-
-            }
-        }
-        hittedVertex->setBackgroundColor(Qt::lightGray);
-        hittedVertex->setBorderColor(Qt::lightGray);*/
-    }
 }

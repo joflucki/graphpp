@@ -4,6 +4,7 @@
 #include <QWidget>
 #include <QtWidgets>
 #include "qvertex.h"
+#include "core/graph.h"
 
 enum Tool
 {
@@ -25,25 +26,30 @@ public:
     void setSelectedTool(Tool selectedTool);
 
 private:
-    Graph<QVertex> graph;
-    QList<QVertex*> listVertex;
-
-    int vertexRadius = 5;
+    Graph<QVertex> *graph;
+    const int vertexRadius = 5;
     Tool selectedTool = Tool::SELECTOR;
+
+    // useful methods
+    void unselectVertices();
     bool hitVertex(QPointF position, QVertex*& hittedVertex);
 
+    // click behaviours methods
+    void clickCreateVertex(QMouseEvent *event);
+    void clickSelector(QMouseEvent *event);
+    void clickCreateEdge(QMouseEvent *event);
+    void clickCycleGraph(QMouseEvent *event);
+    void clickCompleteGraph(QMouseEvent *event);
+    void clickBipartiteGraph(QMouseEvent *event);
+
+    // move behaviours methods
+    void moveEraser(QMouseEvent *event);
 protected:
     void paintEvent(QPaintEvent *);
     void mousePressEvent(QMouseEvent *event);
     void mouseMoveEvent(QMouseEvent *event);
     void mouseReleaseEvent(QMouseEvent *event);
 
-    void unselectVertices();
-    void clickCreateVertex(QMouseEvent *event);
-    void clickSelector(QMouseEvent *event);
-    void clickCreateEdge(QMouseEvent *event);
-
-    void moveEraser(QMouseEvent *event);
 };
 
 #endif // QBOARD_H
