@@ -5,13 +5,12 @@ skinparam {
 }
 package "C++ library" {
     class "Graph< T >" as Graph {
-        {static} -vertexCounter : int
-        #vertices : map<int, T>
-        #adjacencyList : map<int, list<Edge>>
+        #adjacencyList : map<T, list<Edge>>
         --modifiers--
-        +addVertex(T vertex) : int
-        +addEdge(T vertex, T vertex) : void
-        +removeVertex(int vertexId) : void
+        +addVertex(T vertex) : void
+        +addEdge(T source, T target, int weight) : void
+        +addDoubleEdge(T vertex1, T vertex2, int weight) : void
+        +removeVertex(T vertex) : void
         +removeEdge(Edge<T> edge) : void
         --analysis--
         +isEulerian() : bool
@@ -25,19 +24,19 @@ package "C++ library" {
         +getNbFaces() : int
         +getNbEdges() : int
         +getNbVertices() : int
-        +getVertexDegree(Vertex vertex) : int
+        +getVertexDegree(T vertex) : int
     }
 
-    struct Edge {
-        +target : int
-        +weight : int
+    struct Edge< T > {
+        +target : T
+        +weight : int = 1
     }
 
     Edge "0..*" ---l---* "1" Graph
 }
 
 package "GUI related classes"{
-    class DisplayableVertex {
+    class QVertex {
         -name : QString
         -position : QPointF
         -textColor : QColor
@@ -57,9 +56,9 @@ package "GUI related classes"{
         -setBorderColor(QColor color) : void
 
     }
-    class DisplayableGraph {
+    class QGraph {
         -name : QString
-        -graph: Graph<DisplayableVertex>
+        -graph: Graph<QVertex>
         --getters--
         +getName() : QString
         --setters--
@@ -70,7 +69,7 @@ package "GUI related classes"{
 
 
 
-Graph <|-d- DisplayableGraph
+Graph <|-d- QGraph
 
 
 
