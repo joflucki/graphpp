@@ -1,4 +1,5 @@
 #include "qboard.h"
+#include "graph.h"
 
 /***************************************************\
  * CLICK BEHAVIOURS                                *

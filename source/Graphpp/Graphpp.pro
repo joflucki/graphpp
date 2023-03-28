@@ -10,6 +10,8 @@ CONFIG += c++17
 
 SOURCES += \
     clickBehaviours.cpp \
+    edge.cpp \
+    graph.cpp \
     main.cpp \
     mainwindow.cpp \
     moveBehaviours.cpp \
@@ -18,6 +20,8 @@ SOURCES += \
     qvertex.cpp
 
 HEADERS += \
+    edge.h \
+    graph.h \
     mainwindow.h \
     overlay.h \
     qboard.h \
@@ -26,7 +30,7 @@ HEADERS += \
 FORMS += \
     mainwindow.ui
 
-include($$PWD/core/Core.pri)
+#include($$PWD/core/Core.pri)
 
 # Default rules for deployment.
 qnx: target.path = /tmp/$${TARGET}/bin

@@ -52,5 +52,10 @@ private:
     void createActions();
     void createMenus();
     void createToolBars();
+    void createDockWindows();
+    QListWidget *customerList;
+    QListWidget *paragraphsList;
+
+    QMenu *viewMenu;
 };
 #endif // MAINWINDOW_H

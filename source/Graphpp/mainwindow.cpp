@@ -12,6 +12,7 @@ MainWindow::MainWindow() : QMainWindow()
     createActions();
     createMenus();
     createToolBars();
+    createDockWindows();
     addToolBar(Qt::LeftToolBarArea, this->toolsToolBar);
     statusBar()->showMessage(tr("Menu contextuel avec un clic droit"));
 
@@ -176,6 +177,52 @@ void MainWindow::createToolBars()
     toolsToolBar->addAction(bipartiteGrapheAct);
 }
 
+void MainWindow::createDockWindows()
+{
+    QDockWidget *dock = new QDockWidget(tr("Customers"), this);
+    dock->setAllowedAreas(Qt::LeftDockWidgetArea | Qt::RightDockWidgetArea);
+    customerList = new QListWidget(dock);
+    customerList->addItems(QStringList()
+            << "John Doe, Harmony Enterprises, 12 Lakeside, Ambleton"
+            << "Jane Doe, Memorabilia, 23 Watersedge, Beaton"
+            << "Tammy Shea, Tiblanka, 38 Sea Views, Carlton"
+            << "Tim Sheen, Caraba Gifts, 48 Ocean Way, Deal"
+            << "Sol Harvey, Chicos Coffee, 53 New Springs, Eccleston"
+            << "Sally Hobart, Tiroli Tea, 67 Long River, Fedula");
+    dock->setWidget(customerList);
+    addDockWidget(Qt::RightDockWidgetArea, dock);
+    viewMenu->addAction(dock->toggleViewAction());
+
+    dock = new QDockWidget(tr("Paragraphs"), this);
+    paragraphsList = new QListWidget(dock);
+    paragraphsList->addItems(QStringList()
+            << "Thank you for your payment which we have received today."
+            << "Your order has been dispatched and should be with you "
+               "within 28 days."
+            << "We have dispatched those items that were in stock. The "
+               "rest of your order will be dispatched once all the "
+               "remaining items have arrived at our warehouse. No "
+               "additional shipping charges will be made."
+            << "You made a small overpayment (less than $5) which we "
+               "will keep on account for you, or return at your request."
+            << "You made a small underpayment (less than $1), but we have "
+               "sent your order anyway. We'll add this underpayment to "
+               "your next bill."
+            << "Unfortunately you did not send enough money. Please remit "
+               "an additional $. Your order will be dispatched as soon as "
+               "the complete amount has been received."
+            << "You made an overpayment (more than $5). Do you wish to "
+               "buy more items, or should we return the excess to you?");
+    dock->setWidget(paragraphsList);
+    addDockWidget(Qt::RightDockWidgetArea, dock);
+    viewMenu->addAction(dock->toggleViewAction());
+
+    connect(customerList, &QListWidget::currentTextChanged,
+            this, &MainWindow::newGraph);
+    connect(paragraphsList, &QListWidget::currentTextChanged,
+            this, &MainWindow::about);
+}
+
 void MainWindow::newGraph()
 {
     QBoard *qBoard= new QBoard();
@@ -216,46 +263,46 @@ void MainWindow::updateSelectedTool(QAction* action)
     QMdiSubWindow* qMDISubWindow = this->mdi->activeSubWindow();
     if (action != nullptr && qMDISubWindow != nullptr)
     {
-        QBoard* QBoard = (QBoard*)qMDISubWindow->widget();
+        QBoard* qBoard = (QBoard*)(qMDISubWindow->widget());
 
         if (action == selectToolAct)
         {
-            QBoard->setSelectedTool(Tool::SELECTOR);
+            qBoard->setSelectedTool(Tool::SELECTOR);
             qDebug() << "updateSelectedTool: SELECTOR";
         }
         else if (action == newVertexAct)
         {
-            QBoard->setSelectedTool(Tool::CREATE_VERTEX);
+            qBoard->setSelectedTool(Tool::CREATE_VERTEX);
             qDebug() << "updateSelectedTool: CREATE_VERTEX";
         }
         else if (action == linkVertexAct)
         {
-            QBoard->setSelectedTool(Tool::CREATE_EDGE);
+            qBoard->setSelectedTool(Tool::CREATE_EDGE);
             qDebug() << "updateSelectedTool: CREATE_EDGE";
         }
         else if (action == eraserAct)
         {
-            QBoard->setSelectedTool(Tool::ERASER);
+            qBoard->setSelectedTool(Tool::ERASER);
             qDebug() << "updateSelectedTool: ERASER";
         }
         else if (action == moveToolAct)
         {
-            QBoard->setSelectedTool(Tool::HAND);
+            qBoard->setSelectedTool(Tool::HAND);
             qDebug() << "updateSelectedTool: HAND";
         }
         else if (action == cycleGrapheAct)
         {
-            QBoard->setSelectedTool(Tool::CYCLE_GRAPH);
+            qBoard->setSelectedTool(Tool::CYCLE_GRAPH);
             qDebug() << "updateSelectedTool: CYCLE_GRAPH";
         }
         else if (action == completeGrapheAct)
         {
-            QBoard->setSelectedTool(Tool::COMPLETE_GRAPH);
+            qBoard->setSelectedTool(Tool::COMPLETE_GRAPH);
             qDebug() << "updateSelectedTool: COMPLETE_GRAPH";
         }
         else if (action == bipartiteGrapheAct)
         {
-            QBoard->setSelectedTool(Tool::BIPARTITE_GRAPH);
+            qBoard->setSelectedTool(Tool::BIPARTITE_GRAPH);
             qDebug() << "updateSelectedTool: BIPARTITE_GRAPH";
         }
     }
