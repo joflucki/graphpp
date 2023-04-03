@@ -15,7 +15,7 @@ public:
 
 template <typename T>
 Edge<T>::Edge(T target, int weight){
-    this->target = target;
+    this->target = &target;
     this->weight = weight;
 }
 

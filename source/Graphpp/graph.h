@@ -14,7 +14,7 @@ public:
     ~Graph();
 
     //attributes
-    std::unordered_map<T*, std::list<Edge<T>>> adjacencyList;
+    std::unordered_map<T*, std::list<Edge<T>*>> adjacencyList;
 
     //modifiers
     void addVertex(T *vertex);
@@ -40,7 +40,7 @@ public:
 
 template <typename T> Graph<T>::Graph()
 {
-    this->adjacencyList = new std::unordered_map<T*, std::list<Edge<T>>>;
+    this->adjacencyList = std::unordered_map<T*, std::list<Edge<T>*>>();
 }
 
 template <typename T> void Graph<T>::addVertex(T *vertex)
@@ -48,8 +48,10 @@ template <typename T> void Graph<T>::addVertex(T *vertex)
     if (this->adjacencyList.find(vertex) == this->adjacencyList.end())
     {
         //vertex does not exist in map
-        std::pair<T*, std::list<Edge<T>>> newAdjacencyList = new std::pair<T*, std::list<Edge<T>>> (vertex, new std::list<Edge<T>>);
-        this->adjacencyList.insert(newAdjacencyList);
+        //std::pair<T*, std::list<Edge<T>>> newAdjacencyList = new std::pair<T*, std::list<Edge<T>>> (vertex, new std::list<Edge<T>>);
+        //this->adjacencyList.insert(newAdjacencyList);
+
+        this->adjacencyList.insert(std::make_pair(vertex, std::list<Edge<T>*>()));
     }
     else
     {
@@ -63,8 +65,8 @@ template <typename T> void Graph<T>::addEdge(T *source, T *target, int weight)
     {
         if(this->adjacencyList.find(target) != this->adjacencyList.end())
         {
-            std::list<Edge<T>> sourceAdjacencyList = this->adjacencyList[source];
-            Edge<T> newEdge = new Edge(target, weight);
+            std::list<Edge<T>*> sourceAdjacencyList = this->adjacencyList[source];
+            Edge<T> *newEdge = new Edge(*target, weight);
             sourceAdjacencyList.push_back(newEdge);
             this->adjacencyList[source] = sourceAdjacencyList;
         }

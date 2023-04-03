@@ -28,7 +28,7 @@ void QBoard::paintEvent(QPaintEvent *)
             QPointF sourceVertexPos = mapRow.first->getPosition().toPoint();
             for (auto & edge : mapRow.second)
             {
-                QVertex* targetVertex = edge.getTarget();
+                QVertex* targetVertex = edge->getTarget();
                 QPointF targetVertexPos = targetVertex->getPosition().toPoint();
                 painter.drawLine(sourceVertexPos, targetVertexPos);
             }

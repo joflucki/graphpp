@@ -12,7 +12,7 @@ MainWindow::MainWindow() : QMainWindow()
     createActions();
     createMenus();
     createToolBars();
-    createDockWindows();
+    //createDockWindows();
     addToolBar(Qt::LeftToolBarArea, this->toolsToolBar);
     statusBar()->showMessage(tr("Menu contextuel avec un clic droit"));
 
