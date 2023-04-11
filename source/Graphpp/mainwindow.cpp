@@ -1,6 +1,8 @@
 #include <QtWidgets>
 #include "mainwindow.h"
 #include "qboard.h"
+#include "graphdockwidget.h"
+#include "vertexdockwidget.h"
 
 MainWindow::MainWindow() : QMainWindow()
 {
@@ -9,12 +11,13 @@ MainWindow::MainWindow() : QMainWindow()
     mdi->setTabsClosable(true);
     setCentralWidget(mdi);
 
+    createDockWindows();
     createActions();
     createMenus();
     createToolBars();
-    //createDockWindows();
     addToolBar(Qt::LeftToolBarArea, this->toolsToolBar);
     statusBar()->showMessage(tr("Menu contextuel avec un clic droit"));
+    setStyleSheet("QStatusBar{border-top: 1px outset grey;}");
 
     setWindowTitle(tr("Graph++ Outil de visualisation et analyse de graphes"));
     setMinimumSize(200, 100);
@@ -134,6 +137,15 @@ void MainWindow::createActions()
     prevAct = new QAction(tr("&Graphe suivant"), this);
     prevAct->setShortcut(QKeySequence(QKeySequence::PreviousChild));
     connect(prevAct, &QAction::triggered, this, &MainWindow::prev);
+
+    toggleGraphDockAct = graphDock->toggleViewAction();
+    toggleGraphDockAct->setText(tr("&Afficher les propriétés du graphe"));
+
+    toggleVertexDockAct = vertexDock->toggleViewAction();
+    toggleVertexDockAct->setText(tr("&Afficher les propriétés du sommet"));
+
+    // update graph in graphdockwidget
+    connect(mdi, &QMdiArea::subWindowActivated, this, &MainWindow::updateGraphDockWidget);
 }
 
 void MainWindow::createMenus()
@@ -153,6 +165,8 @@ void MainWindow::createMenus()
     editMenu->addAction(redoAct);
 
     optionMenu = menuBar()->addMenu(tr("&Options"));
+    optionMenu->addAction(toggleGraphDockAct);
+    optionMenu->addAction(toggleVertexDockAct);
 
     aboutMenu = menuBar()->addMenu(tr("&A propos"));
     aboutMenu->addAction(aboutAct);
@@ -179,48 +193,17 @@ void MainWindow::createToolBars()
 
 void MainWindow::createDockWindows()
 {
-    QDockWidget *dock = new QDockWidget(tr("Customers"), this);
-    dock->setAllowedAreas(Qt::LeftDockWidgetArea | Qt::RightDockWidgetArea);
-    customerList = new QListWidget(dock);
-    customerList->addItems(QStringList()
-            << "John Doe, Harmony Enterprises, 12 Lakeside, Ambleton"
-            << "Jane Doe, Memorabilia, 23 Watersedge, Beaton"
-            << "Tammy Shea, Tiblanka, 38 Sea Views, Carlton"
-            << "Tim Sheen, Caraba Gifts, 48 Ocean Way, Deal"
-            << "Sol Harvey, Chicos Coffee, 53 New Springs, Eccleston"
-            << "Sally Hobart, Tiroli Tea, 67 Long River, Fedula");
-    dock->setWidget(customerList);
-    addDockWidget(Qt::RightDockWidgetArea, dock);
-    viewMenu->addAction(dock->toggleViewAction());
+    graphDock = new QDockWidget(tr("Propriétés du graphe"), this);
+    graphDock->setAllowedAreas(Qt::LeftDockWidgetArea | Qt::RightDockWidgetArea);
 
-    dock = new QDockWidget(tr("Paragraphs"), this);
-    paragraphsList = new QListWidget(dock);
-    paragraphsList->addItems(QStringList()
-            << "Thank you for your payment which we have received today."
-            << "Your order has been dispatched and should be with you "
-               "within 28 days."
-            << "We have dispatched those items that were in stock. The "
-               "rest of your order will be dispatched once all the "
-               "remaining items have arrived at our warehouse. No "
-               "additional shipping charges will be made."
-            << "You made a small overpayment (less than $5) which we "
-               "will keep on account for you, or return at your request."
-            << "You made a small underpayment (less than $1), but we have "
-               "sent your order anyway. We'll add this underpayment to "
-               "your next bill."
-            << "Unfortunately you did not send enough money. Please remit "
-               "an additional $. Your order will be dispatched as soon as "
-               "the complete amount has been received."
-            << "You made an overpayment (more than $5). Do you wish to "
-               "buy more items, or should we return the excess to you?");
-    dock->setWidget(paragraphsList);
-    addDockWidget(Qt::RightDockWidgetArea, dock);
-    viewMenu->addAction(dock->toggleViewAction());
+    graphDockWidget = new GraphDockWidget(this);
+    graphDock->setWidget(graphDockWidget);
+    addDockWidget(Qt::RightDockWidgetArea, graphDock);
 
-    connect(customerList, &QListWidget::currentTextChanged,
-            this, &MainWindow::newGraph);
-    connect(paragraphsList, &QListWidget::currentTextChanged,
-            this, &MainWindow::about);
+    vertexDock = new QDockWidget(tr("Propriétés du sommet"), this);
+    vertexDockWidget = new VertexDockWidget(this);
+    vertexDock->setWidget(vertexDockWidget);
+    addDockWidget(Qt::RightDockWidgetArea, vertexDock);
 }
 
 void MainWindow::newGraph()
@@ -256,6 +239,16 @@ void MainWindow::about()
 {
     QMessageBox::about(this, tr("A Propos"),
                        tr("Graph++, Banger international"));
+}
+
+void MainWindow::updateGraphDockWidget()
+{
+    QMdiSubWindow* qMDISubWindow = this->mdi->activeSubWindow();
+    if (qMDISubWindow != nullptr)
+    {
+        QBoard* qBoard = (QBoard*)(qMDISubWindow->widget());
+        graphDockWidget->setSelectedGraph(qBoard->graph);
+    }
 }
 
 void MainWindow::updateSelectedTool(QAction* action)

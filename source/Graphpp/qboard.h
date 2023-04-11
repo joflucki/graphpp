@@ -24,9 +24,9 @@ public:
     QBoard(QWidget *parent = nullptr);
     virtual ~QBoard();
     void setSelectedTool(Tool selectedTool);
+    Graph<QVertex> *graph;
 
 private:
-    Graph<QVertex> *graph;
     const int vertexRadius = 5;
     Tool selectedTool = Tool::SELECTOR;
 

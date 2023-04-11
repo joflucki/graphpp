@@ -19,9 +19,9 @@ void QBoard::paintEvent(QPaintEvent *)
 
     painter.setBrush(Qt::black);
     painter.setPen(QPen(Qt::black, 2));
-
     if (!graph->adjacencyList.empty())
     {
+        // Display edges
         // NOT CONST
         for (auto & mapRow : graph->adjacencyList)
         {
@@ -31,8 +31,10 @@ void QBoard::paintEvent(QPaintEvent *)
                 QVertex* targetVertex = edge->getTarget();
                 QPointF targetVertexPos = targetVertex->getPosition().toPoint();
                 painter.drawLine(sourceVertexPos, targetVertexPos);
+                qDebug() << "target: " << targetVertexPos;
             }
         }
+        // Display vertices
         for (auto const& mapRow : graph->adjacencyList)
         {
             QVertex* vertex = mapRow.first;

@@ -7,15 +7,15 @@ private:
     int weight;
 
 public:
-    Edge(T target, int weight = 1);
+    Edge(T *target, int weight = 1);
     T* getTarget();
     int getWeight();
     void setWeight(int weight);
 };
 
 template <typename T>
-Edge<T>::Edge(T target, int weight){
-    this->target = &target;
+Edge<T>::Edge(T *target, int weight){
+    this->target = target;
     this->weight = weight;
 }
 

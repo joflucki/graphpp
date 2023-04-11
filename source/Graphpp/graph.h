@@ -66,10 +66,10 @@ template <typename T> void Graph<T>::addEdge(T *source, T *target, int weight)
     {
         if(this->adjacencyList.find(target) != this->adjacencyList.end())
         {
-            std::list<Edge<T>*> sourceAdjacencyList = this->adjacencyList[source];
-            Edge<T> *newEdge = new Edge(*target, weight);
-            sourceAdjacencyList.push_back(newEdge);
-            this->adjacencyList[source] = sourceAdjacencyList;
+            //std::list<Edge<T>*> sourceAdjacencyList = ;
+            Edge<T> *newEdge = new Edge(target, weight);
+            this->adjacencyList[source].push_back(newEdge);
+            //this->adjacencyList[source] = sourceAdjacencyList;
         }
         else
         {

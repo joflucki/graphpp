@@ -12,20 +12,26 @@ SOURCES += \
     clickBehaviours.cpp \
     edge.cpp \
     graph.cpp \
+    graphdockwidget.cpp \
     main.cpp \
     mainwindow.cpp \
     moveBehaviours.cpp \
     overlay.cpp \
     qboard.cpp \
-    qvertex.cpp
+    qvertex.cpp \
+    selectcolorbutton.cpp \
+    vertexdockwidget.cpp
 
 HEADERS += \
     edge.h \
     graph.h \
+    graphdockwidget.h \
     mainwindow.h \
     overlay.h \
     qboard.h \
-    qvertex.h
+    qvertex.h \
+    selectcolorbutton.h \
+    vertexdockwidget.h
 
 FORMS += \
     mainwindow.ui

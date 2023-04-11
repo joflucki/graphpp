@@ -7,6 +7,10 @@ QT_BEGIN_NAMESPACE
 namespace Ui { class MainWindow; }
 QT_END_NAMESPACE
 
+// Forward declarations
+class GraphDockWidget;
+class VertexDockWidget;
+
 class MainWindow : public QMainWindow
 {
     Q_OBJECT
@@ -17,9 +21,13 @@ private:
     *exitAct, *undoAct, *redoAct, *aboutAct, *selectToolAct,
     *newVertexAct, *linkVertexAct, *eraserAct, *moveToolAct,
     *cycleGrapheAct, *completeGrapheAct, *bipartiteGrapheAct,
-    *closeCurrentGrapheAct, *closeAllGrapheAct, *nextAct, *prevAct;
+    *closeCurrentGrapheAct, *closeAllGrapheAct, *nextAct, *prevAct,
+    *toggleGraphDockAct, *toggleVertexDockAct;
+    QDockWidget *vertexDock, *graphDock;
     QMdiArea *mdi;
     QActionGroup *toolsActGroup;
+    GraphDockWidget *graphDockWidget;
+    VertexDockWidget *vertexDockWidget;
 
 public:
     MainWindow();
@@ -32,6 +40,7 @@ private slots:
     void redo();
     void about();
 
+    void updateGraphDockWidget();
     void updateSelectedTool(QAction* action);
     /*
     void selectTool();
