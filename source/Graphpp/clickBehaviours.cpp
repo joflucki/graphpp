@@ -17,6 +17,7 @@ void QBoard::clickSelector(QMouseEvent *event)
     if (hitVertex(QPointF(event->pos().x(), event->pos().y()), hittedVertex))
     {
         hittedVertex->setBackgroundColor(Qt::red); // Debug purpose
+        this->vertexDockWidget->setSelectedVertex(hittedVertex);
         hittedVertex->setSelected(true);
     }
 }

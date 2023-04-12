@@ -16,14 +16,16 @@ VertexDockWidget::VertexDockWidget(QWidget *parent) : QWidget(parent)
     // instanciate fields
     name = new QLineEdit(propertyPanel);
     positionX = new QSpinBox(propertyPanel);
+    positionX->setRange(-9999, 9999);
     positionY = new QSpinBox(propertyPanel);
+    positionY->setRange(-9999, 9999);
 
     // create color picker buttons
     textColorBtn = new SelectColorButton(propertyPanel);
     backgroundColorBtn = new SelectColorButton(propertyPanel);
     borderColorBtn = new SelectColorButton(propertyPanel);
-    QPushButton *validate = new QPushButton("&Valider");
-    connect(validate, &QPushButton::clicked, this, &VertexDockWidget::updateVertex);
+    QPushButton *modify = new QPushButton("&Modifer");
+    connect(modify, &QPushButton::clicked, this, &VertexDockWidget::updateVertex);
 
     QFormLayout *layout = new QFormLayout();
     layout->addRow(labelName, name);
@@ -32,7 +34,7 @@ VertexDockWidget::VertexDockWidget(QWidget *parent) : QWidget(parent)
     layout->addRow(labelTextColor, textColorBtn);
     layout->addRow(labelBackgroundColor, backgroundColorBtn);
     layout->addRow(labelBorderColor, borderColorBtn);
-    layout->addRow(new QLabel(), validate);
+    layout->addRow(new QLabel(), modify);
 
     this->setLayout(layout);
 }
@@ -41,7 +43,7 @@ void VertexDockWidget::updateVertex()
 {
     if (this->selectedVertex != nullptr)
     {
-        this->selectedVertex->setName(this->name->selectedText());
+        this->selectedVertex->setName(this->name->text());
         this->selectedVertex->setPosition(QPointF(this->positionX->value(), this->positionY->value()));
         this->selectedVertex->setTextColor(this->textColorBtn->getColor());
         this->selectedVertex->setBackgroundColor(this->backgroundColorBtn->getColor());

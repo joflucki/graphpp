@@ -4,6 +4,7 @@
 #include <QWidget>
 #include <QtWidgets>
 #include "qvertex.h"
+#include "vertexdockwidget.h"
 #include "graph.h"
 
 enum Tool
@@ -21,7 +22,7 @@ enum Tool
 class QBoard : public QWidget
 {
 public:
-    QBoard(QWidget *parent = nullptr);
+    QBoard(VertexDockWidget *vertexDockWidget, QWidget *parent = nullptr);
     virtual ~QBoard();
     void setSelectedTool(Tool selectedTool);
     Graph<QVertex> *graph;
@@ -30,9 +31,13 @@ private:
     const int vertexRadius = 5;
     Tool selectedTool = Tool::SELECTOR;
 
+    // used to update dockWidget when a vertex is selected
+    VertexDockWidget *vertexDockWidget;
+
     // useful methods
     void unselectVertices();
     bool hitVertex(QPointF position, QVertex*& hittedVertex);
+    bool hitSegment(QPointF hitPoint, QPointF p1, QPointF p2, double margin);
 
     // click behaviours methods
     void clickCreateVertex(QMouseEvent *event);

@@ -90,38 +90,46 @@ template <typename T> void Graph<T>::addDoubleEdge(T *vertex1, T *vertex2, int w
 
 template <typename T> void Graph<T>::removeVertex(T *vertex)
 {
-    if(this->adjacencyList.find(vertex) != this->adjacencyList.end())
+    // Remove all edges related to the vertex
+    for (auto & vertexPair : this->adjacencyList)
     {
-        for (auto const& edge : this->adjacencyList[vertex])
+        auto & edgeList = vertexPair.second;
+        auto edgeIt = edgeList.begin();
+        while (edgeIt != edgeList.end())
         {
-            delete edge;
-        }
-        for (auto const& otherVertex : this->adjacencyList)
-        {
-            for (auto const& edgeFromOtherVertex : this->adjacencyList[otherVertex.first])
+            if ((*edgeIt)->getTarget() == vertex)
             {
-                if(edgeFromOtherVertex->getTarget() == vertex)
-                {
-                    this->adjacencyList[otherVertex.first].remove(edgeFromOtherVertex);
-                    delete edgeFromOtherVertex;
-                }
+                delete *edgeIt;
+                edgeIt = edgeList.erase(edgeIt);
+            }
+            else
+            {
+                ++edgeIt;
             }
         }
-
-        this->adjacencyList.extract(vertex);
     }
+
+    // Remove the vertex from the map
+    adjacencyList.erase(vertex);
+    delete vertex;
 }
 
 template <typename T> void Graph<T>::removeEdge(Edge<T> *edge)
 {
-    for (auto const& vertex : this->adjacencyList)
+    for (auto &vertex : this->adjacencyList)
     {
-        for (auto const& edge1 : this->adjacencyList[vertex])
+        auto it = vertex.second.begin();
+        while (it != vertex.second.end())
         {
-            if(edge1 == edge)
+            if (*it == edge)
             {
-                this->adjacencyList[vertex].erase(edge1);
-                delete edge1;
+                it = vertex.second.erase(it);
+                delete edge;
+                edge = nullptr;
+            }
+            else
+            {
+                ++it;
             }
         }
     }
