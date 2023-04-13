@@ -31,6 +31,8 @@ private:
     const int vertexRadius = 5;
     Tool selectedTool = Tool::SELECTOR;
 
+    QTransform transform; // actual transform matrix
+
     // used to update dockWidget when a vertex is selected
     VertexDockWidget *vertexDockWidget;
 
@@ -38,22 +40,26 @@ private:
     void unselectVertices();
     bool hitVertex(QPointF position, QVertex*& hittedVertex);
     bool hitSegment(QPointF hitPoint, QPointF p1, QPointF p2, double margin);
+    void zoom(qreal scaleFactor, const QPointF &fixedViewPos);
+    QPointF convertRelativToTransform(QPointF globalPosition);
 
     // click behaviours methods
-    void clickCreateVertex(QMouseEvent *event);
-    void clickSelector(QMouseEvent *event);
-    void clickCreateEdge(QMouseEvent *event);
-    void clickCycleGraph(QMouseEvent *event);
-    void clickCompleteGraph(QMouseEvent *event);
-    void clickBipartiteGraph(QMouseEvent *event);
+    void clickCreateVertex(QPointF clickPos);
+    void clickSelector(QPointF clickPos);
+    void clickCreateEdge(QPointF clickPos);
+    void clickCycleGraph(QPointF clickPos);
+    void clickCompleteGraph(QPointF clickPos);
+    void clickBipartiteGraph(QPointF clickPos);
 
     // move behaviours methods
-    void moveEraser(QMouseEvent *event);
+    void moveEraser(QPointF clickPos);
+    void moveHand(QPointF clickPos);
 protected:
-    void paintEvent(QPaintEvent *);
-    void mousePressEvent(QMouseEvent *event);
-    void mouseMoveEvent(QMouseEvent *event);
-    void mouseReleaseEvent(QMouseEvent *event);
+    void paintEvent(QPaintEvent *) override;
+    void mousePressEvent(QMouseEvent *event) override;
+    void mouseMoveEvent(QMouseEvent *event) override;
+    void mouseReleaseEvent(QMouseEvent *event) override;
+    void wheelEvent(QWheelEvent *event) override;
 
 };
 

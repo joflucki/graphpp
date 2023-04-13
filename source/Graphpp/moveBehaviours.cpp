@@ -4,10 +4,10 @@
  * MOVE BEHAVIOURS                                 *
 \***************************************************/
 
-void QBoard::moveEraser(QMouseEvent *event)
+void QBoard::moveEraser(QPointF clickPos)
 {
     QVertex* hittedVertex = nullptr;
-    QPointF hittedPoint = QPointF(event->pos().x(), event->pos().y());
+    QPointF hittedPoint = clickPos;
     // check if hit vertex
     if (hitVertex(hittedPoint, hittedVertex))
     {
@@ -37,4 +37,9 @@ void QBoard::moveEraser(QMouseEvent *event)
             graph->removeEdge(edge);
         }
     }
+}
+
+void QBoard::moveHand(QPointF clickPos)
+{
+
 }

@@ -5,26 +5,26 @@
  * CLICK BEHAVIOURS                                *
 \***************************************************/
 
-void QBoard::clickCreateVertex(QMouseEvent *event)
+void QBoard::clickCreateVertex(QPointF clickPos)
 {
-    // TODO change vertex name
-    this->graph->addVertex(new QVertex("A", QPointF(event->pos().x(), event->pos().y())));
+    QString vertexName = "Vertex " + QString::number(this->graph->adjacencyList.size()+1); //start at 0
+    this->graph->addVertex(new QVertex(vertexName, clickPos));
 }
-void QBoard::clickSelector(QMouseEvent *event)
+void QBoard::clickSelector(QPointF clickPos)
 {
     this->unselectVertices();
     QVertex* hittedVertex = nullptr;
-    if (hitVertex(QPointF(event->pos().x(), event->pos().y()), hittedVertex))
+    if (hitVertex(clickPos, hittedVertex))
     {
         hittedVertex->setBackgroundColor(Qt::red); // Debug purpose
         this->vertexDockWidget->setSelectedVertex(hittedVertex);
         hittedVertex->setSelected(true);
     }
 }
-void QBoard::clickCreateEdge(QMouseEvent *event)
+void QBoard::clickCreateEdge(QPointF clickPos)
 {
     QVertex* hittedVertex = nullptr;
-    if (hitVertex(QPointF(event->pos().x(), event->pos().y()), hittedVertex))
+    if (hitVertex(clickPos, hittedVertex))
     {
         hittedVertex->setSelected(true);
         hittedVertex->setBackgroundColor(Qt::green);
@@ -58,15 +58,15 @@ void QBoard::clickCreateEdge(QMouseEvent *event)
     }
 }
 
-void QBoard::clickCycleGraph(QMouseEvent *event)
+void QBoard::clickCycleGraph(QPointF clickPos)
 {
 
 }
-void QBoard::clickCompleteGraph(QMouseEvent *event)
+void QBoard::clickCompleteGraph(QPointF clickPos)
 {
 
 }
-void QBoard::clickBipartiteGraph(QMouseEvent *event)
+void QBoard::clickBipartiteGraph(QPointF clickPos)
 {
 
 }

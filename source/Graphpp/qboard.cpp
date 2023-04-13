@@ -16,9 +16,20 @@ QBoard::~QBoard()
 void QBoard::paintEvent(QPaintEvent *)
 {
     QPainter painter(this);
+    painter.setTransform(this->transform);
+
+    // draw origin (debug purpose)
+    {
+        painter.setPen(Qt::gray);
+        painter.drawLine(QPoint(0,10), QPoint(0,-10));
+        painter.drawLine(QPoint(10,0), QPoint(-10,0));
+    }
 
     painter.setBrush(Qt::black);
     painter.setPen(QPen(Qt::black, 2));
+
+    //    QPoint cursorPos = this->mapFromGlobal(QCursor::pos());
+
     if (!graph->adjacencyList.empty())
     {
         // Display edges
@@ -31,7 +42,6 @@ void QBoard::paintEvent(QPaintEvent *)
                 QVertex* targetVertex = edge->getTarget();
                 QPointF targetVertexPos = targetVertex->getPosition().toPoint();
                 painter.drawLine(sourceVertexPos, targetVertexPos);
-                qDebug() << "target: " << targetVertexPos;
             }
         }
         // Display vertices
@@ -108,19 +118,37 @@ void QBoard::unselectVertices()
     this->update();
 }
 
+void QBoard::zoom(qreal zoomFactor, const QPointF &fixedViewPos)
+{
+    QTransform zoomTransform;
+    zoomTransform.translate(fixedViewPos.x(), fixedViewPos.y());
+    zoomTransform.scale(zoomFactor, zoomFactor);
+    zoomTransform.translate(-fixedViewPos.x(), -fixedViewPos.y());
+
+    this->transform = zoomTransform * this->transform;
+}
+
+QPointF QBoard::convertRelativToTransform(QPointF globalPosition)
+{
+    QPointF clickPos = mapFromGlobal(globalPosition); // convert it relativ to QBoard
+    return transform.inverted().map(clickPos); // apply transformation with transform matrix
+}
+
 /***************************************************\
  * MOUSE EVENTS                                    *
 \***************************************************/
 
 void QBoard::mousePressEvent(QMouseEvent *event)
 {
+    QPointF clickPos = convertRelativToTransform(event->globalPosition());
+
     switch (this->selectedTool)
     {
-    case CREATE_VERTEX: clickCreateVertex(event);
+    case CREATE_VERTEX: clickCreateVertex(clickPos);
         break;
-    case SELECTOR: clickSelector(event);
+    case SELECTOR: clickSelector(clickPos);
         break;
-    case CREATE_EDGE: clickCreateEdge(event);
+    case CREATE_EDGE: clickCreateEdge(clickPos);
         break;
     default: qDebug() << "click: Not implemented" << Qt::endl;
     }
@@ -133,11 +161,39 @@ void QBoard::mouseReleaseEvent(QMouseEvent *event)
 
 void QBoard::mouseMoveEvent(QMouseEvent *event)
 {
+    QPointF clickPos = convertRelativToTransform(event->globalPosition());
+
     switch (this->selectedTool)
     {
-    case ERASER: moveEraser(event);
+    case ERASER: moveEraser(clickPos);
+        break;
+    case HAND: moveHand(clickPos);
         break;
     default: qDebug() << "move: Not implemented" << Qt::endl;
     }
     this->update();
 }
+
+void QBoard::wheelEvent(QWheelEvent *event)
+{
+    // calcule la position de la souris dans la vue
+    QPoint mousePos = event->position().toPoint();
+
+    // calcule le facteur de zoom en fonction de l'événement de la roulette
+    qreal scaleFactor = 1;
+    if (event->angleDelta().y() > 0)
+    {
+        scaleFactor = 1.1;
+    }
+    else
+    {
+        scaleFactor = 0.9;
+    }
+
+    // effectue le zoom en utilisant la position de la souris comme point fixe
+    zoom(scaleFactor, event->globalPosition());
+
+    // force le widget à se redessiner
+    update();
+}
+
