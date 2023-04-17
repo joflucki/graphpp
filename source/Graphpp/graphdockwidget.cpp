@@ -55,18 +55,18 @@ void GraphDockWidget::updateLabels()
         qDebug() << "Connexe done" << Qt::endl;
         stronglyConnected->setText(tr("Fortement connexe: ") + (selectedGraph->isStronglyConnected() ? tr("Oui") : tr("Non")));
         qDebug() << "Fortement connexe done" << Qt::endl;
-        //oriented->setText(tr("Orienté: ") + (selectedGraph->isOriented() ? tr("Oui") : tr("Non")));
-        //qDebug() << "Orienté done" << Qt::endl;
-        //weighted->setText(tr("Pondéré: ") + (selectedGraph->isWeighted() ? tr("Oui") : tr("Non")));
-        //qDebug() << "Pondéré done" << Qt::endl;
+        oriented->setText(tr("Orienté: ") + (selectedGraph->isOriented() ? tr("Oui") : tr("Non")));
+        qDebug() << "Orienté done" << Qt::endl;
+        weighted->setText(tr("Pondéré: ") + (selectedGraph->isWeighted() ? tr("Oui") : tr("Non")));
+        qDebug() << "Pondéré done" << Qt::endl;
         planar->setText(tr("Planaire: ") + (selectedGraph->isPlanar() ? tr("Oui") : tr("Non")));
         qDebug() << "Planaire done" << Qt::endl;
         chromaticNumber->setText(tr("Nombre chromatique: ") + QString::number(selectedGraph->getChromaticNumber()));
         qDebug() << "Nombre chromatique done" << Qt::endl;
         nbFaces->setText(tr("Nombre de faces: ") + QString::number(selectedGraph->getNbFaces()));
         qDebug() << "Nombre de faces done" << Qt::endl;
-        //nbEdges->setText(tr("Nombre d'arrêtes: ") + QString::number(selectedGraph->getNbEdges()));
-        //qDebug() << "Nombre d'arrêtes done" << Qt::endl;
+        nbEdges->setText(tr("Nombre d'arrêtes: ") + QString::number(selectedGraph->getNbEdges()));
+        qDebug() << "Nombre d'arrêtes done" << Qt::endl;
         nbVertices->setText(tr("Nombre de sommets: ") + QString::number(selectedGraph->getNbVertices()));
         qDebug() << "Nombre de sommets done" << Qt::endl;
 

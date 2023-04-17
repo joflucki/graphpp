@@ -17,9 +17,9 @@ public:
     std::unordered_map<T*, std::list<Edge<T>*>> adjacencyList;
 
     //modifiers
-    void addVertex(T *vertex); //OK, à tester
-    void addEdge(T *source, T *target, int weight = 1); //OK, à tester
-    void addDoubleEdge(T *vertex1, T *vertex2, int weight = 1); //OK, à tester
+    void addVertex(T *vertex); //OK
+    void addEdge(T *source, T *target, int weight = 1); //OK
+    void addDoubleEdge(T *vertex1, T *vertex2, int weight = 1); //OK
     void removeVertex(T *vertex); //A tester
     void removeEdge(Edge<T> *edge); //A tester
 
@@ -33,8 +33,8 @@ public:
     bool isPlanar();
     int getChromaticNumber();
     int getNbFaces();
-    int getNbEdges(); //OK, à tester
-    int getNbVertices(); //OK, à tester
+    int getNbEdges(); //OK
+    int getNbVertices(); //OK
     int getVertexIndegree(T *vertex); //OK, à tester
     int getVertexOutdegree(T *vertex); //OK, à tester
 };
@@ -157,26 +157,40 @@ template <typename T> bool Graph<T>::isStronglyConnected()
 
 template <typename T> bool Graph<T>::isOriented()
 {
-    bool isOriented = false;
-    for (auto const& vertex1 : this->adjacencyList)
+    std::list<std::pair<bool,std::pair<T*,T*>>> edgeList;
+    for (auto & vertex : this->adjacencyList)
     {
-        for (auto const& edge1 : this->adjacencyList[vertex1])
+        for(auto const& edge : vertex.second)
         {
-            bool hasOppositeEdge = false;
-            for (auto const& edge2 : this->adjacencyList[edge1->getTarget()])
+            edgeList.push_back(std::make_pair(false, std::make_pair(vertex.first, edge->getTarget())));
+        }
+    }
+    for (auto & edge1 : edgeList)
+    {
+        if(edge1.first == false)
+        {
+            for (auto & edge2 : edgeList)
             {
-                if(edge2->getTarget() == vertex1)
+                if(edge2.first == false)
                 {
-                    hasOppositeEdge = true;
+                    if(edge1.second.first == edge2.second.second && edge2.second.first == edge1.second.second)
+                    {
+                        edge1.first = true;
+                        edge2.first = true;
+                    }
                 }
-            }
-            if(!hasOppositeEdge)
-            {
-                isOriented = true;
             }
         }
     }
-    return isOriented;
+    bool oriented = false;
+    for (auto const& edge : edgeList)
+    {
+        if(edge.first == false)
+        {
+            oriented = true;
+        }
+    }
+    return oriented;
 }
 
 template <typename T> bool Graph<T>::isWeighted()
@@ -184,7 +198,7 @@ template <typename T> bool Graph<T>::isWeighted()
     bool isWeighted = false;
     for (auto const& vertex : this->adjacencyList)
     {
-        for (auto const& edge : this->adjacencyList[vertex])
+        for (auto const& edge : vertex.second)
         {
             if(edge->getWeight() != 1)
             {
@@ -215,7 +229,11 @@ template <typename T> int Graph<T>::getNbEdges()
     int sizeSum = 0;
     for (auto const& vertex : this->adjacencyList)
     {
-        sizeSum += this->adjacencyList[vertex].size();
+        sizeSum += vertex.second.size();
+    }
+    if(!this->isOriented())
+    {
+        sizeSum /= 2;
     }
     return sizeSum;
 }
