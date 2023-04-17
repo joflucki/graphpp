@@ -212,6 +212,8 @@ void MainWindow::newGraph()
     mdi->addSubWindow(qBoard);
     qBoard->setWindowTitle("Graphe");
     qBoard->show();
+    // set right tool
+    updateSelectedTool(toolsActGroup->checkedAction());
 }
 
 void MainWindow::openGraph()
@@ -260,49 +262,49 @@ void MainWindow::updateSelectedTool(QAction* action)
         if (action == selectToolAct)
         {
             qBoard->setSelectedTool(Tool::SELECTOR);
-            setCursor(QCursor(Qt::ArrowCursor));
+            qBoard->setCursor(QCursor(Qt::ArrowCursor));
             qDebug() << "updateSelectedTool: SELECTOR";
         }
         else if (action == newVertexAct)
         {
             qBoard->setSelectedTool(Tool::CREATE_VERTEX);
-            setCursor(QCursor(Qt::CrossCursor));
+            qBoard->setCursor(QCursor(Qt::CrossCursor));
             qDebug() << "updateSelectedTool: CREATE_VERTEX";
         }
         else if (action == linkVertexAct)
         {
             qBoard->setSelectedTool(Tool::CREATE_EDGE);
-            setCursor(QCursor(Qt::CrossCursor));
+            qBoard->setCursor(QCursor(Qt::CrossCursor));
             qDebug() << "updateSelectedTool: CREATE_EDGE";
         }
         else if (action == eraserAct)
         {
             qBoard->setSelectedTool(Tool::ERASER);
-            setCursor(QCursor(QPixmap(":/img/eraser.png")));
+            qBoard->setCursor(QCursor(QPixmap(":/img/eraser.png")));
             qDebug() << "updateSelectedTool: ERASER";
         }
         else if (action == moveToolAct)
         {
             qBoard->setSelectedTool(Tool::HAND);
-            setCursor(QCursor(Qt::OpenHandCursor));
+            qBoard->setCursor(QCursor(Qt::OpenHandCursor));
             qDebug() << "updateSelectedTool: HAND";
         }
         else if (action == cycleGrapheAct)
         {
             qBoard->setSelectedTool(Tool::CYCLE_GRAPH);
-            setCursor(QCursor(Qt::CrossCursor));
+            qBoard->setCursor(QCursor(Qt::CrossCursor));
             qDebug() << "updateSelectedTool: CYCLE_GRAPH";
         }
         else if (action == completeGrapheAct)
         {
             qBoard->setSelectedTool(Tool::COMPLETE_GRAPH);
-            setCursor(QCursor(Qt::CrossCursor));
+            qBoard->setCursor(QCursor(Qt::CrossCursor));
             qDebug() << "updateSelectedTool: COMPLETE_GRAPH";
         }
         else if (action == bipartiteGrapheAct)
         {
             qBoard->setSelectedTool(Tool::BIPARTITE_GRAPH);
-            setCursor(QCursor(Qt::CrossCursor));
+            qBoard->setCursor(QCursor(Qt::CrossCursor));
             qDebug() << "updateSelectedTool: BIPARTITE_GRAPH";
         }
     }

@@ -21,6 +21,9 @@ public slots:
     void updateColor();
     void changeColor();
 
+signals:
+    void colorChanged();
+
 private:
     QColor color;
 };

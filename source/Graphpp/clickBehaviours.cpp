@@ -17,9 +17,9 @@ void QBoard::clickSelector(QPointF clickPos)
     if (hitVertex(clickPos, hittedVertex))
     {
         hittedVertex->setBackgroundColor(Qt::red); // Debug purpose
-        this->vertexDockWidget->setSelectedVertex(hittedVertex);
         hittedVertex->setSelected(true);
     }
+    this->vertexDockWidget->setSelectedVertex(hittedVertex);
 }
 void QBoard::clickCreateEdge(QPointF clickPos)
 {

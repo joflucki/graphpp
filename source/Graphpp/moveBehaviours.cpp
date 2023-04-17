@@ -41,5 +41,9 @@ void QBoard::moveEraser(QPointF clickPos)
 
 void QBoard::moveHand(QPointF clickPos)
 {
-
+    if (isDragging) {
+        QPointF delta = clickPos - lastMousePos;
+        translate(delta);
+        lastMousePos = clickPos;
+    }
 }

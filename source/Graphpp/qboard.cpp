@@ -7,6 +7,7 @@ QBoard::QBoard(VertexDockWidget *vertexDockWidget, QWidget *parent)
 {
     this->graph = new Graph<QVertex>();
     this->vertexDockWidget = vertexDockWidget;
+    connect(vertexDockWidget, &VertexDockWidget::vertexUpdated, this, qOverload<>(&QWidget::update));
 }
 
 QBoard::~QBoard()
@@ -128,6 +129,15 @@ void QBoard::zoom(qreal zoomFactor, const QPointF &fixedViewPos)
     this->transform = zoomTransform * this->transform;
 }
 
+void QBoard::translate(const QPointF &delta)
+{
+    QTransform translateTransform;
+    translateTransform.translate(delta.x(), delta.y());
+
+    this->transform = this->transform * translateTransform;
+    update();
+}
+
 QPointF QBoard::convertRelativToTransform(QPointF globalPosition)
 {
     QPointF clickPos = mapFromGlobal(globalPosition); // convert it relativ to QBoard
@@ -150,12 +160,25 @@ void QBoard::mousePressEvent(QMouseEvent *event)
         break;
     case CREATE_EDGE: clickCreateEdge(clickPos);
         break;
+    case HAND:
+        isDragging = true;
+        lastMousePos = clickPos;
+        setCursor(QCursor(Qt::ClosedHandCursor));
+        break;
     default: qDebug() << "click: Not implemented" << Qt::endl;
     }
 }
 
 void QBoard::mouseReleaseEvent(QMouseEvent *event)
 {
+    switch (this->selectedTool)
+    {
+    case HAND:
+        setCursor(QCursor(Qt::OpenHandCursor));
+        isDragging = false;
+        break;
+    default: break;
+    }
     this->update();
 }
 
@@ -167,7 +190,9 @@ void QBoard::mouseMoveEvent(QMouseEvent *event)
     {
     case ERASER: moveEraser(clickPos);
         break;
-    case HAND: moveHand(clickPos);
+    case HAND:
+        setCursor(QCursor(Qt::ClosedHandCursor));
+        moveHand(clickPos);
         break;
     default: qDebug() << "move: Not implemented" << Qt::endl;
     }

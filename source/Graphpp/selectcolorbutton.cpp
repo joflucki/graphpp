@@ -18,6 +18,7 @@ void SelectColorButton::changeColor()
     if ( newColor != color )
     {
         setColor( newColor );
+        emit colorChanged();
     }
 }
 

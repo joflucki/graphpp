@@ -7,6 +7,7 @@
 
 class VertexDockWidget: public QWidget
 {
+    Q_OBJECT
 private:
     QVertex* selectedVertex = nullptr;
 
@@ -14,12 +15,15 @@ private:
     QLineEdit *name;
     QSpinBox *positionX, *positionY;
     SelectColorButton *textColorBtn, *backgroundColorBtn, *borderColorBtn;
-    void updateVertex();
     void updateFields();
+    void updateVertex();
 
 public:
     void setSelectedVertex(QVertex* vertex);
     VertexDockWidget(QWidget *parent);
+
+signals:
+    void vertexUpdated();
 };
 
 #endif // VERTEXDOCKWIDGET_H

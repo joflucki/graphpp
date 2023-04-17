@@ -24,8 +24,8 @@ VertexDockWidget::VertexDockWidget(QWidget *parent) : QWidget(parent)
     textColorBtn = new SelectColorButton(propertyPanel);
     backgroundColorBtn = new SelectColorButton(propertyPanel);
     borderColorBtn = new SelectColorButton(propertyPanel);
-    QPushButton *modify = new QPushButton("&Modifer");
-    connect(modify, &QPushButton::clicked, this, &VertexDockWidget::updateVertex);
+    QPushButton *applyBtn = new QPushButton("&Appliquer");
+    connect(applyBtn, &QPushButton::clicked, this, &VertexDockWidget::updateVertex);
 
     QFormLayout *layout = new QFormLayout();
     layout->addRow(labelName, name);
@@ -34,7 +34,7 @@ VertexDockWidget::VertexDockWidget(QWidget *parent) : QWidget(parent)
     layout->addRow(labelTextColor, textColorBtn);
     layout->addRow(labelBackgroundColor, backgroundColorBtn);
     layout->addRow(labelBorderColor, borderColorBtn);
-    layout->addRow(new QLabel(), modify);
+    layout->addRow(new QLabel(), applyBtn);
 
     this->setLayout(layout);
 }
@@ -47,7 +47,8 @@ void VertexDockWidget::updateVertex()
         this->selectedVertex->setPosition(QPointF(this->positionX->value(), this->positionY->value()));
         this->selectedVertex->setTextColor(this->textColorBtn->getColor());
         this->selectedVertex->setBackgroundColor(this->backgroundColorBtn->getColor());
-        this->selectedVertex->setBorderColor(this->backgroundColorBtn->getColor());
+        this->selectedVertex->setBorderColor(this->borderColorBtn->getColor());
+        emit vertexUpdated();
     }
 }
 void VertexDockWidget::updateFields()
@@ -60,6 +61,15 @@ void VertexDockWidget::updateFields()
         this->textColorBtn->setColor(this->selectedVertex->getTextColor());
         this->backgroundColorBtn->setColor(this->selectedVertex->getBackgroundColor());
         this->borderColorBtn->setColor(this->selectedVertex->getBorderColor());
+    }
+    else
+    {
+        this->name->setText("");
+        this->positionX->setValue(0);
+        this->positionY->setValue(0);
+        this->textColorBtn->setColor(Qt::lightGray);
+        this->backgroundColorBtn->setColor(Qt::lightGray);
+        this->borderColorBtn->setColor(Qt::lightGray);
     }
 }
 

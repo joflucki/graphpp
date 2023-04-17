@@ -36,11 +36,16 @@ private:
     // used to update dockWidget when a vertex is selected
     VertexDockWidget *vertexDockWidget;
 
+    // used for hand tool
+    bool isDragging = false;
+    QPointF lastMousePos;
+
     // useful methods
     void unselectVertices();
     bool hitVertex(QPointF position, QVertex*& hittedVertex);
     bool hitSegment(QPointF hitPoint, QPointF p1, QPointF p2, double margin);
     void zoom(qreal scaleFactor, const QPointF &fixedViewPos);
+    void translate(const QPointF &delta);
     QPointF convertRelativToTransform(QPointF globalPosition);
 
     // click behaviours methods
