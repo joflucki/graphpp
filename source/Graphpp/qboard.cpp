@@ -49,6 +49,12 @@ void QBoard::paintEvent(QPaintEvent *)
         for (auto const& mapRow : graph->adjacencyList)
         {
             QVertex* vertex = mapRow.first;
+            if (vertex->isSelected())
+            {
+                painter.setBrush(Qt::lightGray);
+                painter.setPen(QPen(Qt::black, 2));
+                painter.drawEllipse(vertex->getPosition().toPoint(),this->vertexRadius+5,this->vertexRadius+5); // bigger outlined for selected vertices
+            }
             painter.setBrush(vertex->getBackgroundColor());
             painter.setPen(vertex->getBorderColor());
             painter.drawEllipse(vertex->getPosition().toPoint(),this->vertexRadius,this->vertexRadius);
@@ -114,7 +120,6 @@ void QBoard::unselectVertices()
     {
         QVertex* vertex = mapRow.first;
         vertex->setSelected(false);
-        vertex->setBackgroundColor(Qt::black); // Debug purpose
     }
     this->update();
 }
@@ -160,10 +165,19 @@ void QBoard::mousePressEvent(QMouseEvent *event)
         break;
     case CREATE_EDGE: clickCreateEdge(clickPos);
         break;
+    case ERASER: moveEraser(clickPos);
+        break;
     case HAND:
         isDragging = true;
         lastMousePos = clickPos;
         setCursor(QCursor(Qt::ClosedHandCursor));
+        break;
+
+    case CYCLE_GRAPH: clickCycleGraph(clickPos);
+        break;
+    case COMPLETE_GRAPH: clickCompleteGraph(clickPos);
+        break;
+    case BIPARTITE_GRAPH: clickBipartiteGraph(clickPos);
         break;
     default: qDebug() << "click: Not implemented" << Qt::endl;
     }
