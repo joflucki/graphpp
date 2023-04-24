@@ -63,39 +63,58 @@ void QBoard::clickCycleGraph(QPointF clickPos)
 
     if (ok)
     {
-        QVertex* arrayVertices[nbVertices];
-        double angle = 360./nbVertices;
         double radius = 200;
-        QPointF center = clickPos;
+        QVertex* arrayVertices[nbVertices];
+        createRoundedVertices(arrayVertices, nbVertices, radius, clickPos);
 
-        for (int i=0; i < nbVertices; ++i)
-        {
-            double realAngle = angle*i * M_PI / 180; // convert to radian
-            QPointF vertexPos = QPointF(center.x() + (cos(realAngle) * radius), center.y() + (sin(realAngle) * radius));
-            QString vertexName = "Vertex cycle " + QString::number(this->graph->adjacencyList.size()+1); //start at 0
-            arrayVertices[i] = new QVertex(vertexName, vertexPos);
-            this->graph->addVertex(arrayVertices[i]);
-        }
+        // add edges to the graph
         for (int i=0; i < nbVertices-1; ++i)
         {
             this->graph->addDoubleEdge(arrayVertices[i], arrayVertices[i+1]);
         }
         // add last connexion between the last and the first
         this->graph->addDoubleEdge(arrayVertices[nbVertices-1], arrayVertices[0]);
-
     }
 }
 void QBoard::clickCompleteGraph(QPointF clickPos)
 {
     bool ok;
-    int nbVertices = QInputDialog::getInt(this, tr("Graphe complet"), tr("Choisissez le nombre de sommet (3-360):"),3, 3,360,1,&ok);
+    int nbVertices = QInputDialog::getInt(this, tr("Graphe complet"), tr("Choisissez le nombre de sommet (3-100):"),3, 3,100,1,&ok);
 
     if (ok)
     {
-    }
+        double radius = 200;
+        QVertex* arrayVertices[nbVertices];
+        createRoundedVertices(arrayVertices, nbVertices, radius, clickPos);
 
+        // add edges to the graph
+        for (auto * vertexSource: arrayVertices)
+        {
+            for (auto * vertexTarget: arrayVertices)
+            {
+                if (vertexSource != vertexTarget)
+                {
+                    this->graph->addDoubleEdge(vertexSource, vertexTarget);
+                }
+            }
+        }
+    }
 }
 void QBoard::clickBipartiteGraph(QPointF clickPos)
 {
 
+}
+
+void QBoard::createRoundedVertices(QVertex* arrayVertices[], int nbOfVertices, double radius, QPointF center)
+{
+    double angle = 360./nbOfVertices;
+    for (int i=0; i < nbOfVertices; ++i)
+    {
+        double realAngle = angle*i * M_PI / 180; // convert to radian
+        QPointF vertexPos = QPointF(center.x() + (cos(realAngle) * radius), center.y() + (sin(realAngle) * radius));
+        QString vertexName = "Vertex cycle " + QString::number(this->graph->adjacencyList.size()+1); //start at 0
+        arrayVertices[i] = new QVertex(vertexName, vertexPos);
+        // add to graph
+        this->graph->addVertex(arrayVertices[i]);
+    }
 }

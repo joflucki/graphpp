@@ -55,6 +55,7 @@ private:
     void clickCycleGraph(QPointF clickPos);
     void clickCompleteGraph(QPointF clickPos);
     void clickBipartiteGraph(QPointF clickPos);
+    void createRoundedVertices(QVertex* arrayVertices[], int nbOfVertices, double radius, QPointF center);
 
     // move behaviours methods
     void moveEraser(QPointF clickPos);
