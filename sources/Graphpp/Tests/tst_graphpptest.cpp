@@ -2,7 +2,7 @@
 #include <QtTest>
 
 // add necessary includes here
-#include <graphpplib.h>
+#include <graph.h>
 
 class GraphppTest : public QObject
 {
@@ -14,9 +14,7 @@ public:
 
 private slots:
     void test_case1();
-    void test_case2();
-    void test_case3();
-    void test_case4();
+    void test_graph_initialization();
 
 };
 
@@ -34,19 +32,11 @@ void GraphppTest::test_case1()
 {
     QVERIFY(1 == 1);
 }
-void GraphppTest::test_case2()
-{
-    QVERIFY(1 != 12);
-}
 
-void GraphppTest::test_case3()
-{
-    QVERIFY(1 > -1);
-}
-
-void GraphppTest::test_case4()
-{
-    QVERIFY(0 == 0);
+void GraphppTest::test_graph_initialization(){
+    Graph<int>* graph = new Graph<int>();
+    QVERIFY(graph->getNbVertices() == 0);
+    QVERIFY(graph->getNbEdges() == 0);
 }
 
 
