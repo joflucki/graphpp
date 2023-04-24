@@ -7,22 +7,42 @@ CONFIG += c++17
 # You can make your code fail to compile if it uses deprecated APIs.
 # In order to do so, uncomment the following line.
 #DEFINES += QT_DISABLE_DEPRECATED_BEFORE=0x060000    # disables all the APIs deprecated before Qt 6.0.0
-INCLUDEPATH += $$PWD/../Lib/
-DEPENDPATH += $$PWD/../Lib/
+INCLUDEPATH += ../Lib/
+DEPENDPATH += ../Lib/
 
-LIBS += -L$$OUT_PWD/../Lib/debug -lLib
+LIBS += -L../Lib/debug -lLib
 
 SOURCES += \
+    clickBehaviours.cpp \
+    graphdockwidget.cpp \
     main.cpp \
-    mainwindow.cpp
+    mainwindow.cpp \
+    moveBehaviours.cpp \
+    overlay.cpp \
+    qboard.cpp \
+    qvertex.cpp \
+    selectcolorbutton.cpp \
+    vertexdockwidget.cpp
 
 HEADERS += \
-    mainwindow.h
+    graphdockwidget.h \
+    mainwindow.h \
+    overlay.h \
+    qboard.h \
+    qvertex.h \
+    selectcolorbutton.h \
+    vertexdockwidget.h
 
 FORMS += \
     mainwindow.ui
+
+RESOURCES += \
+        img.qrc
+
+#include($$PWD/core/Core.pri)
 
 # Default rules for deployment.
 qnx: target.path = /tmp/$${TARGET}/bin
 else: unix:!android: target.path = /opt/$${TARGET}/bin
 !isEmpty(target.path): INSTALLS += target
+
