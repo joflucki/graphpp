@@ -18,6 +18,7 @@ SOURCES += \
     moveBehaviours.cpp \
     overlay.cpp \
     qboard.cpp \
+    qmultipleinputdialog.cpp \
     qvertex.cpp \
     selectcolorbutton.cpp \
     vertexdockwidget.cpp
@@ -29,6 +30,7 @@ HEADERS += \
     mainwindow.h \
     overlay.h \
     qboard.h \
+    qmultipleinputdialog.h \
     qvertex.h \
     selectcolorbutton.h \
     vertexdockwidget.h
