@@ -6,59 +6,63 @@
 #include <stack>
 #include "edge.h"
 
-template <typename T> class Graph
+template <typename T>
+class Graph
 {
 public:
     Graph();
     ~Graph();
 
-    //attributes
-    std::unordered_map<T*, std::list<Edge<T>*>> adjacencyList;
+    // attributes
+    std::unordered_map<T *, std::list<Edge<T> *>> adjacencyList;
 
-    //modifiers
+    // modifiers
     void addVertex(T *vertex);
     void addEdge(T *source, T *target, int weight = 1);
     void addDoubleEdge(T *vertex1, T *vertex2, int weight = 1);
     void removeVertex(T *vertex);
     void removeEdge(Edge<T> *edge);
 
-    //analysis
+    // analysis
     bool isEulerian();
     bool isHamiltonian();
     bool isConnected();
     bool isStronglyConnected();
-    bool isOriented(); //Not
-    bool isWeighted(); //OK
+    bool isOriented(); // Not
+    bool isWeighted(); // OK
     bool isPlanar();
     int getChromaticNumber();
     int getNbFaces();
-    int getNbEdges(); //OK
-    int getNbVertices(); //OK
-    int getVertexIndegree(T *vertex); //OK, à tester
-    int getVertexOutdegree(T *vertex); //OK, à tester
+    int getNbEdges();                  // OK
+    int getNbVertices();               // OK
+    int getVertexIndegree(T *vertex);  // OK, à tester
+    int getVertexOutdegree(T *vertex); // OK, à tester
 };
 
 /// @brief Initializes a new graph
 /// @author Damien Tschan
 /// @date 17.04.2023
-template <typename T> Graph<T>::Graph()
+template <typename T>
+Graph<T>::Graph()
 {
-    this->adjacencyList = std::unordered_map<T*, std::list<Edge<T>*>>();
+    this->adjacencyList = std::unordered_map<T *, std::list<Edge<T> *>>();
 }
 
 /// @brief Adds a vertex to the graph
 /// @param A vertex
 /// @author Damien Tschan
 /// @date 17.04.2023
-template <typename T> void Graph<T>::addVertex(T *vertex)
+template <typename T>
+void Graph<T>::addVertex(T *vertex)
 {
     if (this->adjacencyList.find(vertex) == this->adjacencyList.end())
     {
-        this->adjacencyList.insert(std::make_pair(vertex, std::list<Edge<T>*>()));
+        this->adjacencyList.insert(std::make_pair(vertex, std::list<Edge<T> *>()));
     }
     else
     {
-
+        // TODO error
+        // qDebug() << "ERROR : cannot add vertex : vertex already in map" << Qt::endl; //TODO throw error
     }
 }
 
@@ -68,23 +72,24 @@ template <typename T> void Graph<T>::addVertex(T *vertex)
 /// @param The weight of the edge
 /// @author Damien Tschan
 /// @date 17.04.2023
-template <typename T> void Graph<T>::addEdge(T *source, T *target, int weight)
+template <typename T>
+void Graph<T>::addEdge(T *source, T *target, int weight)
 {
-    if(this->adjacencyList.find(source) != this->adjacencyList.end())
+    if (this->adjacencyList.find(source) != this->adjacencyList.end())
     {
-        if(this->adjacencyList.find(target) != this->adjacencyList.end())
+        if (this->adjacencyList.find(target) != this->adjacencyList.end())
         {
             Edge<T> *newEdge = new Edge(target, weight);
             this->adjacencyList[source].push_back(newEdge);
         }
         else
         {
-
+            // qDebug() << "ERROR : cannot add edge : target does not exist" << Qt::endl; //TODO throw error
         }
     }
     else
     {
-
+        // qDebug() << "ERROR : cannot add edge : source does not exist" << Qt::endl; //TODO throw error
     }
 }
 
@@ -94,7 +99,8 @@ template <typename T> void Graph<T>::addEdge(T *source, T *target, int weight)
 /// @param The weight of the edge
 /// @author Damien Tschan
 /// @date 17.04.2023
-template <typename T> void Graph<T>::addDoubleEdge(T *vertex1, T *vertex2, int weight)
+template <typename T>
+void Graph<T>::addDoubleEdge(T *vertex1, T *vertex2, int weight)
 {
     this->addEdge(vertex1, vertex2, weight);
     this->addEdge(vertex2, vertex1, weight);
@@ -104,12 +110,13 @@ template <typename T> void Graph<T>::addDoubleEdge(T *vertex1, T *vertex2, int w
 /// @param A vertex
 /// @author Damien Tschan
 /// @date 17.04.2023
-template <typename T> void Graph<T>::removeVertex(T *vertex)
+template <typename T>
+void Graph<T>::removeVertex(T *vertex)
 {
     // Remove all edges related to the vertex
-    for (auto & vertexPair : this->adjacencyList)
+    for (auto &vertexPair : this->adjacencyList)
     {
-        auto & edgeList = vertexPair.second;
+        auto &edgeList = vertexPair.second;
         auto edgeIt = edgeList.begin();
         while (edgeIt != edgeList.end())
         {
@@ -134,7 +141,8 @@ template <typename T> void Graph<T>::removeVertex(T *vertex)
 /// @param An edge
 /// @author Damien Tschan
 /// @date 17.04.2023
-template <typename T> void Graph<T>::removeEdge(Edge<T> *edge)
+template <typename T>
+void Graph<T>::removeEdge(Edge<T> *edge)
 {
     for (auto &vertex : this->adjacencyList)
     {
@@ -158,7 +166,8 @@ template <typename T> void Graph<T>::removeEdge(Edge<T> *edge)
 /// @brief Returns whether the graph is eulerian or not
 /// @author TODO
 /// @date
-template <typename T> bool Graph<T>::isEulerian()
+template <typename T>
+bool Graph<T>::isEulerian()
 {
     return false;
 }
@@ -166,7 +175,8 @@ template <typename T> bool Graph<T>::isEulerian()
 /// @brief Returns whether the graph is hamiltonian or not
 /// @author TODO
 /// @date
-template <typename T> bool Graph<T>::isHamiltonian()
+template <typename T>
+bool Graph<T>::isHamiltonian()
 {
     return false;
 }
@@ -174,27 +184,27 @@ template <typename T> bool Graph<T>::isHamiltonian()
 /// @brief Returns whether the graph is connected or not
 /// @author TODO
 /// @date
-template <typename T> bool Graph<T>::isConnected()
+template <typename T>
+bool Graph<T>::isConnected()
 {
-    T* vertex = this->adjacencyList.begin()->second;
+    T *vertex = this->adjacencyList.begin()->second;
     std::stack<T> verticesToVisitStack;
 
     verticesToVisitStack.push(vertex);
 
     while (!verticesToVisitStack.empty())
     {
-        T* currentVertex = verticesToVisitStack.top();
+        T *currentVertex = verticesToVisitStack.top();
         verticesToVisitStack.pop();
 
-        for(auto & adjacentVertex : this->adjacencyList[currentVertex])
+        for (auto &adjacentVertex : this->adjacencyList[currentVertex])
         {
             verticesToVisitStack.push(adjacentVertex->second);
         }
     }
 
-    for(auto & edge : this->adjacencyList[vertex]->second)
+    for (auto &edge : this->adjacencyList[vertex]->second)
     {
-
     }
 
     return false;
@@ -203,9 +213,10 @@ template <typename T> bool Graph<T>::isConnected()
 /// @brief Returns whether the graph is strongly connected or not
 /// @author Damien Tschan
 /// @date 24.04.2023
-template <typename T> bool Graph<T>::isStronglyConnected()
+template <typename T>
+bool Graph<T>::isStronglyConnected()
 {
-    return this->getNbVertices()*log2(this->getNbVertices()) < this->getNbEdges();
+    return this->getNbVertices() * log2(this->getNbVertices()) < this->getNbEdges();
 }
 
 /// @brief Returns whether the graph is oriented or not
@@ -213,7 +224,8 @@ template <typename T> bool Graph<T>::isStronglyConnected()
 /// @date 24.04.2023
 ///
 /// As oriented graphs are not supported by this version of the app, isOriented() will always return false.
-template <typename T> bool Graph<T>::isOriented()
+template <typename T>
+bool Graph<T>::isOriented()
 {
     /*std::list<std::pair<bool,std::pair<T*,T*>>> edgeList;
     for (auto & vertex : this->adjacencyList)
@@ -257,7 +269,8 @@ template <typename T> bool Graph<T>::isOriented()
 /// @date 24.04.2023
 ///
 /// As weighted graphs are not supported by this version of the app, isWeighted() will always return false.
-template <typename T> bool Graph<T>::isWeighted()
+template <typename T>
+bool Graph<T>::isWeighted()
 {
     /*bool isWeighted = false;
     for (auto const& vertex : this->adjacencyList)
@@ -277,7 +290,8 @@ template <typename T> bool Graph<T>::isWeighted()
 /// @brief Returns whether the graph is planar or not
 /// @author TODO
 /// @date
-template <typename T> bool Graph<T>::isPlanar()
+template <typename T>
+bool Graph<T>::isPlanar()
 {
     return false;
 }
@@ -285,7 +299,8 @@ template <typename T> bool Graph<T>::isPlanar()
 /// @brief Returns the chromatic number of the graph as an integer
 /// @author TODO
 /// @date
-template <typename T> int Graph<T>::getChromaticNumber()
+template <typename T>
+int Graph<T>::getChromaticNumber()
 {
     return 0;
 }
@@ -293,7 +308,8 @@ template <typename T> int Graph<T>::getChromaticNumber()
 /// @brief Returns the amount of faces in the graph as an integer
 /// @author TODO
 /// @date
-template <typename T> int Graph<T>::getNbFaces()
+template <typename T>
+int Graph<T>::getNbFaces()
 {
     return 0;
 }
@@ -301,14 +317,15 @@ template <typename T> int Graph<T>::getNbFaces()
 /// @brief Returns the amount of edges in the graph as an integer
 /// @author Damien Tschan
 /// @date 17.04.2023
-template <typename T> int Graph<T>::getNbEdges()
+template <typename T>
+int Graph<T>::getNbEdges()
 {
     int sizeSum = 0;
-    for (auto const& vertex : this->adjacencyList)
+    for (auto const &vertex : this->adjacencyList)
     {
         sizeSum += vertex.second.size();
     }
-    if(!this->isOriented())
+    if (!this->isOriented())
     {
         sizeSum /= 2;
     }
@@ -318,7 +335,8 @@ template <typename T> int Graph<T>::getNbEdges()
 /// @brief Returns the amount of vertices in the graph as an integer
 /// @author Damien Tschan
 /// @date 17.04.2023
-template <typename T> int Graph<T>::getNbVertices()
+template <typename T>
+int Graph<T>::getNbVertices()
 {
     return this->adjacencyList.size();
 }
@@ -327,16 +345,17 @@ template <typename T> int Graph<T>::getNbVertices()
 /// @param A vertex
 /// @author Damien Tschan
 /// @date 17.04.2023
-template <typename T> int Graph<T>::getVertexIndegree(T *vertex)
+template <typename T>
+int Graph<T>::getVertexIndegree(T *vertex)
 {
     int indegree = 0;
-    if(this->adjacencyList.find(vertex) != this->adjacencyList.end())
+    if (this->adjacencyList.find(vertex) != this->adjacencyList.end())
     {
-        for (auto const& otherVertex : this->adjacencyList)
+        for (auto const &otherVertex : this->adjacencyList)
         {
-            for (auto const& edgeFromOtherVertex : this->adjacencyList[otherVertex])
+            for (auto const &edgeFromOtherVertex : this->adjacencyList[otherVertex])
             {
-                if(edgeFromOtherVertex->getTarget() == vertex)
+                if (edgeFromOtherVertex->getTarget() == vertex)
                 {
                     indegree++;
                 }
@@ -350,9 +369,10 @@ template <typename T> int Graph<T>::getVertexIndegree(T *vertex)
 /// @param A vertex
 /// @author Damien Tschan
 /// @date 17.04.2023
-template <typename T> int Graph<T>::getVertexOutdegree(T *vertex)
+template <typename T>
+int Graph<T>::getVertexOutdegree(T *vertex)
 {
-    if(this->adjacencyList.find(vertex) != this->adjacencyList.end())
+    if (this->adjacencyList.find(vertex) != this->adjacencyList.end())
     {
         return this->adjacencyList[vertex].size();
     }

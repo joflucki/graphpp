@@ -5,7 +5,7 @@
 #include <QtWidgets>
 #include "qvertex.h"
 #include "vertexdockwidget.h"
-#include "graph.h"
+#include <graph.h>
 
 enum Tool
 {

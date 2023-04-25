@@ -7,11 +7,13 @@ CONFIG += c++17
 # You can make your code fail to compile if it uses deprecated APIs.
 # In order to do so, uncomment the following line.
 #DEFINES += QT_DISABLE_DEPRECATED_BEFORE=0x060000    # disables all the APIs deprecated before Qt 6.0.0
+INCLUDEPATH += ../Lib/
+DEPENDPATH += ../Lib/
+
+LIBS += -L../Lib/debug -lLib
 
 SOURCES += \
     clickBehaviours.cpp \
-    edge.cpp \
-    graph.cpp \
     graphdockwidget.cpp \
     main.cpp \
     mainwindow.cpp \
@@ -24,8 +26,6 @@ SOURCES += \
     vertexdockwidget.cpp
 
 HEADERS += \
-    edge.h \
-    graph.h \
     graphdockwidget.h \
     mainwindow.h \
     overlay.h \
@@ -38,6 +38,9 @@ HEADERS += \
 FORMS += \
     mainwindow.ui
 
+RESOURCES += \
+        img.qrc
+
 #include($$PWD/core/Core.pri)
 
 # Default rules for deployment.
@@ -45,5 +48,3 @@ qnx: target.path = /tmp/$${TARGET}/bin
 else: unix:!android: target.path = /opt/$${TARGET}/bin
 !isEmpty(target.path): INSTALLS += target
 
-RESOURCES += \
-    img.qrc
