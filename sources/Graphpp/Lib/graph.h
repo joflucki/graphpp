@@ -187,7 +187,7 @@ bool Graph<T>::isHamiltonian()
 template <typename T>
 bool Graph<T>::isConnected()
 {
-    T *vertex = this->adjacencyList.begin()->second;
+    /*T *vertex = this->adjacencyList.begin()->second;
     std::stack<T> verticesToVisitStack;
 
     verticesToVisitStack.push(vertex);
@@ -206,7 +206,7 @@ bool Graph<T>::isConnected()
     for (auto &edge : this->adjacencyList[vertex]->second)
     {
     }
-
+*/
     return false;
 }
 
