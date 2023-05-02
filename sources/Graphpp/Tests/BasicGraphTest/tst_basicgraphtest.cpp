@@ -67,11 +67,15 @@ void BasicGraphTest::test_weight()
 
 void BasicGraphTest::test_indegrees()
 {
-
+    for(int i = 0; i < nbVertices; i++){
+        QCOMPARE(graph->getVertexIndegree(&vertices[i]), 1);
+    }
 }
 void BasicGraphTest::test_outdegrees()
 {
-
+    for(int i = 0; i < nbVertices; i++){
+        QCOMPARE(graph->getVertexOutdegree(&vertices[i]), 1);
+    }
 }
 
 QTEST_APPLESS_MAIN(BasicGraphTest)
