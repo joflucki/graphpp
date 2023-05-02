@@ -3,19 +3,20 @@
 // add necessary includes here
 #include <graph.h>
 
-/// This class will test the different properties of a circular graph of size 10
-class BasicGraphTest : public QObject
+/// This class will test the different properties of a complete graph of size 10
+class ComplexGraphTest : public QObject
 {
     Q_OBJECT
 
 public:
-    BasicGraphTest();
-    ~BasicGraphTest();
+    ComplexGraphTest();
+    ~ComplexGraphTest();
 
 private:
     Graph<int>* graph;
     int* vertices;
     int nbVertices = 10;
+
 
 private slots:
     void test_vertices();
@@ -32,7 +33,7 @@ private slots:
 
 };
 
-BasicGraphTest::BasicGraphTest()
+ComplexGraphTest::ComplexGraphTest()
 {
     graph = new Graph<int>();
     vertices = new int[nbVertices];
@@ -41,11 +42,11 @@ BasicGraphTest::BasicGraphTest()
     }
 }
 
-BasicGraphTest::~BasicGraphTest()
+ComplexGraphTest::~ComplexGraphTest()
 {
     delete vertices;
 }
-void BasicGraphTest::test_vertices()
+void ComplexGraphTest::test_vertices()
 {
     QCOMPARE(graph->getNbVertices(), 0);
     for(int i = 0; i < nbVertices; i++){
@@ -54,26 +55,26 @@ void BasicGraphTest::test_vertices()
     }
 }
 
-void BasicGraphTest::test_edges()
+void ComplexGraphTest::test_edges()
 {
     //Build graph edges (graph is actually the circular graph C10)
     for(int i = 0; i < nbVertices;i++){
-        int nextIndex = i + 1;
-        if(nextIndex >= nbVertices){
-            nextIndex = 0;
+        for(int j = 0; j < nbVertices; j++){
+            if(i != j){
+                graph->addEdge(&vertices[i], &vertices[j], vertices[i]*vertices[j]);
+            }
         }
-        graph->addDoubleEdge(&vertices[i], &vertices[nextIndex]);
     }
-    QCOMPARE(graph->getNbEdges(), nbVertices);
+    QCOMPARE(graph->getNbEdges(), ((nbVertices-1)*nbVertices)/2);
 }
 
-void BasicGraphTest::test_weight()
+void ComplexGraphTest::test_weight()
 {
-    QVERIFY(!graph->isWeighted());
+    QVERIFY(graph->isWeighted());
 }
 
 
-void BasicGraphTest::test_indegrees()
+void ComplexGraphTest::test_indegrees()
 {
     //TODO uncomment with working Indegree method
     for(int i = 0; i < nbVertices; i++){
@@ -81,7 +82,7 @@ void BasicGraphTest::test_indegrees()
     }
     QVERIFY(false);
 }
-void BasicGraphTest::test_outdegrees(){
+void ComplexGraphTest::test_outdegrees(){
     //TODO uncomment with working Outdegree method
     for(int i = 0; i < nbVertices; i++){
         //QCOMPARE(graph->getVertexOutdegree(&vertices[i]), 1);
@@ -89,36 +90,36 @@ void BasicGraphTest::test_outdegrees(){
     QVERIFY(false);
 }
 
-void BasicGraphTest::test_connectivity()
+void ComplexGraphTest::test_connectivity()
 {
     QVERIFY(graph->isConnected());
 }
 
-void BasicGraphTest::test_strongConnectivity()
+void ComplexGraphTest::test_strongConnectivity()
 {
-    QVERIFY(!graph->isStronglyConnected());
+    QVERIFY(graph->isStronglyConnected());
 }
 
-void BasicGraphTest::test_orientation()
+void ComplexGraphTest::test_orientation()
 {
     QVERIFY(!graph->isOriented());
 }
 
-void BasicGraphTest::test_eulerian()
+void ComplexGraphTest::test_eulerian()
 {
-    QVERIFY(graph->isEulerian());
+    QVERIFY(!graph->isEulerian());
+}
+void ComplexGraphTest::test_chromaticNumber()
+{
+    QCOMPARE(graph->getChromaticNumber(), nbVertices);
 }
 
-void BasicGraphTest::test_chromaticNumber()
-{
-    QCOMPARE(graph->getChromaticNumber(), 2);
-}
-
-void BasicGraphTest::test_hamiltonian()
+void ComplexGraphTest::test_hamiltonian()
 {
     QVERIFY(graph->isHamiltonian());
 }
 
-QTEST_APPLESS_MAIN(BasicGraphTest)
 
-#include "tst_basicgraphtest.moc"
+QTEST_APPLESS_MAIN(ComplexGraphTest)
+
+#include "tst_complexgraphtest.moc"
