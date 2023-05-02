@@ -6,4 +6,3 @@ SUBDIRS += \
     Tests
 
 App.depends = Lib
-Tests.depends = Lib
