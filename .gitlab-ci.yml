@@ -10,7 +10,7 @@ test-job:
   script:
     # Print/Check version of software
     - qmake6 --version
-    - cmake --version
+    - make --version
     # Navigate to sources directory
     - cd sources/Graphpp
     # Change path in all *.pro files to match Linux
