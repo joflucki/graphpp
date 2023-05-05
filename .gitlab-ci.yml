@@ -1,10 +1,9 @@
-image: gcc
+image: joflucki/graphpp
 
 build:
   stage: build
   script:
     - echo "To update"
-    #- g++ helloworld.cpp -o mybinary
   artifacts:
     paths:
       - mybinary
