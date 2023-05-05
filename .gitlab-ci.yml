@@ -10,4 +10,4 @@ test-job:
   script:
     - qmake --version
     - cd sources/Graphpp/Tests
-    - ls
+    - qmake .
