@@ -7,4 +7,6 @@ test-job:
     name: joflucki/graphpp
     entrypoint:
       ["/bin/bash", "-c", "ln  -snf  /bin/bash  /bin/sh  &&  /bin/bash  -c  $0"]
-  script: echo "https://hub.docker.com/r/vookimedlo/ubuntu-qt"
+  script:
+    - ls
+    - qmake --version
