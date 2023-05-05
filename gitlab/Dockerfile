@@ -2,12 +2,27 @@
 ##              Base install              ##
 ############################################
 FROM ubuntu:22.04
+ENTRYPOINT ["tail", "-f", "/dev/null"]
 
 # Add universe repository
 RUN apt update
 RUN apt install -y software-properties-common
 RUN add-apt-repository universe
 RUN apt update
+
+
+############################################
+##                 Ninja                  ##
+############################################
+# Install Doxygen
+RUN apt install -y ninja-build
+
+
+############################################
+##                Doxygen                 ##
+############################################
+# Install Doxygen
+RUN apt install -y doxygen
 
 
 ############################################
@@ -51,15 +66,4 @@ RUN qtchooser -install qt6 $(which qmake6)
 RUN mv /usr/lib/x86_64-linux-gnu/qt6/qt6.conf /usr/share/qtchooser/
 RUN mkdir -p /usr/lib/$(uname -p)-linux-gnu/qt-default/qtchooser
 RUN ln -n /usr/share/qtchooser/qt6.conf /usr/lib/$(uname -p)-linux-gnu/qt-default/qtchooser/default.conf
-
-############################################
-##                Doxygen                 ##
-############################################
-# Install Doxygen
-RUN apt install -y doxygen
-
-############################################
-##                 Ninja                  ##
-############################################
-# Install Doxygen
-RUN apt install -y ninja-build
+RUN export QT_SELECT=qt6
