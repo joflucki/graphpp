@@ -1,8 +1,7 @@
 stages:
   - test
-  - build
 
-test:
+test-job:
   stage: test
   image:
     name: joflucki/graphpp
@@ -10,20 +9,4 @@ test:
       ["/bin/bash", "-c", "ln  -snf  /bin/bash  /bin/sh  &&  /bin/bash  -c  $0"]
   tags:
     - docker
-  needs: ["build"]
   script: echo "https://hub.docker.com/r/vookimedlo/ubuntu-qt"
-
-build:
-  stage: build
-  needs: [test]
-  image:
-    name: joflucki/graphpp
-    entrypoint:
-      ["/bin/bash", "-c", "ln  -snf  /bin/bash  /bin/sh  &&  /bin/bash  -c  $0"]
-  tags:
-    - docker
-  script:
-    - echo "To update"
-  artifacts:
-    paths:
-      - mybinary
