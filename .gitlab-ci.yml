@@ -8,8 +8,9 @@ test-job:
     entrypoint:
       ["/bin/bash", "-c", "ln  -snf  /bin/bash  /bin/sh  &&  /bin/bash  -c  $0"]
   script:
-    # Check for working version of qmake
+    # Print/Check version of software
     - qmake6 --version
+    - cmake --version
     # Navigate to sources directory
     - cd sources/Graphpp
     # Change path in all *.pro files to match Linux
