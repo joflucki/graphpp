@@ -8,5 +8,6 @@ test-job:
     entrypoint:
       ["/bin/bash", "-c", "ln  -snf  /bin/bash  /bin/sh  &&  /bin/bash  -c  $0"]
   script:
-    - ls
     - qmake --version
+    - cd sources/Graphpp/Tests
+    - ls

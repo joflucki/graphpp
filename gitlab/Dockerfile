@@ -47,6 +47,11 @@ RUN apt install -y \
 RUN apt install -y \
     qt6-base-dev
 
+RUN qtchooser -install qt6 $(which qmake6)
+RUN mv /usr/lib/x86_64-linux-gnu/qt6/qt6.conf /usr/share/qtchooser/
+RUN mkdir -p /usr/lib/$(uname -p)-linux-gnu/qt-default/qtchooser
+RUN ln -n /usr/share/qtchooser/qt6.conf /usr/lib/$(uname -p)-linux-gnu/qt-default/qtchooser/default.conf
+
 ############################################
 ##                Doxygen                 ##
 ############################################
