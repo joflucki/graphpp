@@ -2,7 +2,6 @@
 ##              Base install              ##
 ############################################
 FROM ubuntu:22.04
-ENTRYPOINT ["tail", "-f", "/dev/null"]
 
 # Add universe repository
 RUN apt update
@@ -61,9 +60,3 @@ RUN apt install -y \
 # Install Qt package
 RUN apt install -y \
     qt6-base-dev
-
-RUN qtchooser -install qt6 $(which qmake6)
-RUN mv /usr/lib/x86_64-linux-gnu/qt6/qt6.conf /usr/share/qtchooser/
-RUN mkdir -p /usr/lib/$(uname -p)-linux-gnu/qt-default/qtchooser
-RUN ln -n /usr/share/qtchooser/qt6.conf /usr/lib/$(uname -p)-linux-gnu/qt-default/qtchooser/default.conf
-RUN export QT_SELECT=qt6
