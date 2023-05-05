@@ -5,6 +5,4 @@ test-job:
   stage: test
   image:
     name: joflucki/graphpp
-  tags:
-    - docker
   script: echo "https://hub.docker.com/r/vookimedlo/ubuntu-qt"
