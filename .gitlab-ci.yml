@@ -16,7 +16,7 @@ test-job:
     # Change path in all *.pro files to match Linux
     - find . -type f -print0 | xargs -0 sed -i 's/\/debug//g' *.pro
     # Build the project
-    - qmake6
-    - sudo make
+    - qmake6 .
+    - make .
     # Run single test file (TODO: Run all test files)
     - ./Tests/BasicGraphTest/BasicGraphTest
