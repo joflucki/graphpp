@@ -1,9 +1,7 @@
-image: joflucki/graphpp
-
 build:
   stage: build
   image:
-    name: dahanna/ubuntu-libc
+    name: joflucki/graphpp
     entrypoint:
       ["/bin/bash", "-c", "ln -snf /bin/bash /bin/sh && /bin/bash -c $0"]
   tags:
@@ -17,7 +15,7 @@ build:
 test:
   stage: test
   image:
-    name: dahanna/ubuntu-libc
+    name: joflucki/graphpp
     entrypoint:
       ["/bin/bash", "-c", "ln -snf /bin/bash /bin/sh && /bin/bash -c $0"]
   tags:
@@ -28,7 +26,7 @@ test:
 deploy:
   stage: deploy
   image:
-    name: dahanna/ubuntu-libc
+    name: joflucki/graphpp
     entrypoint:
       ["/bin/bash", "-c", "ln -snf /bin/bash /bin/sh && /bin/bash -c $0"]
   tags:
