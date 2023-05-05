@@ -8,6 +8,7 @@ RUN apt update
 RUN apt install -y software-properties-common
 RUN add-apt-repository universe
 RUN apt update
+RUN apt install -y sudo
 
 
 ############################################
