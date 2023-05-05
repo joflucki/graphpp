@@ -1,9 +1,25 @@
-build:
-  stage: build
+stages:
+  - test
+  - build
+
+test:
+  stage: test
   image:
     name: joflucki/graphpp
     entrypoint:
-      ["/bin/bash", "-c", "ln -snf /bin/bash /bin/sh && /bin/bash -c $0"]
+      ["/bin/bash", "-c", "ln  -snf  /bin/bash  /bin/sh  &&  /bin/bash  -c  $0"]
+  tags:
+    - docker
+  needs: ["build"]
+  script: echo "https://hub.docker.com/r/vookimedlo/ubuntu-qt"
+
+build:
+  stage: build
+  needs: [test]
+  image:
+    name: joflucki/graphpp
+    entrypoint:
+      ["/bin/bash", "-c", "ln  -snf  /bin/bash  /bin/sh  &&  /bin/bash  -c  $0"]
   tags:
     - docker
   script:
@@ -11,26 +27,3 @@ build:
   artifacts:
     paths:
       - mybinary
-
-test:
-  stage: test
-  image:
-    name: joflucki/graphpp
-    entrypoint:
-      ["/bin/bash", "-c", "ln -snf /bin/bash /bin/sh && /bin/bash -c $0"]
-  tags:
-    - docker
-  needs: ["build"]
-  script: echo "https://hub.docker.com/r/vookimedlo/ubuntu-qt"
-
-deploy:
-  stage: deploy
-  image:
-    name: joflucki/graphpp
-    entrypoint:
-      ["/bin/bash", "-c", "ln -snf /bin/bash /bin/sh && /bin/bash -c $0"]
-  tags:
-    - docker
-  needs: ["test"]
-  script: echo "https://gitlab.com/kosadev/example-gitlab-ci-cd-for-qt-project"
-  environment: production
