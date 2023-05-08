@@ -173,12 +173,12 @@ bool Graph<T>::isEulerian()
     bool eulerian = true;
     for (auto &vertex : this->adjacencyList)
     {
-        if(this->getVertexIndegree(vertex.first) != this->getVertexOutdegree(vertex.first))
+        if(this->getVertexIndegree(vertex.first) % 2 != 0 || this->getVertexOutdegree(vertex.first) % 2 != 0)
         {
             return false;
         }
     }
-    return true;
+    return true && this->isConnected();
 }
 
 /// @brief Returns whether the graph is hamiltonian or not
@@ -201,33 +201,29 @@ bool Graph<T>::isConnected()
         T *vertex = this->adjacencyList.begin()->first;
 
         std::list<T*> visited;
-        std::stack<T*> toVisit;
+        std::list<T*> toVisit;
 
-        toVisit.push(vertex);
-        visited.push_back(vertex);
+        toVisit.push_back(vertex);
 
         while (!toVisit.empty())
         {
-            T *currentVertex = toVisit.top();
-            toVisit.pop();
+            T *currentVertex = *toVisit.begin();
+            visited.push_back(currentVertex);
 
             for (auto &adjacentVertex : this->adjacencyList[currentVertex])
             {
-                if(std::find(visited.begin(), visited.end(), adjacentVertex->getTarget()) == visited.end())
+                bool notVisited = std::find(visited.begin(), visited.end(), adjacentVertex->getTarget()) == visited.end();
+                bool notEncountered = std::find(toVisit.begin(), toVisit.end(), adjacentVertex->getTarget()) == toVisit.end();
+                if(notVisited && notEncountered)
                 {
-                     toVisit.push(adjacentVertex->getTarget());
-                     visited.push_back(currentVertex);
+                     toVisit.push_back(adjacentVertex->getTarget());
                 }
             }
+
+            toVisit.remove(currentVertex);
         }
 
-        bool connected = false;
-        if(visited.size() == this->adjacencyList.size())
-        {
-            connected = true;
-        }
-
-        return connected;
+        return visited.size() == this->adjacencyList.size();
     }
     else
     {
