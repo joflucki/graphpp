@@ -4,6 +4,7 @@
 #include <unordered_map>
 #include <cmath>
 #include <stack>
+#include <algorithm>
 #include "edge.h"
 
 template <typename T>
@@ -182,32 +183,43 @@ bool Graph<T>::isHamiltonian()
 }
 
 /// @brief Returns whether the graph is connected or not
-/// @author TODO
-/// @date
+/// @author Damien Tschan
+/// @date 08.05.2023
 template <typename T>
 bool Graph<T>::isConnected()
 {
-    /*T *vertex = this->adjacencyList.begin()->second;
-    std::stack<T> verticesToVisitStack;
+    T *vertex = this->adjacencyList.begin()->second;
 
-    verticesToVisitStack.push(vertex);
+    std::list<T> visited = new std::list<T>;
+    std::stack<T> toVisit = new std::stack<T>;
 
-    while (!verticesToVisitStack.empty())
+    toVisit.push(vertex);
+
+    while (!toVisit.empty())
     {
-        T *currentVertex = verticesToVisitStack.top();
-        verticesToVisitStack.pop();
+        T *currentVertex = toVisit.top();
+        visited.insert(currentVertex);
+        toVisit.pop();
 
         for (auto &adjacentVertex : this->adjacencyList[currentVertex])
         {
-            verticesToVisitStack.push(adjacentVertex->second);
+            if(std::find(visited.begin(), visited.end(), adjacentVertex) == visited.end())
+            {
+                 toVisit.push(adjacentVertex->second);
+            }
         }
     }
 
-    for (auto &edge : this->adjacencyList[vertex]->second)
+    bool connected = false;
+    if(visited.size() == this->adjacencyList.size())
     {
+        connected = true;
     }
-*/
-    return false;
+
+    delete visited;
+    delete toVisit;
+
+    return connected;
 }
 
 /// @brief Returns whether the graph is strongly connected or not
@@ -267,12 +279,10 @@ bool Graph<T>::isOriented()
 /// @brief Returns whether the graph is weighted or not
 /// @author Damien Tschan
 /// @date 24.04.2023
-///
-/// As weighted graphs are not supported by this version of the app, isWeighted() will always return false.
 template <typename T>
 bool Graph<T>::isWeighted()
 {
-    /*bool isWeighted = false;
+    bool isWeighted = false;
     for (auto const& vertex : this->adjacencyList)
     {
         for (auto const& edge : vertex.second)
@@ -283,7 +293,7 @@ bool Graph<T>::isWeighted()
             }
         }
     }
-    return isWeighted;*/
+    return isWeighted;
     return false;
 }
 
