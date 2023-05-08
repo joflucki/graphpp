@@ -215,6 +215,9 @@ void QBoard::mouseMoveEvent(QMouseEvent *event)
 
 void QBoard::wheelEvent(QWheelEvent *event)
 {
+    // ATTENTION
+    // Pas totalement fonctionnel, désactivé pour l'instant
+    /*
     // calcule la position de la souris dans la vue
     QPoint mousePos = event->position().toPoint();
 
@@ -234,5 +237,6 @@ void QBoard::wheelEvent(QWheelEvent *event)
 
     // force le widget à se redessiner
     update();
+    */
 }
 

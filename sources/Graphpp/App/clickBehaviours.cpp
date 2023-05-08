@@ -50,10 +50,18 @@ void QBoard::clickCreateEdge(QPointF clickPos)
     }
     if (selectedVertices == 2)
     {
-        // create edge
-        this->graph->addDoubleEdge(firstVertex, secondVertex);
-        qDebug() << "Creating edge";
-        this->unselectVertices();
+        try
+        {
+            // create edge
+            this->graph->addDoubleEdge(firstVertex, secondVertex);
+
+            qDebug() << "Edge created";
+            this->unselectVertices();
+        }
+        catch (std::exception &e)
+        {
+            QMessageBox::critical(this, tr("Erreur - Création d'un arc"), tr("L'arc que vous tentez de créer existe déjà!"));
+        }
     }
 }
 
