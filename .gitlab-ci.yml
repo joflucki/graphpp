@@ -10,6 +10,7 @@ build-job:
     entrypoint:
       ["/bin/bash", "-c", "ln  -snf  /bin/bash  /bin/sh  &&  /bin/bash  -c  $0"]
   script:
+    - su
     # Print/Check version of software
     - qmake6 --version
     - make --version
@@ -28,6 +29,7 @@ test-job:
     entrypoint:
       ["/bin/bash", "-c", "ln  -snf  /bin/bash  /bin/sh  &&  /bin/bash  -c  $0"]
   script:
+    - su
     # Print/Check version of software
     - qmake6 --version
     - make --version
