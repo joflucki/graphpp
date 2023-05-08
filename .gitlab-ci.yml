@@ -5,7 +5,8 @@ test-job:
   stage: test
   image:
     name: joflucki/graphpp
-    entrypoint: ["/bin/sh"]
+    entrypoint:
+      ["/bin/bash", "-c", "ln  -snf  /bin/bash  /bin/sh  &&  /bin/bash  -c  $0"]
   script:
     # Print/Check version of software
     - qmake6 --version
