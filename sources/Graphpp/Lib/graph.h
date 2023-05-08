@@ -15,9 +15,8 @@
 /// @author The Graph++ Development Team
 /// @date spring 2023
 ///
-/// Un méga pavé
-template <typename T>
-class Graph
+/// [Un méga pavé]
+template <typename T> class Graph
 {
 public:
     Graph();
@@ -207,6 +206,7 @@ void Graph<T>::removeEdge(Edge<T> *edge)
 }
 
 /// @brief Returns whether the graph is eulerian
+/// @returns Whether the graph is eulerian
 /// @author Damien Tschan
 /// @date 08.05.2023
 template <typename T>
@@ -223,6 +223,7 @@ bool Graph<T>::isEulerian()
 }
 
 /// @brief Returns whether the graph is hamiltonian
+/// @returns Whether the graph is hamiltonian
 /// @author Damien Tschan
 /// @date TODO
 template <typename T>
@@ -232,6 +233,7 @@ bool Graph<T>::isHamiltonian()
 }
 
 /// @brief Returns whether the graph is connected
+/// @returns Whether the graph is connected
 /// @author Damien Tschan
 /// @date 08.05.2023
 template <typename T>
@@ -273,6 +275,7 @@ bool Graph<T>::isConnected()
 }
 
 /// @brief Returns whether the graph is strongly connected
+/// @returns Whether the graph is strongly connected
 /// @author Damien Tschan
 /// @date 24.04.2023
 template <typename T>
@@ -282,6 +285,7 @@ bool Graph<T>::isStronglyConnected()
 }
 
 /// @brief Returns whether the graph is oriented
+/// @returns Whether the graph is oriented
 /// @author Damien Tschan
 /// @date 24.04.2023
 ///
@@ -326,6 +330,7 @@ bool Graph<T>::isOriented()
 }
 
 /// @brief Returns whether the graph is weighted
+/// @returns Whether the graph is weighted
 /// @author Damien Tschan
 /// @date 24.04.2023
 template <typename T>
@@ -343,7 +348,6 @@ bool Graph<T>::isWeighted()
         }
     }
     return isWeighted;
-    return false;
 }
 
 /// @brief Returns an estimation of the chromatic number of the graph as an integer
@@ -421,6 +425,7 @@ int Graph<T>::getChromaticNumber()
 }
 
 /// @brief Returns the amount of edges in the graph as an integer
+/// @returns The amount of edges in the graph as an integer
 /// @author Damien Tschan
 /// @date 17.04.2023
 template <typename T>
@@ -439,6 +444,7 @@ int Graph<T>::getNbEdges()
 }
 
 /// @brief Returns the amount of vertices in the graph as an integer
+/// @returns The amount of vertices in the graph as an integer
 /// @author Damien Tschan
 /// @date 17.04.2023
 template <typename T>
@@ -449,6 +455,7 @@ int Graph<T>::getNbVertices()
 
 /// @brief Returns the indegree of a vertex
 /// @param vertex A vertex
+/// @returns The indegree of the vertex
 /// @author Damien Tschan
 /// @date 17.04.2023
 template <typename T>
@@ -473,6 +480,7 @@ int Graph<T>::getVertexIndegree(T *vertex)
 
 /// @brief Returns the outdegree of a vertex
 /// @param vertex A vertex
+/// @returns The outdegree of the vertex
 /// @author Damien Tschan
 /// @date 17.04.2023
 template <typename T>

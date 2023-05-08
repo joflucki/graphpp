@@ -10,13 +10,10 @@ CONFIG += c++17
 #DEFINES += QT_DISABLE_DEPRECATED_BEFORE=0x060000    # disables all the APIs deprecated before Qt 6.0.0
 
 SOURCES += \
-    graphpplib.cpp \
     edge.cpp \
     graph.cpp
 
 HEADERS += \
-    Lib_global.h \
-    graphpplib.h \
     edge.h \
     graph.h \
     queue_element.h
