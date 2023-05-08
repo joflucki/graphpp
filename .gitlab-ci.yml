@@ -20,6 +20,7 @@ build-job:
     - find . -type f -print0 | xargs -0 sed -i 's/\/debug//g' *.pro
     # Build the project
     - qmake6 .
+    - cat Makefile
     - make
 
 test-job:
