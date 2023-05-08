@@ -1,5 +1,10 @@
 #include "qmultipleinputdialog.h"
 
+/// @brief Constructor of QMultipleInputDialog
+/// @param QString: title
+/// @param QList<QPair<QLabel*, QSpinBox*>>: list of pair of labels and spinbox
+/// @param QWidget: parent
+/// @author Plumey Simon, inspired by Bobur
 QMultipleInputDialog::QMultipleInputDialog(QString title, QList<QPair<QLabel*, QSpinBox*>> elements, QWidget *parent) : QDialog(parent)
 {
     QFormLayout *lytMain = new QFormLayout(this);
@@ -25,6 +30,8 @@ QMultipleInputDialog::QMultipleInputDialog(QString title, QList<QPair<QLabel*, Q
     setLayout(lytMain);
 }
 
+/// @brief Get all spinbox values and put in a list
+/// @author Plumey Simon, inspired by Bobur
 QList<int> QMultipleInputDialog::getInts(QString title, QList<QPair<QLabel*, QSpinBox*>> elements, bool *ok, QWidget *parent)
 {
     QMultipleInputDialog *dialog = new QMultipleInputDialog(title, elements, parent);

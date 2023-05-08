@@ -2,6 +2,9 @@
 #include <QPainter>
 #include <cstdlib>
 
+/// @brief Constructor of the QBoard
+/// @param QWidget: parent
+/// @author Plumey Simon
 QBoard::QBoard(VertexDockWidget *vertexDockWidget, QWidget *parent)
     : QWidget(parent)
 {
@@ -10,10 +13,16 @@ QBoard::QBoard(VertexDockWidget *vertexDockWidget, QWidget *parent)
     connect(vertexDockWidget, &VertexDockWidget::vertexUpdated, this, qOverload<>(&QWidget::update));
 }
 
+/// @brief Destructor of the QBoard
+/// @author Plumey Simon
 QBoard::~QBoard()
 {
 }
 
+/// @brief Paint event method. Called on every graph update.
+/// This method is not supposed to be called. Use this->update() to refresh scene
+/// @param QPaintEvent*
+/// @author Plumey Simon
 void QBoard::paintEvent(QPaintEvent *)
 {
     QPainter painter(this);
@@ -66,12 +75,20 @@ void QBoard::paintEvent(QPaintEvent *)
  * USEFUL METHODS                                  *
 \***************************************************/
 
+/// @brief Set the selected Tool
+/// @param Tool: Selected
+/// @author Plumey Simon
 void QBoard::setSelectedTool(Tool selectedTool)
 {
     this->unselectVertices();
     this->selectedTool = selectedTool;
 }
 
+/// @brief Test if a vertex is hit or not
+/// @param QPointF: position of click
+/// @param QVertex*&: nullptr by default, if vertex hit, set the the vertex hitted
+/// @return bool: if a vertex is hitted or not
+/// @author Plumey Simon
 bool QBoard::hitVertex(QPointF position, QVertex*& hittedVertex)
 {
     hittedVertex = nullptr;
@@ -92,6 +109,13 @@ bool QBoard::hitVertex(QPointF position, QVertex*& hittedVertex)
     return false;
 }
 
+/// @brief Test if a segment is hit or not
+/// @param QPointF: position of click
+/// @param QPointF: first coordinate of the segment
+/// @param QPointF: second coordinate of the segment
+/// @param double: error margin
+/// @return bool: if a segment is hitted or not
+/// @author Plumey Simon
 bool QBoard::hitSegment(QPointF hitPoint, QPointF p1, QPointF p2, double margin)
 {
     double xmin = std::min(p1.rx(), p2.rx()) - margin;
@@ -114,6 +138,8 @@ bool QBoard::hitSegment(QPointF hitPoint, QPointF p1, QPointF p2, double margin)
     return false;
 }
 
+/// @brief Unselected all vertices
+/// @author Plumey Simon
 void QBoard::unselectVertices()
 {
     for (auto const& mapRow : graph->adjacencyList)
@@ -124,6 +150,10 @@ void QBoard::unselectVertices()
     this->update();
 }
 
+/// @brief Zoom
+/// @param qreal: zoom factor
+/// @param const QPointF& fixed view position
+/// @author Plumey Simon
 void QBoard::zoom(qreal zoomFactor, const QPointF &fixedViewPos)
 {
     QTransform zoomTransform;
@@ -134,6 +164,9 @@ void QBoard::zoom(qreal zoomFactor, const QPointF &fixedViewPos)
     this->transform = zoomTransform * this->transform;
 }
 
+/// @brief Translation method
+/// @param const QPointF &: delta between current position and the next
+/// @author Plumey Simon
 void QBoard::translate(const QPointF &delta)
 {
     QTransform translateTransform;
@@ -143,6 +176,9 @@ void QBoard::translate(const QPointF &delta)
     update();
 }
 
+/// @brief Convert relativ to Transform
+/// @param QPointF: global position
+/// @author Plumey Simon
 QPointF QBoard::convertRelativToTransform(QPointF globalPosition)
 {
     QPointF clickPos = mapFromGlobal(globalPosition); // convert it relativ to QBoard
@@ -153,6 +189,9 @@ QPointF QBoard::convertRelativToTransform(QPointF globalPosition)
  * MOUSE EVENTS                                    *
 \***************************************************/
 
+/// @brief Method to handle the right behaviour on click depending on which tool is selected
+/// @param QMouseEvent: Mouse event
+/// @author Plumey Simon
 void QBoard::mousePressEvent(QMouseEvent *event)
 {
     QPointF clickPos = convertRelativToTransform(event->globalPosition());
@@ -183,6 +222,9 @@ void QBoard::mousePressEvent(QMouseEvent *event)
     }
 }
 
+/// @brief Method to handle the right behaviour on release click depending on which tool is selected
+/// @param QMouseEvent: Mouse event
+/// @author Plumey Simon
 void QBoard::mouseReleaseEvent(QMouseEvent *event)
 {
     switch (this->selectedTool)
@@ -196,6 +238,9 @@ void QBoard::mouseReleaseEvent(QMouseEvent *event)
     this->update();
 }
 
+/// @brief Method to handle the right behaviour on mouse moving depending on which tool is selected
+/// @param QMouseEvent: Mouse event
+/// @author Plumey Simon
 void QBoard::mouseMoveEvent(QMouseEvent *event)
 {
     QPointF clickPos = convertRelativToTransform(event->globalPosition());
@@ -213,6 +258,9 @@ void QBoard::mouseMoveEvent(QMouseEvent *event)
     this->update();
 }
 
+/// @brief Zoom when mouse wheel is used
+/// @param QWheelEvent: Mouse event
+/// @author Plumey Simon
 void QBoard::wheelEvent(QWheelEvent *event)
 {
     // ATTENTION

@@ -1,5 +1,12 @@
 #include "qvertex.h"
 
+/// @brief Constructor of QVertex
+/// @param QString: name
+/// @param QPointF: position
+/// @param QColor: color of text
+/// @param QColor: color of background
+/// @param QColor: color of border
+/// @author Plumey Simon, inspired by Bobur
 QVertex::QVertex(QString name,
                                      QPointF position,
                                      QColor textColor,

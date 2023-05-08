@@ -4,6 +4,9 @@
  * MOVE BEHAVIOURS                                 *
 \***************************************************/
 
+/// @brief Remove vertex or edges if clicked coordinates hit an element
+/// @param QPointF: click coordinates
+/// @author Plumey Simon
 void QBoard::moveEraser(QPointF clickPos)
 {
     QVertex* hittedVertex = nullptr;
@@ -39,6 +42,9 @@ void QBoard::moveEraser(QPointF clickPos)
     }
 }
 
+/// @brief Move the white board depending of user moves
+/// @param QPointF: click coordinates
+/// @author Plumey Simon
 void QBoard::moveHand(QPointF clickPos)
 {
     if (isDragging) {

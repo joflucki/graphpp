@@ -6,11 +6,18 @@
  * CLICK BEHAVIOURS                                *
 \***************************************************/
 
+/// @brief Add vertex on the clicked coordinates
+/// @param QPointF: click coordinates
+/// @author Plumey Simon
 void QBoard::clickCreateVertex(QPointF clickPos)
 {
     QString vertexName = "Vertex " + QString::number(this->graph->adjacencyList.size()+1); //start at 0
     this->graph->addVertex(new QVertex(vertexName, clickPos));
 }
+
+/// @brief Select a vertex if the click coordinates hit a vertex
+/// @param QPointF: click coordinates
+/// @author Plumey Simon
 void QBoard::clickSelector(QPointF clickPos)
 {
     this->unselectVertices();
@@ -21,6 +28,10 @@ void QBoard::clickSelector(QPointF clickPos)
     }
     this->vertexDockWidget->setSelectedVertex(hittedVertex);
 }
+
+/// @brief Create an edge between two selected vertices
+/// @param QPointF: click coordinates
+/// @author Plumey Simon
 void QBoard::clickCreateEdge(QPointF clickPos)
 {
     QVertex* hittedVertex = nullptr;
@@ -65,6 +76,9 @@ void QBoard::clickCreateEdge(QPointF clickPos)
     }
 }
 
+/// @brief Create a cycle graph on the clicked coordinates
+/// @param QPointF: click coordinates
+/// @author Plumey Simon
 void QBoard::clickCycleGraph(QPointF clickPos)
 {
     // BUILDING MODAL
@@ -108,6 +122,10 @@ void QBoard::clickCycleGraph(QPointF clickPos)
         this->graph->addDoubleEdge(arrayVertices[nbVertices-1], arrayVertices[0]);
     }
 }
+
+/// @brief Create a complete graph on the clicked coordinates
+/// @param QPointF: click coordinates
+/// @author Plumey Simon
 void QBoard::clickCompleteGraph(QPointF clickPos)
 {
     // BUILDING MODAL
@@ -156,6 +174,12 @@ void QBoard::clickCompleteGraph(QPointF clickPos)
     }
 }
 
+/// @brief Useful method to create a base rounded vertices
+/// @param QVertex*: Array to fill
+/// @param int: number of vertices
+/// @param double: radius of the circle
+/// @param QPointF: center of the circle
+/// @author Plumey Simon
 void QBoard::createRoundedVertices(QVertex* arrayVertices[], int nbOfVertices, double radius, QPointF center)
 {
     double angle = 360./nbOfVertices;
@@ -169,6 +193,10 @@ void QBoard::createRoundedVertices(QVertex* arrayVertices[], int nbOfVertices, d
         this->graph->addVertex(arrayVertices[i]);
     }
 }
+
+/// @brief Create a bipartite graph
+/// @param QPointF: click coordinates
+/// @author Plumey Simon
 void QBoard::clickBipartiteGraph(QPointF clickPos)
 {
     // BUILDING MODAL
@@ -224,8 +252,8 @@ void QBoard::clickBipartiteGraph(QPointF clickPos)
         QVertex* arrayVertices1[nbVertices1];
         QVertex* arrayVertices2[nbVertices2];
 
-        createLineOfVertices(arrayVertices1, nbVertices1, width, height, true, clickPos);
-        createLineOfVertices(arrayVertices2, nbVertices2, width, height, false, clickPos);
+        createLineOfVertices(arrayVertices1, nbVertices1, width, height/2, clickPos);
+        createLineOfVertices(arrayVertices2, nbVertices2, width, -height/2, clickPos);
 
         // add edges to the graph
         for (auto * vertexSource: arrayVertices1)
@@ -241,8 +269,14 @@ void QBoard::clickBipartiteGraph(QPointF clickPos)
     }
 }
 
-
-void QBoard::createLineOfVertices(QVertex* arrayVertices[], int nbOfVertices, int width, int height, bool upper, QPointF center)
+/// @brief Useful method to create a line of vertices
+/// @param QVertex*: Array to fill
+/// @param int: number of vertices
+/// @param int: width of line
+/// @param int: offset Y with center
+/// @param QPointF: center of line
+/// @author Plumey Simon
+void QBoard::createLineOfVertices(QVertex* arrayVertices[], int nbOfVertices, int width, int offsetY, QPointF center)
 {
     // add vertices to graph
     int spaceBtwPoints;
@@ -260,20 +294,9 @@ void QBoard::createLineOfVertices(QVertex* arrayVertices[], int nbOfVertices, in
         startingPoint = 0;
     }
 
-    // define if it's upper line or not
-    int lineHeight;
-    if (upper)
-    {
-        lineHeight = -height/2;
-    }
-    else
-    {
-        lineHeight = height/2;
-    }
-
     for (int i=startingPoint; i < nbOfVertices+startingPoint; ++i)
     {
-        QPointF vertexPos = QPointF(center.x()- width/2 + i*spaceBtwPoints, center.y() + lineHeight);
+        QPointF vertexPos = QPointF(center.x()- width/2 + i*spaceBtwPoints, center.y() + offsetY);
         QString vertexName = "Vertex " + QString::number(this->graph->adjacencyList.size()+1); //start at 0
         arrayVertices[i-startingPoint] = new QVertex(vertexName, vertexPos);
         // add to graph

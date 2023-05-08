@@ -1,6 +1,9 @@
 #include "vertexdockwidget.h"
 #include <QtWidgets>
 
+/// @brief Constructor of the dock widget about vertex properties
+/// @param QWidget: parent
+/// @author Plumey Simon
 VertexDockWidget::VertexDockWidget(QWidget *parent) : QWidget(parent)
 {
     QWidget *propertyPanel = new QWidget(this);
@@ -39,6 +42,8 @@ VertexDockWidget::VertexDockWidget(QWidget *parent) : QWidget(parent)
     this->setLayout(layout);
 }
 
+/// @brief Update the selected vertex with values from user
+/// @author Plumey Simon
 void VertexDockWidget::updateVertex()
 {
     if (this->selectedVertex != nullptr)
@@ -51,6 +56,9 @@ void VertexDockWidget::updateVertex()
         emit vertexUpdated();
     }
 }
+
+/// @brief Update field when a new vertex is selected
+/// @author Plumey Simon
 void VertexDockWidget::updateFields()
 {
     if (this->selectedVertex != nullptr)
@@ -73,6 +81,9 @@ void VertexDockWidget::updateFields()
     }
 }
 
+/// @brief Set the selected vertex
+/// @param QVertex*: vertex
+/// @author Plumey Simon
 void VertexDockWidget::setSelectedVertex(QVertex* vertex)
 {
     this->selectedVertex = vertex;

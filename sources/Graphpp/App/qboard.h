@@ -56,7 +56,7 @@ private:
     void clickCompleteGraph(QPointF clickPos);
     void clickBipartiteGraph(QPointF clickPos);
     void createRoundedVertices(QVertex* arrayVertices[], int nbOfVertices, double radius, QPointF center);
-    void createLineOfVertices(QVertex* arrayVertices[], int nbOfVertices, int width, int height, bool upper, QPointF center);
+    void createLineOfVertices(QVertex* arrayVertices[], int nbOfVertices, int width, int offsetY, QPointF center);
 
     // move behaviours methods
     void moveEraser(QPointF clickPos);

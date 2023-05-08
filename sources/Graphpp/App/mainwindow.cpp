@@ -4,6 +4,8 @@
 #include "graphdockwidget.h"
 #include "vertexdockwidget.h"
 
+/// @brief Constructor main window
+/// @author Plumey Simon
 MainWindow::MainWindow() : QMainWindow()
 {
     mdi = new QMdiArea(this);
@@ -24,6 +26,8 @@ MainWindow::MainWindow() : QMainWindow()
     resize(1280, 720);
 }
 
+/// @brief Create all application's actions
+/// @author Plumey Simon
 void MainWindow::createActions()
 {
     newGraphAct = new QAction(tr("&Nouveau"), this);
@@ -148,6 +152,8 @@ void MainWindow::createActions()
     connect(mdi, &QMdiArea::subWindowActivated, this, &MainWindow::updateGraphDockWidget);
 }
 
+/// @brief Create all application's menus
+/// @author Plumey Simon
 void MainWindow::createMenus()
 {
     fileMenu = menuBar()->addMenu(tr("&Fichier"));
@@ -172,6 +178,8 @@ void MainWindow::createMenus()
     aboutMenu->addAction(aboutAct);
 }
 
+/// @brief Create the tool bars
+/// @author Plumey Simon
 void MainWindow::createToolBars()
 {
     toolsToolBar = addToolBar(tr(""));
@@ -191,6 +199,8 @@ void MainWindow::createToolBars()
     toolsToolBar->addAction(bipartiteGrapheAct);
 }
 
+/// @brief Create the dock widgets like an overlay
+/// @author Plumey Simon
 void MainWindow::createDockWindows()
 {
     graphDock = new QDockWidget(tr("Propriétés du graphe"), this);
@@ -206,6 +216,8 @@ void MainWindow::createDockWindows()
     addDockWidget(Qt::RightDockWidgetArea, vertexDock);
 }
 
+/// @brief Create a graph
+/// @author Plumey Simon
 void MainWindow::newGraph()
 {
     QBoard *qBoard= new QBoard(vertexDockWidget);
@@ -216,32 +228,44 @@ void MainWindow::newGraph()
     updateSelectedTool(toolsActGroup->checkedAction());
 }
 
+/// @brief Open a graph
+/// @author Plumey Simon
 void MainWindow::openGraph()
 {
 
 }
 
+/// @brief Save a graph
+/// @author Plumey Simon
 void MainWindow::saveGraph()
 {
 
 }
 
+/// @brief Undo
+/// @author Plumey Simon
 void MainWindow::undo()
 {
 
 }
 
+/// @brief Redo
+/// @author Plumey Simon
 void MainWindow::redo()
 {
 
 }
 
+/// @brief About message box
+/// @author Plumey Simon
 void MainWindow::about()
 {
     QMessageBox::about(this, tr("A Propos"),
                        tr("Graph++, Banger international"));
 }
 
+/// @brief update the selected graph of the GraphDockWidget depending of the selected tab
+/// @author Plumey Simon
 void MainWindow::updateGraphDockWidget()
 {
     QMdiSubWindow* qMDISubWindow = this->mdi->activeSubWindow();
@@ -252,6 +276,9 @@ void MainWindow::updateGraphDockWidget()
     }
 }
 
+/// @brief update the selected tool
+/// @param QAction: action selected
+/// @author Plumey Simon
 void MainWindow::updateSelectedTool(QAction* action)
 {
     QMdiSubWindow* qMDISubWindow = this->mdi->activeSubWindow();
@@ -310,18 +337,29 @@ void MainWindow::updateSelectedTool(QAction* action)
     }
 }
 
+/// @brief close current graph
+/// @author Plumey Simon
 void MainWindow::closeCurrentGraphe()
 {
     mdi->closeActiveSubWindow();
 }
+
+/// @brief close all graphs
+/// @author Plumey Simon
 void MainWindow::closeAllGraphe()
 {
     mdi->closeAllSubWindows();
 }
+
+/// @brief select next graph
+/// @author Plumey Simon
 void MainWindow::next()
 {
     mdi->activateNextSubWindow();
 }
+
+/// @brief select previous graph
+/// @author Plumey Simon
 void MainWindow::prev()
 {
     mdi->activatePreviousSubWindow();

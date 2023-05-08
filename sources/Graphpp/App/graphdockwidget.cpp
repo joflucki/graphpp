@@ -1,6 +1,9 @@
 #include "graphdockwidget.h"
 #include <QtWidgets>
 
+/// @brief Constructor of the dock widget about graph analysis
+/// @param QWidget: parent
+/// @author Plumey Simon
 GraphDockWidget::GraphDockWidget(QWidget *parent) : QWidget(parent)
 {
     QWidget *propertyPanel = new QWidget(this);
@@ -43,6 +46,8 @@ GraphDockWidget::GraphDockWidget(QWidget *parent) : QWidget(parent)
     this->setLayout(layout);
 }
 
+/// @brief updateLabels depending of the selected graph
+/// @author Plumey Simon
 void GraphDockWidget::updateLabels()
 {
     if (this->selectedGraph != nullptr)
@@ -73,6 +78,9 @@ void GraphDockWidget::updateLabels()
     }
 }
 
+/// @brief Set the selected graph
+/// @param Graph<QVertex>*: graph of QVertex
+/// @author Plumey Simon
 void GraphDockWidget::setSelectedGraph(Graph<QVertex>* graph)
 {
     this->selectedGraph = graph;

@@ -18,7 +18,6 @@ SOURCES += \
     main.cpp \
     mainwindow.cpp \
     moveBehaviours.cpp \
-    overlay.cpp \
     qboard.cpp \
     qmultipleinputdialog.cpp \
     qvertex.cpp \
@@ -28,7 +27,6 @@ SOURCES += \
 HEADERS += \
     graphdockwidget.h \
     mainwindow.h \
-    overlay.h \
     qboard.h \
     qmultipleinputdialog.h \
     qvertex.h \
