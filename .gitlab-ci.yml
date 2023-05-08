@@ -6,7 +6,7 @@ image:
 stages:
   # - build
   # - test
-  - document
+  - documentation
 
 # build:
 #   stage: build
@@ -41,8 +41,8 @@ stages:
 #     # Run single test file (TODO: Run all test files)
 #     - ./Tests/BasicGraphTest/BasicGraphTest
 
-doc:
-  stage: document
+documentation:
+  stage: documentation
   artifacts:
     untracked: false
     when: on_success
