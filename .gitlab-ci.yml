@@ -1,14 +1,18 @@
+image: joflucki/graphpp
+
 stages:
   - build
   - test
   - document
 
-build-job:
+build:
   stage: build
-  image:
-    name: joflucki/graphpp
-    entrypoint:
-      ["/bin/bash", "-c", "ln  -snf  /bin/bash  /bin/sh  &&  /bin/bash  -c  $0"]
+  artifacts:
+    untracked: false
+    when: on_success
+    expire_in: "30 days"
+    paths:
+      - build-test
   script:
     - su
     # Print/Check version of software
@@ -20,22 +24,17 @@ build-job:
     - find . -type f -print0 | xargs -0 sed -i 's/\/debug//g' *.pro
     # Build the project
     - qmake6 .
-    - cat Makefile
     - make
 
-test-job:
+test:
   stage: test
-  image:
-    name: joflucki/graphpp
-    entrypoint:
-      ["/bin/bash", "-c", "ln  -snf  /bin/bash  /bin/sh  &&  /bin/bash  -c  $0"]
   script:
     - su
     # Print/Check version of software
     - qmake6 --version
     - make --version
     # Navigate to sources directory
-    - cd sources/Graphpp
+    - cd sources/Graphpp/Tests
     # Change path in all *.pro files to match Linux
     - find . -type f -print0 | xargs -0 sed -i 's/\/debug//g' *.pro
     # Build the project
@@ -44,12 +43,8 @@ test-job:
     # Run single test file (TODO: Run all test files)
     - ./Tests/BasicGraphTest/BasicGraphTest
 
-doc-job:
+doc:
   stage: document
-  image:
-    name: joflucki/graphpp
-    entrypoint:
-      ["/bin/bash", "-c", "ln  -snf  /bin/bash  /bin/sh  &&  /bin/bash  -c  $0"]
   script:
     # Print/Check version of software
     - doxygen--version
