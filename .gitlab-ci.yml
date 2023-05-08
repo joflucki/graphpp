@@ -1,30 +1,24 @@
 image: joflucki/graphpp
 
 stages:
-  - build
+  # - build
   - test
   - document
 
-build:
-  stage: build
-  artifacts:
-    untracked: false
-    when: on_success
-    expire_in: "30 days"
-    paths:
-      - build-test
-  script:
-    - su
-    # Print/Check version of software
-    - qmake6 --version
-    - make --version
-    # Navigate to sources directory
-    - cd sources/Graphpp
-    # Change path in all *.pro files to match Linux
-    - find . -type f -print0 | xargs -0 sed -i 's/\/debug//g' *.pro
-    # Build the project
-    - qmake6 .
-    - make
+# build:
+#   stage: build
+#   script:
+#     - su
+#     # Print/Check version of software
+#     - qmake6 --version
+#     - make --version
+#     # Navigate to sources directory
+#     - cd sources/Graphpp
+#     # Change path in all *.pro files to match Linux
+#     - find . -type f -print0 | xargs -0 sed -i 's/\/debug//g' *.pro
+#     # Build the project
+#     - qmake6 .
+#     - make
 
 test:
   stage: test
