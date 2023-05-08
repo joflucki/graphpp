@@ -1,5 +1,25 @@
 stages:
+  - build
   - test
+  - document
+
+build-job:
+  stage: build
+  image:
+    name: joflucki/graphpp
+    entrypoint:
+      ["/bin/bash", "-c", "ln  -snf  /bin/bash  /bin/sh  &&  /bin/bash  -c  $0"]
+  script:
+    # Print/Check version of software
+    - qmake6 --version
+    - make --version
+    # Navigate to sources directory
+    - cd sources/Graphpp
+    # Change path in all *.pro files to match Linux
+    - find . -type f -print0 | xargs -0 sed -i 's/\/debug//g' *.pro
+    # Build the project
+    - qmake6 .
+    - make
 
 test-job:
   stage: test
@@ -20,3 +40,15 @@ test-job:
     - make
     # Run single test file (TODO: Run all test files)
     - ./Tests/BasicGraphTest/BasicGraphTest
+
+doc-job:
+  stage: document
+  image:
+    name: joflucki/graphpp
+    entrypoint:
+      ["/bin/bash", "-c", "ln  -snf  /bin/bash  /bin/sh  &&  /bin/bash  -c  $0"]
+  script:
+    # Print/Check version of software
+    - doxygen--version
+    # Generate sources
+    - doxygen
