@@ -18,7 +18,8 @@ build:
     # Navigate to sources directory
     - cd sources/Graphpp
     # Change path in all *.pro files to match Linux
-    - find . -type f -name "*.pro" -print0 | xargs -0 sed -i 's/\/debug//g'
+    - find . -type f -name "*.pro" -print0 | xargs -0 sed -i 's/Lib\/debug/Lib\//g'
+    - cat App/App.pro
     # Build the project
     - qmake6
     - make
@@ -33,7 +34,7 @@ test:
     # Navigate to sources directory
     - cd sources/Graphpp/Tests
     # Change path in all *.pro files to match Linux
-    - find . -type f -name "*.pro" -print0 | xargs -0 sed -i 's/\/debug//g'
+    - find . -type f -name "*.pro" -print0 | xargs -0 sed -i 's/Lib\/debug/Lib\//g'
     # Build the project
     - qmake6
     - make
