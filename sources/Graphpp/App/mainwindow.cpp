@@ -37,13 +37,21 @@ void MainWindow::createActions()
 
     openGraphAct = new QAction(tr("&Ouvrir..."), this);
     openGraphAct->setShortcut(QKeySequence(QKeySequence::Open));
-    openGraphAct->setStatusTip(tr("Ouvir un fichier graphe++"));
+    openGraphAct->setStatusTip(tr("Ouvir un fichier JSON contant un graph créé à l'aide de graph++"));
     connect(openGraphAct, &QAction::triggered, this, &MainWindow::openGraph);
 
     saveGraphAct = new QAction(tr("&Enregistrer"), this);
     saveGraphAct->setShortcut(QKeySequence(QKeySequence::Save));
-    saveGraphAct->setStatusTip(tr("Enregistrer le travail"));
+    saveGraphAct->setStatusTip(tr("Enregistrer le travail au format JSON"));
     connect(saveGraphAct, &QAction::triggered, this, &MainWindow::saveGraph);
+
+    exportToDotAct = new QAction(tr("Export en &DOT"), this);
+    exportToDotAct->setStatusTip(tr("Exporter le graph en .dot"));
+    connect(exportToDotAct, &QAction::triggered, this, &MainWindow::exportToDot);
+
+    exportToPngAct = new QAction(tr("Export en &PNG"), this);
+    exportToPngAct->setStatusTip(tr("Exporter le graph en une image PNG"));
+    connect(exportToPngAct, &QAction::triggered, this, &MainWindow::exportToPng);
 
     exitAct = new QAction(tr("&Quitter"), this);
     exitAct->setShortcut(QKeySequence(QKeySequence::Quit));
@@ -64,54 +72,47 @@ void MainWindow::createActions()
     aboutAct->setStatusTip(tr("Affiche des informations sur le programme"));
     connect(aboutAct, &QAction::triggered, this, &MainWindow::about);
 
+    // TOOLS actions
     selectToolAct = new QAction(QIcon(":/img/selector.png"), tr("&Outil de sélection"), this);
     selectToolAct->setShortcut(tr("Ctrl+1"));
     selectToolAct->setCheckable(true);
     selectToolAct->setChecked(true);
     selectToolAct->setStatusTip(tr("Outil de sélection/édition"));
-    //connect(selectToolAct, &QAction::triggered, this, &MainWindow::updateSelectedTool);
 
     newVertexAct = new QAction(QIcon(":/img/vertex.png"), tr("&Nouveau sommet"), this);
     newVertexAct->setShortcut(tr("Ctrl+2"));
     newVertexAct->setCheckable(true);
     newVertexAct->setStatusTip(tr("Créer un sommet"));
-    //connect(newVertexAct, &QAction::triggered, this, &MainWindow::updateSelectedTool);
 
     linkVertexAct = new QAction(QIcon(":/img/link.png"), tr("&Lier deux sommets"), this);
     linkVertexAct->setShortcut(tr("Ctrl+3"));
     linkVertexAct->setCheckable(true);
     linkVertexAct->setStatusTip(tr("Lier deux sommets entres-eux"));
-    //connect(linkVertexAct, &QAction::triggered, this, &MainWindow::updateSelectedTool);
 
     eraserAct = new QAction(QIcon(":/img/eraser.png"), tr("&Gomme"), this);
     eraserAct->setShortcut(tr("Ctrl+4"));
     eraserAct->setCheckable(true);
     eraserAct->setStatusTip(tr("Outil de gomme"));
-    //connect(eraserAct, &QAction::triggered, this, &MainWindow::updateSelectedTool);
 
     moveToolAct = new QAction(QIcon(":/img/hand.png"), tr("&Main"), this);
     moveToolAct->setShortcut(tr("Ctrl+5"));
     moveToolAct->setCheckable(true);
     moveToolAct->setStatusTip(tr("Outil de main"));
-    //connect(moveToolAct, &QAction::triggered, this, &MainWindow::updateSelectedTool);
 
     cycleGrapheAct = new QAction(QIcon(":/img/cycle.png"), tr("&Graphe cyclique"), this);
     cycleGrapheAct->setShortcut(tr("Ctrl+6"));
     cycleGrapheAct->setCheckable(true);
     cycleGrapheAct->setStatusTip(tr("Outil de création de graphe cyclique"));
-    //connect(cycleGrapheAct, &QAction::triggered, this, &MainWindow::updateSelectedTool);
 
     completeGrapheAct = new QAction(QIcon(":/img/complete.png"), tr("&Graphe complet"), this);
     completeGrapheAct->setShortcut(tr("Ctrl+7"));
     completeGrapheAct->setCheckable(true);
     completeGrapheAct->setStatusTip(tr("Outil de création de graphe complet"));
-    //connect(completeGrapheAct, &QAction::triggered, this, &MainWindow::updateSelectedTool);
 
     bipartiteGrapheAct = new QAction(QIcon(":/img/bipartite.png"), tr("&Graphe bi parties"), this);
     bipartiteGrapheAct->setShortcut(tr("Ctrl+8"));
     bipartiteGrapheAct->setCheckable(true);
     bipartiteGrapheAct->setStatusTip(tr("Outil de création de graphe bi parties"));
-    //connect(bipartiteGrapheAct, &QAction::triggered, this, &MainWindow::updateSelectedTool);
 
     // groupe with tools. exclusiv each other
     toolsActGroup = new QActionGroup(this);
@@ -125,12 +126,12 @@ void MainWindow::createActions()
     toolsActGroup->addAction(bipartiteGrapheAct);
     connect(toolsActGroup, &QActionGroup::triggered, this, &MainWindow::updateSelectedTool);
 
-    closeCurrentGrapheAct = new QAction(tr("&Fermer le graphe actif"), this);
+    closeCurrentGrapheAct = new QAction(tr("Fermer &le graphe actif"), this);
     closeCurrentGrapheAct->setShortcut(QKeySequence(QKeySequence::Close));
     closeCurrentGrapheAct->setStatusTip(tr("Ferme le graphe qui est actuellement ouvert et visible"));
     connect(closeCurrentGrapheAct, &QAction::triggered, this, &MainWindow::closeCurrentGraphe);
 
-    closeAllGrapheAct = new QAction(tr("&Fermer tous les graphes"), this);
+    closeAllGrapheAct = new QAction(tr("Fermer &tous les graphes"), this);
     closeAllGrapheAct->setStatusTip(tr("Ferme tous les graphes qui sont actuellement ouverts SANS les enregistrer"));
     connect(closeAllGrapheAct, &QAction::triggered, this, &MainWindow::closeAllGraphe);
 
@@ -160,6 +161,9 @@ void MainWindow::createMenus()
     fileMenu->addAction(newGraphAct);
     fileMenu->addAction(openGraphAct);
     fileMenu->addAction(saveGraphAct);
+    fileMenu->addSeparator();
+    fileMenu->addAction(exportToDotAct);
+    fileMenu->addAction(exportToPngAct);
     fileMenu->addSeparator();
     fileMenu->addAction(closeCurrentGrapheAct);
     fileMenu->addAction(closeAllGrapheAct);
@@ -238,6 +242,20 @@ void MainWindow::openGraph()
 /// @brief Save a graph
 /// @author Plumey Simon
 void MainWindow::saveGraph()
+{
+
+}
+
+/// @brief Export to dot
+/// @author Plumey Simon
+void MainWindow::exportToDot()
+{
+
+}
+
+/// @brief Export to Png
+/// @author Plumey Simon
+void MainWindow::exportToPng()
 {
 
 }
