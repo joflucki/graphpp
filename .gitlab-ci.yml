@@ -37,6 +37,9 @@ test:
     # Change path in all *.pro files to match Linux
     - find . -type f -print0 | xargs -0 sed -i 's/Lib\/debug/Lib/g' *.pro
     # Build the project
+    - pwd
+    - which qmake6
+    - which make
     - qmake6
     - cat Makefile
     - make
