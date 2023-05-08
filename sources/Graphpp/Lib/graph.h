@@ -165,12 +165,20 @@ void Graph<T>::removeEdge(Edge<T> *edge)
 }
 
 /// @brief Returns whether the graph is eulerian or not
-/// @author TODO
-/// @date
+/// @author Damien Tschan
+/// @date 08.05.2023
 template <typename T>
 bool Graph<T>::isEulerian()
 {
-    return false;
+    bool eulerian = true;
+    for (auto &vertex : this->adjacencyList)
+    {
+        if(this->getVertexIndegree(vertex.first) != this->getVertexOutdegree(vertex.first))
+        {
+            return false;
+        }
+    }
+    return true;
 }
 
 /// @brief Returns whether the graph is hamiltonian or not
@@ -188,38 +196,43 @@ bool Graph<T>::isHamiltonian()
 template <typename T>
 bool Graph<T>::isConnected()
 {
-    T *vertex = this->adjacencyList.begin()->second;
-
-    std::list<T> visited = new std::list<T>;
-    std::stack<T> toVisit = new std::stack<T>;
-
-    toVisit.push(vertex);
-
-    while (!toVisit.empty())
+    if(this->adjacencyList.size() >= 1)
     {
-        T *currentVertex = toVisit.top();
-        visited.insert(currentVertex);
-        toVisit.pop();
+        T *vertex = this->adjacencyList.begin()->first;
 
-        for (auto &adjacentVertex : this->adjacencyList[currentVertex])
+        std::list<T*> visited;
+        std::stack<T*> toVisit;
+
+        toVisit.push(vertex);
+        visited.push_back(vertex);
+
+        while (!toVisit.empty())
         {
-            if(std::find(visited.begin(), visited.end(), adjacentVertex) == visited.end())
+            T *currentVertex = toVisit.top();
+            toVisit.pop();
+
+            for (auto &adjacentVertex : this->adjacencyList[currentVertex])
             {
-                 toVisit.push(adjacentVertex->second);
+                if(std::find(visited.begin(), visited.end(), adjacentVertex->getTarget()) == visited.end())
+                {
+                     toVisit.push(adjacentVertex->getTarget());
+                     visited.push_back(currentVertex);
+                }
             }
         }
-    }
 
-    bool connected = false;
-    if(visited.size() == this->adjacencyList.size())
+        bool connected = false;
+        if(visited.size() == this->adjacencyList.size())
+        {
+            connected = true;
+        }
+
+        return connected;
+    }
+    else
     {
-        connected = true;
+        return true;
     }
-
-    delete visited;
-    delete toVisit;
-
-    return connected;
 }
 
 /// @brief Returns whether the graph is strongly connected or not
@@ -363,7 +376,7 @@ int Graph<T>::getVertexIndegree(T *vertex)
     {
         for (auto const &otherVertex : this->adjacencyList)
         {
-            for (auto const &edgeFromOtherVertex : this->adjacencyList[otherVertex])
+            for (auto const &edgeFromOtherVertex : this->adjacencyList[otherVertex.first])
             {
                 if (edgeFromOtherVertex->getTarget() == vertex)
                 {
