@@ -18,6 +18,7 @@ private:
     QMenu *fileMenu, *editMenu, *optionMenu, *aboutMenu;
     QToolBar *toolsToolBar;
     QAction *newGraphAct, *openGraphAct, *saveGraphAct,
+    *exportToDotAct, *exportToPngAct,
     *exitAct, *undoAct, *redoAct, *aboutAct, *selectToolAct,
     *newVertexAct, *linkVertexAct, *eraserAct, *moveToolAct,
     *cycleGrapheAct, *completeGrapheAct, *bipartiteGrapheAct,
@@ -36,21 +37,14 @@ private slots:
     void newGraph();
     void openGraph();
     void saveGraph();
+    void exportToDot();
+    void exportToPng();
     void undo();
     void redo();
     void about();
 
     void updateGraphDockWidget();
     void updateSelectedTool(QAction* action);
-    /*
-    void selectTool();
-    void newVertex();
-    void linkVertex();
-    void eraser();
-    void moveTool();
-    void cycleGraphe();
-    void completeGraphe();
-    void bipartiteGraphe();*/
 
     void closeCurrentGraphe();
     void closeAllGraphe();
