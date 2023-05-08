@@ -4,7 +4,7 @@ image:
     ["/bin/bash", "-c", "ln  -snf  /bin/bash  /bin/sh  &&  /bin/bash  -c  $0"]
 
 stages:
-  - build
+  # - build
   - test
   - document
 
@@ -20,7 +20,8 @@ build:
     # Change path in all *.pro files to match Linux
     - find . -type f -print0 | xargs -0 sed -i 's/\/debug//g' *.pro
     # Build the project
-    - qmake6 -d
+    - qmake6
+    - cat Makefile
     - make -d
 
 test:
