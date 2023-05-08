@@ -52,6 +52,6 @@ doc:
       - docs/latex
   script:
     # Print/Check version of software
-    - doxygen--version
+    - doxygen --version
     # Generate sources
     - doxygen
