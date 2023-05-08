@@ -61,5 +61,3 @@ RUN apt install -y \
 # Install Qt package
 RUN apt install -y \
     qt6-base-dev
-
-CMD ["bash"]
