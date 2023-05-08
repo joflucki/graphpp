@@ -5,7 +5,7 @@ test-job:
   stage: test
   image:
     name: joflucki/graphpp
-    entrypoint: ["/bin/bash"]
+    entrypoint: ["/bin/sh"]
   script:
     # Print/Check version of software
     - qmake6 --version
