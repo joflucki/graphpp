@@ -20,9 +20,10 @@ build:
     # Change path in all *.pro files to match Linux
     - find . -type f -print0 | xargs -0 sed -i 's/Lib\/debug/Lib/g' *.pro
     # Build the project
+    - /bin/sh
     - qmake6
     - cat Makefile
-    - make -d
+    - make
 
 test:
   stage: test
@@ -36,8 +37,8 @@ test:
     # Change path in all *.pro files to match Linux
     - find . -type f -print0 | xargs -0 sed -i 's/Lib\/debug/Lib/g' *.pro
     # Build the project
-    - qmake6 -d
-    - make -d
+    - qmake6
+    - make
     # Run single test file (TODO: Run all test files)
     - ./Tests/BasicGraphTest/BasicGraphTest
 
