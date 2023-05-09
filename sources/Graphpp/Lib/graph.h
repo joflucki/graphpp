@@ -316,8 +316,10 @@ bool Graph<T>::isPlanar()
 }
 
 /// @brief Returns the chromatic number of the graph as an integer
-/// @author TODO
-/// @date
+/// @author Jonas Flückiger
+/// @date 09.05.2023
+///
+///
 template <typename T>
 int Graph<T>::getChromaticNumber()
 {
