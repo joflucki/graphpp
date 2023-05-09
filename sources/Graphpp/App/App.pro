@@ -33,8 +33,7 @@ HEADERS += \
     selectcolorbutton.h \
     vertexdockwidget.h
 
-FORMS += \
-    mainwindow.ui
+FORMS +=
 
 RESOURCES += \
         img.qrc

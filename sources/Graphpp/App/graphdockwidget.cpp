@@ -14,9 +14,7 @@ GraphDockWidget::GraphDockWidget(QWidget *parent) : QWidget(parent)
     stronglyConnected = new QLabel(tr("Fortement connexe: "), propertyPanel);
     oriented = new QLabel(tr("Orienté: "), propertyPanel);
     weighted = new QLabel(tr("Pondéré: "), propertyPanel);
-    planar = new QLabel(tr("Planaire: "), propertyPanel);
     chromaticNumber = new QLabel(tr("Nombre chromatique: "), propertyPanel);
-    nbFaces = new QLabel(tr("Nombre de faces: "), propertyPanel);
     nbEdges = new QLabel(tr("Nombre d'arrêtes: "), propertyPanel);
     nbVertices = new QLabel(tr("Nombre sommets: "), propertyPanel);
 
@@ -28,9 +26,7 @@ GraphDockWidget::GraphDockWidget(QWidget *parent) : QWidget(parent)
     layout->addWidget(stronglyConnected);
     layout->addWidget(oriented);
     layout->addWidget(weighted);
-    layout->addWidget(planar);
     layout->addWidget(chromaticNumber);
-    layout->addWidget(nbFaces);
     layout->addWidget(nbEdges);
     layout->addWidget(nbVertices);
     layout->addStretch(1);
@@ -64,12 +60,8 @@ void GraphDockWidget::updateLabels()
         qDebug() << "Orienté done" << Qt::endl;
         weighted->setText(tr("Pondéré: ") + (selectedGraph->isWeighted() ? tr("Oui") : tr("Non")));
         qDebug() << "Pondéré done" << Qt::endl;
-        planar->setText(tr("Planaire: ") + (selectedGraph->isPlanar() ? tr("Oui") : tr("Non")));
-        qDebug() << "Planaire done" << Qt::endl;
         chromaticNumber->setText(tr("Nombre chromatique: ") + QString::number(selectedGraph->getChromaticNumber()));
         qDebug() << "Nombre chromatique done" << Qt::endl;
-        nbFaces->setText(tr("Nombre de faces: ") + QString::number(selectedGraph->getNbFaces()));
-        qDebug() << "Nombre de faces done" << Qt::endl;
         nbEdges->setText(tr("Nombre d'arrêtes: ") + QString::number(selectedGraph->getNbEdges()));
         qDebug() << "Nombre d'arrêtes done" << Qt::endl;
         nbVertices->setText(tr("Nombre de sommets: ") + QString::number(selectedGraph->getNbVertices()));

@@ -12,7 +12,7 @@ private:
     Graph<QVertex>* selectedGraph = nullptr;
 
     QLabel *eulerian, *hamiltonian, *connected, *stronglyConnected, *oriented,
-    *weighted, *planar, *chromaticNumber, *nbFaces, *nbEdges, *nbVertices;
+    *weighted, *chromaticNumber, *nbEdges, *nbVertices;
     void updateLabels();
 
 public:
