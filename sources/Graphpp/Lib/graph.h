@@ -1,5 +1,6 @@
 #ifndef GRAPH_H
 #define GRAPH_H
+#include <iostream>
 #include <list>
 #include <unordered_map>
 #include <cmath>
@@ -315,15 +316,50 @@ bool Graph<T>::isPlanar()
     return false;
 }
 
-/// @brief Returns the chromatic number of the graph as an integer
+/// @brief Returns an estimation of the chromatic number of the graph as an integer
 /// @author Jonas Flückiger
 /// @date 09.05.2023
 ///
-///
+/// This method uses the greedy algorithm, where each vertex is colored one after the other
+/// with the first possible color. This method can perform well depending on the order in which
+/// the vertices are colored, and depends on the shape of the graph.
 template <typename T>
 int Graph<T>::getChromaticNumber()
 {
-    return 0;
+    std::unordered_map<T*, int> colorMap;
+    if(this->adjacencyList.size() == 1){
+        return 1;
+    }
+
+    // Function to check if a vertex can be assigned a given color
+    auto canAssignColor = [&](T* vertex, int color) {
+        for (auto& adjacentVertex : this->adjacencyList[vertex]) {
+            if (colorMap[adjacentVertex->getTarget()] == color) {
+                return false;
+            }
+        }
+        return true;
+    };
+
+    int numVertices = this->getNbVertices();
+    int chromaticNumber = 0;
+
+    // Try to assign colors from 1 to the maximum possible number of colors
+    for (auto const& vertexStruct : this->adjacencyList)
+    {
+        int colorNum = 1;
+        while(colorNum <= numVertices){
+            if(canAssignColor(vertexStruct.first, colorNum)){
+                colorMap[vertexStruct.first] = colorNum;
+                chromaticNumber = colorNum > chromaticNumber ? colorNum : chromaticNumber;
+                break;
+            }else{
+                colorNum++;
+            }
+        }
+    }
+
+    return chromaticNumber;
 }
 
 /// @brief Returns the amount of faces in the graph as an integer
