@@ -322,15 +322,35 @@ bool Graph<T>::isPlanar()
 ///
 /// This method uses the greedy algorithm, where each vertex is colored one after the other
 /// with the first possible color. This method can perform well depending on the order in which
-/// the vertices are colored, and depends on the shape of the graph.
+/// the vertices are colored, and depends on the shape of the graph. In this implementation,
+/// vertices are colored in order of descending degree.
 template <typename T>
 int Graph<T>::getChromaticNumber()
 {
-    std::unordered_map<T*, int> colorMap;
-    if(this->adjacencyList.size() == 1){
-        return 1;
+
+
+    // SORTING THE VERTICES
+    // Declare vector of pairs
+    std::vector<std::pair<T *, std::list<Edge<T> *>> > verticesOrderedByDegree;
+
+    // Copy key-value pair from Map
+    // to vector of pairs
+    for (auto& it : this->adjacencyList) {
+        verticesOrderedByDegree.push_back(it);
     }
 
+    // Sort using comparator function
+    sort(verticesOrderedByDegree.begin(), verticesOrderedByDegree.end(), [this](std::pair<T *, std::list<Edge<T> *>> a, std::pair<T *, std::list<Edge<T> *>> b) {
+        int aDegree = this->getVertexIndegree(a.first) + this->getVertexIndegree(a.first);
+        int bDegree = this->getVertexIndegree(b.first) + this->getVertexIndegree(b.first);
+        return aDegree < bDegree;
+    });
+
+
+    // COLORING THE VERTICES
+    // A map of pairs vertex <-> color
+    // Colors are simply represented by an integer
+    std::unordered_map<T*, int> colorMap;
     // Function to check if a vertex can be assigned a given color
     auto canAssignColor = [&](T* vertex, int color) {
         for (auto& adjacentVertex : this->adjacencyList[vertex]) {
@@ -344,16 +364,18 @@ int Graph<T>::getChromaticNumber()
     int numVertices = this->getNbVertices();
     int chromaticNumber = 0;
 
-    // Try to assign colors from 1 to the maximum possible number of colors
-    for (auto const& vertexStruct : this->adjacencyList)
+    // Try to assign colors from 1 to max. number of colors
+    for (auto const& vertexStruct : verticesOrderedByDegree)
     {
         int colorNum = 1;
         while(colorNum <= numVertices){
             if(canAssignColor(vertexStruct.first, colorNum)){
+                // Assign a color
                 colorMap[vertexStruct.first] = colorNum;
                 chromaticNumber = colorNum > chromaticNumber ? colorNum : chromaticNumber;
                 break;
             }else{
+                // Try with the next color
                 colorNum++;
             }
         }
