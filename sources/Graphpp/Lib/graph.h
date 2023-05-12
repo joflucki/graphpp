@@ -318,7 +318,7 @@ bool Graph<T>::isPlanar()
 
 /// @brief Returns an estimation of the chromatic number of the graph as an integer
 /// @author Jonas Flückiger
-/// @date 09.05.2023
+/// @date 12.05.2023
 ///
 /// This method uses the greedy algorithm, where each vertex is colored one after the other
 /// with the first possible color. This method can perform well depending on the order in which
