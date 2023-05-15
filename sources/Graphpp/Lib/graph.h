@@ -2,11 +2,13 @@
 #define GRAPH_H
 #include <iostream>
 #include <list>
+#include <queue>
 #include <unordered_map>
 #include <cmath>
 #include <stack>
 #include <algorithm>
 #include "edge.h"
+#include "queue_element.h"
 
 template <typename T>
 class Graph
@@ -232,7 +234,7 @@ bool Graph<T>::isConnected()
                 bool notEncountered = std::find(toVisit.begin(), toVisit.end(), adjacentVertex->getTarget()) == toVisit.end();
                 if(notVisited && notEncountered)
                 {
-                     toVisit.push_back(adjacentVertex->getTarget());
+                    toVisit.push_back(adjacentVertex->getTarget());
                 }
             }
 
@@ -475,40 +477,53 @@ int Graph<T>::getVertexOutdegree(T *vertex)
 /// @brief Returns a new graph which is a minimum spanning tree of the initial graph
 /// @author Jonas Flückiger
 /// @date 15.05.2023
+///
 template <typename T>
 Graph<T>* Graph<T>::getMinimumSpanningTree()
 {
     Graph<T>* msTree = new Graph<T>();
-    //TODO change from map to list of pairs
-    std::unordered_map<T*, Edge<T>*> toVisit; // Must remember weight of edge and source of edge
+
+    // This method uses a standard library priority queue. Because this implementation does not allow
+    // priority updates, we must check if each element we pop is the most up-to-date one
+    auto cmp = [](queue_element<T> left, queue_element<T> right) { return left.priority > right.priority; };
+    std::unordered_map<T*, int> upToDatePrios = std::unordered_map<T*, int>();
+    std::priority_queue<queue_element<T>, std::vector<queue_element<T>>, decltype(cmp)> toVisit(cmp);
 
     // Add first vertex and its edges
     msTree->addVertex(this->adjacencyList.begin()->first);
-    for (auto &adjacentVertex : this->adjacencyList.begin()->second)
+    for (Edge<T>* &edge : this->adjacencyList.begin()->second)
     {
-        toVisit.insert(std::make_pair(this->adjacencyList.begin()->first, adjacentVertex));
+        toVisit.push(queue_element<T>(edge->getWeight(), this->adjacencyList.begin()->first, edge));
     }
     while(!toVisit.empty()){
-        // Get the top elements
-        T* sourceVertex = toVisit.begin()->first;
-        Edge<T>* nextEdge = toVisit.begin()->second;
+        // Get the top element
+        queue_element<T> top = toVisit.top();
+        toVisit.pop();
+
+        // Ignore out-of-date elements
+        if(top.priority != upToDatePrios[top.edge->getTarget()]){
+            break;
+        }
 
         // Visit the vertex and add it to the tree
-        toVisit.erase(toVisit.begin());
-        msTree->addVertex(nextEdge->getTarget());
-        msTree->addPrebuiltEdge(sourceVertex, nextEdge);
+        msTree->addVertex(top.edge->getTarget());
+        msTree->addPrebuiltEdge(top.edge);
 
         // Add all its neighbour and update edges weight
-        for(Edge<T>* &edge : this->adjacencyList[nextEdge->getTarget()]){
+        for(Edge<T>* &edge : this->adjacencyList[top.edge->getTarget()]){
             // Check if next vertex was already visited
             bool notVisited = msTree->adjacencyList.find(edge->getTarget()) != msTree->adjacencyList.end();
             if(notVisited){
                 // Check if the next vertex was already encountered
-                auto hasSameTarget = [&edge](std::pair<T*, Edge<T>*> pair) { return pair.second->getTarget() == edge->getTarget();};
+                auto hasSameTarget = [&edge](queue_element<T> elem) { return elem.edge->getTarget() == edge->getTarget();};
                 Edge<T>* sameTargetEdge = (*std::find_if(toVisit.begin(), toVisit.end(), hasSameTarget)).second;
-                if(edge->getWeight() > sameTargetEdge->getWeight()){
-                    //Replace
-                    toVisit.erase();
+                if(sameTargetEdge != nullptr ){
+                    if(edge->getWeight() > sameTargetEdge->getWeight()){
+                        upToDatePrios.erase(sameTargetEdge->getTarget());
+                    }else {
+                        toVisit.push(queue_element<T>(edge->getWeight(), top.source, sameTargetEdge));
+                    }
+                    upToDatePrios.insert(std::make_pair(edge->getTarget()), edge->getWeight());
                 }
             }
 

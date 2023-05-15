@@ -12,13 +12,14 @@ CONFIG += c++17
 SOURCES += \
     graphpplib.cpp \
     edge.cpp \
-    graph.cpp \
+    graph.cpp
 
 HEADERS += \
     Lib_global.h \
     graphpplib.h \
     edge.h \
     graph.h \
+    queue_element.h
 
 # Default rules for deployment.
 unix {
