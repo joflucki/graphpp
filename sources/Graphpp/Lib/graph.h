@@ -485,6 +485,7 @@ Graph<T>* Graph<T>::getMinimumSpanningTree()
 
     // This method uses a standard library priority queue. Because this implementation does not allow
     // priority updates, we must check if each element we pop is the most up-to-date one
+    // see https://stackoverflow.com/questions/649640/how-to-do-an-efficient-priority-update-in-stl-priority-queue
     auto cmp = [](queue_element<T> left, queue_element<T> right) { return left.priority > right.priority; };
     std::unordered_map<T*, int> upToDatePrios = std::unordered_map<T*, int>();
     std::priority_queue<queue_element<T>, std::vector<queue_element<T>>, decltype(cmp)> toVisit(cmp);
