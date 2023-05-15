@@ -22,6 +22,7 @@ public:
     void addVertex(T *vertex);
     void addEdge(T *source, T *target, int weight = 1);
     void addDoubleEdge(T *vertex1, T *vertex2, int weight = 1);
+    void addPrebuiltEdge(T* source, Edge<T>*);
     void removeVertex(T *vertex);
     void removeEdge(Edge<T> *edge);
 
@@ -39,6 +40,9 @@ public:
     int getNbVertices();               // OK
     int getVertexIndegree(T *vertex);  // OK, à tester
     int getVertexOutdegree(T *vertex); // OK, à tester
+
+    // Paths, cycles, trees, subgraphs
+    Graph<T>* getMinimumSpanningTree();
 };
 
 /// @brief Initializes a new graph
@@ -106,6 +110,17 @@ void Graph<T>::addDoubleEdge(T *vertex1, T *vertex2, int weight)
 {
     this->addEdge(vertex1, vertex2, weight);
     this->addEdge(vertex2, vertex1, weight);
+}
+
+/// @brief Adds a prebuilt edge to the graph
+/// @param The source vertex
+/// @param The prebuilt edge
+/// @author Jonas Flückiger
+/// @date 15.05.2023
+template <typename T>
+void Graph<T>::addPrebuiltEdge(T *source, Edge<T>* edge)
+{
+    this->adjacencyList[source].push_back(edge);
 }
 
 /// @brief Removes a vertex and its linked edges from the graph
@@ -455,6 +470,52 @@ int Graph<T>::getVertexOutdegree(T *vertex)
     {
         return this->adjacencyList[vertex].size();
     }
+}
+
+/// @brief Returns a new graph which is a minimum spanning tree of the initial graph
+/// @author Jonas Flückiger
+/// @date 15.05.2023
+template <typename T>
+Graph<T>* Graph<T>::getMinimumSpanningTree()
+{
+    Graph<T>* msTree = new Graph<T>();
+    //TODO change from map to list of pairs
+    std::unordered_map<T*, Edge<T>*> toVisit; // Must remember weight of edge and source of edge
+
+    // Add first vertex and its edges
+    msTree->addVertex(this->adjacencyList.begin()->first);
+    for (auto &adjacentVertex : this->adjacencyList.begin()->second)
+    {
+        toVisit.insert(std::make_pair(this->adjacencyList.begin()->first, adjacentVertex));
+    }
+    while(!toVisit.empty()){
+        // Get the top elements
+        T* sourceVertex = toVisit.begin()->first;
+        Edge<T>* nextEdge = toVisit.begin()->second;
+
+        // Visit the vertex and add it to the tree
+        toVisit.erase(toVisit.begin());
+        msTree->addVertex(nextEdge->getTarget());
+        msTree->addPrebuiltEdge(sourceVertex, nextEdge);
+
+        // Add all its neighbour and update edges weight
+        for(Edge<T>* &edge : this->adjacencyList[nextEdge->getTarget()]){
+            // Check if next vertex was already visited
+            bool notVisited = msTree->adjacencyList.find(edge->getTarget()) != msTree->adjacencyList.end();
+            if(notVisited){
+                // Check if the next vertex was already encountered
+                auto hasSameTarget = [&edge](std::pair<T*, Edge<T>*> pair) { return pair.second->getTarget() == edge->getTarget();};
+                Edge<T>* sameTargetEdge = (*std::find_if(toVisit.begin(), toVisit.end(), hasSameTarget)).second;
+                if(edge->getWeight() > sameTargetEdge->getWeight()){
+                    //Replace
+                    toVisit.erase();
+                }
+            }
+
+
+        }
+    }
+    return msTree;
 }
 
 #endif // GRAPH_H
