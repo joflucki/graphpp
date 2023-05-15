@@ -507,7 +507,7 @@ Graph<T>* Graph<T>::getMinimumSpanningTree()
 
         // Visit the vertex and add it to the tree
         msTree->addVertex(top.edge->getTarget());
-        msTree->addPrebuiltEdge(top.edge);
+        msTree->addPrebuiltEdge(top.source, top.edge);
 
         // Add all its neighbour and update edges weight
         for(Edge<T>* &edge : this->adjacencyList[top.edge->getTarget()]){
@@ -516,15 +516,12 @@ Graph<T>* Graph<T>::getMinimumSpanningTree()
             if(notVisited){
                 // Check if the next vertex was already encountered
                 auto hasSameTarget = [&edge](queue_element<T> elem) { return elem.edge->getTarget() == edge->getTarget();};
-                Edge<T>* sameTargetEdge = (*std::find_if(toVisit.begin(), toVisit.end(), hasSameTarget)).second;
-                if(sameTargetEdge != nullptr ){
-                    if(edge->getWeight() > sameTargetEdge->getWeight()){
-                        upToDatePrios.erase(sameTargetEdge->getTarget());
-                    }else {
-                        toVisit.push(queue_element<T>(edge->getWeight(), top.source, sameTargetEdge));
+                if(upToDatePrios.find(edge->getTarget())!=upToDatePrios.end()){
+                    if(edge->getWeight() < upToDatePrios[edge->getTarget()]){
+                        upToDatePrios.erase(edge->getTarget());
+                        upToDatePrios.insert(std::make_pair(edge->getTarget(), edge->getWeight()));
                     }
-                    upToDatePrios.insert(std::make_pair(edge->getTarget()), edge->getWeight());
-                }
+                    toVisit.push(queue_element<T>(edge->getWeight(), top.source, edge));                }
             }
 
 
