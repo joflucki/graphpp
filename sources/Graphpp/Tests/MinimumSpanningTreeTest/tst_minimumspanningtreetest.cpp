@@ -22,6 +22,8 @@ private:
 private slots:
     void test_vertices_nb();
     void test_edges_nb();
+    void test_vertices();
+    void test_edges();
     void test_graph_weight();
 
 };
@@ -93,6 +95,26 @@ void MinimumSpanningTreeTest::test_graph_weight(){
         }
     }
     QCOMPARE(actualSum, expectedSum);
+}
+
+void MinimumSpanningTreeTest::test_vertices(){
+    for (auto const &pair : actual->adjacencyList){
+        QVERIFY(expected->adjacencyList.find(pair.first) != expected->adjacencyList.end());
+    }
+}
+
+void MinimumSpanningTreeTest::test_edges(){
+    for (auto const &pair : actual->adjacencyList){
+        QCOMPARE(pair.second.size(), expected->adjacencyList[pair.first].size());
+        for(auto const &edge : pair.second){
+            QVERIFY(
+                std::find(
+                    expected->adjacencyList[pair.first].begin(),
+                    expected->adjacencyList[pair.first].end(),
+                    edge) !=
+                expected->adjacencyList[pair.first].end());
+        }
+    }
 }
 
 QTEST_APPLESS_MAIN(MinimumSpanningTreeTest)
