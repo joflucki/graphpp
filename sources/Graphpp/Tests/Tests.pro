@@ -2,4 +2,5 @@ TEMPLATE = subdirs
 
 SUBDIRS += \
     BasicGraphTest \
-    ComplexGraphTest
+    ComplexGraphTest \
+    MinimumSpanningTreeTest

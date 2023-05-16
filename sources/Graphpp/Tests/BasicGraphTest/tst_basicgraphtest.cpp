@@ -44,6 +44,7 @@ BasicGraphTest::BasicGraphTest()
 BasicGraphTest::~BasicGraphTest()
 {
     delete vertices;
+    delete graph;
 }
 void BasicGraphTest::test_vertices()
 {

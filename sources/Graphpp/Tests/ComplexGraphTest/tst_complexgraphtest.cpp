@@ -38,13 +38,14 @@ ComplexGraphTest::ComplexGraphTest()
     graph = new Graph<int>();
     vertices = new int[nbVertices];
     for(int i = 0; i < nbVertices; i++){
-        vertices[i] = i;
+        vertices[i] = i+1;
     }
 }
 
 ComplexGraphTest::~ComplexGraphTest()
 {
     delete vertices;
+    delete graph;
 }
 void ComplexGraphTest::test_vertices()
 {
@@ -57,7 +58,7 @@ void ComplexGraphTest::test_vertices()
 
 void ComplexGraphTest::test_edges()
 {
-    //Build graph edges (graph is actually the circular graph C10)
+    //Build graph edges (graph is actually the complete graph K10)
     for(int i = 0; i < nbVertices;i++){
         for(int j = 0; j < nbVertices; j++){
             if(i != j){

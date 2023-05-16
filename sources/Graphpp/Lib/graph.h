@@ -56,6 +56,15 @@ Graph<T>::Graph()
     this->adjacencyList = std::unordered_map<T *, std::list<Edge<T> *>>();
 }
 
+/// @brief Deletes the current graph
+/// @author Jonas Flückiger
+/// @date 16.05.2023
+template <typename T>
+Graph<T>::~Graph()
+{
+    //delete this->adjacencyList;
+}
+
 /// @brief Adds a vertex to the graph
 /// @param A vertex
 /// @author Damien Tschan
@@ -495,6 +504,7 @@ Graph<T>* Graph<T>::getMinimumSpanningTree()
     for (Edge<T>* &edge : this->adjacencyList.begin()->second)
     {
         toVisit.push(queue_element<T>(edge->getWeight(), this->adjacencyList.begin()->first, edge));
+        upToDatePrios.insert(std::make_pair(edge->getTarget(), edge->getWeight()));
     }
     while(!toVisit.empty()){
         // Get the top element
@@ -503,30 +513,36 @@ Graph<T>* Graph<T>::getMinimumSpanningTree()
 
         // Ignore out-of-date elements
         if(top.priority != upToDatePrios[top.edge->getTarget()]){
-            break;
+            continue;
         }
 
         // Visit the vertex and add it to the tree
         msTree->addVertex(top.edge->getTarget());
         msTree->addPrebuiltEdge(top.source, top.edge);
+        if(!this->isOriented()){
+            //Add the reverse path
+            auto hasSourceAsTarget = [&top](Edge<T> edge){return edge.getTarget() == top.source;};
+            Edge<T>* reverseEdge = std::find_if(this->adjacencyList[top.edge->getTarget()].front(), this->adjacencyList[top.edge->getTarget()].back(), hasSourceAsTarget);
+            msTree->addPrebuiltEdge(top.edge->getTarget(), reverseEdge);
+        }
 
         // Add all its neighbour and update edges weight
         for(Edge<T>* &edge : this->adjacencyList[top.edge->getTarget()]){
             // Check if next vertex was already visited
-            bool notVisited = msTree->adjacencyList.find(edge->getTarget()) != msTree->adjacencyList.end();
+            bool notVisited = msTree->adjacencyList.find(edge->getTarget()) == msTree->adjacencyList.end();
             if(notVisited){
-                // Check if the next vertex was already encountered
-                auto hasSameTarget = [&edge](queue_element<T> elem) { return elem.edge->getTarget() == edge->getTarget();};
-                if(upToDatePrios.find(edge->getTarget())!=upToDatePrios.end()){
-                    if(edge->getWeight() < upToDatePrios[edge->getTarget()]){
-                        upToDatePrios.erase(edge->getTarget());
-                        upToDatePrios.insert(std::make_pair(edge->getTarget(), edge->getWeight()));
-                    }
-                    toVisit.push(queue_element<T>(edge->getWeight(), top.source, edge));                }
+                // Check if the next vertex was already encountered and if it was, that the new prio is smaller
+                if(upToDatePrios.find(edge->getTarget()) != upToDatePrios.end() && edge->getWeight() < upToDatePrios[edge->getTarget()]){
+                    //If it is the case, update the priority
+                    upToDatePrios.erase(edge->getTarget());
+                    upToDatePrios.insert(std::make_pair(edge->getTarget(), edge->getWeight()));
+                }
+                toVisit.push(queue_element<T>(edge->getWeight(), top.edge->getTarget(), edge));
             }
 
 
         }
+        std::cout  << std::endl;
     }
     return msTree;
 }
