@@ -20,10 +20,9 @@ private:
     int nbVertices = 10;
 
 private slots:
-    void test_vertices_size();
-    void test_edges_size();
-//    void test_vertices();
-//    void test_edges();
+    void test_vertices_nb();
+    void test_edges_nb();
+    void test_graph_weight();
 
 };
 
@@ -66,14 +65,34 @@ MinimumSpanningTreeTest::~MinimumSpanningTreeTest()
     delete actual;
 }
 
-void MinimumSpanningTreeTest::test_vertices_size()
+void MinimumSpanningTreeTest::test_vertices_nb()
 {
     QCOMPARE(actual->getNbVertices(), expected->getNbVertices());
 }
 
-void MinimumSpanningTreeTest::test_edges_size()
+void MinimumSpanningTreeTest::test_edges_nb()
 {
     QCOMPARE(actual->getNbEdges(), expected->getNbEdges());
+}
+
+void MinimumSpanningTreeTest::test_graph_weight(){
+    int expectedSum = 0;
+    int actualSum = 0;
+    for (auto const &pair : expected->adjacencyList)
+    {
+        for (auto const &edge : pair.second)
+        {
+            expectedSum += edge->getWeight();
+        }
+    }
+    for (auto const &pair : actual->adjacencyList)
+    {
+        for (auto const &edge : pair.second)
+        {
+            actualSum += edge->getWeight();
+        }
+    }
+    QCOMPARE(actualSum, expectedSum);
 }
 
 QTEST_APPLESS_MAIN(MinimumSpanningTreeTest)

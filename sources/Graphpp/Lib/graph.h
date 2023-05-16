@@ -512,7 +512,7 @@ Graph<T>* Graph<T>::getMinimumSpanningTree()
         toVisit.pop();
 
         // Ignore out-of-date elements
-        if(top.priority != upToDatePrios[top.edge->getTarget()]){
+        if(top.priority > upToDatePrios[top.edge->getTarget()]){
             continue;
         }
 
@@ -520,10 +520,24 @@ Graph<T>* Graph<T>::getMinimumSpanningTree()
         msTree->addVertex(top.edge->getTarget());
         msTree->addPrebuiltEdge(top.source, top.edge);
         if(!this->isOriented()){
-            //Add the reverse path
-            auto hasSourceAsTarget = [&top](Edge<T> edge){return edge.getTarget() == top.source;};
-            Edge<T>* reverseEdge = std::find_if(this->adjacencyList[top.edge->getTarget()].front(), this->adjacencyList[top.edge->getTarget()].back(), hasSourceAsTarget);
-            msTree->addPrebuiltEdge(top.edge->getTarget(), reverseEdge);
+            auto hasSourceAsTarget = [&top](Edge<T>* edge){
+                std::cout << edge->getTarget() << " == " << top.source << std::endl;
+                return edge->getTarget() == top.source;
+            };
+
+            // Find corresponding edge
+            Edge<T>* reverseEdge = nullptr;
+            for(auto const &edge : this->adjacencyList[top.edge->getTarget()]){
+                if(hasSourceAsTarget(edge)){
+                    reverseEdge = edge;
+                    continue;
+                }
+            }
+
+            // Add the reverse path
+            if(reverseEdge!=nullptr){
+                msTree->addPrebuiltEdge(top.edge->getTarget(), reverseEdge);
+            }
         }
 
         // Add all its neighbour and update edges weight
@@ -542,7 +556,6 @@ Graph<T>* Graph<T>::getMinimumSpanningTree()
 
 
         }
-        std::cout  << std::endl;
     }
     return msTree;
 }
