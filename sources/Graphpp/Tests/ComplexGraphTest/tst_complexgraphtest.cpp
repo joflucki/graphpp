@@ -3,7 +3,7 @@
 // add necessary includes here
 #include <graph.h>
 
-/// This class will test the different properties of a complete graph of size 10
+/// This class tests the different properties of a complete graph of size 10
 class ComplexGraphTest : public QObject
 {
     Q_OBJECT

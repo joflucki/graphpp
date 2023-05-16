@@ -3,6 +3,11 @@
 // add necessary includes here
 #include <graph.h>
 
+/// @brief This class tests the minimum spanning tree algorithm.
+///
+/// The tested graph is the complete graph K10, where each edge's weight is equal to the
+/// index of the source vertex multiplied by the index of the target vertex (indices range from 1 to 10),
+/// meaning that the minimum spanning tree is composed only of the edges connected to the '1' vertex.
 class MinimumSpanningTreeTest : public QObject
 {
     Q_OBJECT
