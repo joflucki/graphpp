@@ -80,11 +80,18 @@ test:
   stage: test
   dependencies:
     - build-tests
+  artifacts:
+    name: "Test results"
+    untracked: true
+    when: on_success
+    expire_in: "30 days"
+    paths:
+      - sources/Graphpp/Tests/*/*.csv
   script:
     # Navigate to sources directory
     - cd sources/Graphpp/Tests
     # Run test files
-    - find . -type f ! -name "*.*" -executable -exec ./{} \;
+    - find . -type f ! -name "*.*" -executable -exec ./{} -perf -o {}.csv -csv \;
 
 documentation:
   stage: documentation
