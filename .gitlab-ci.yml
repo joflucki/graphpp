@@ -44,6 +44,8 @@ build-app:
     paths:
       - sources/Graphpp/App/App
   script:
+    # Navigate to sources directory
+    - cd sources/Graphpp
     # Change path in all *.pro files to match Linux
     - find . -type f -name "*.pro" -print0 | xargs -0 sed -i 's/Lib\/debug/Lib\//g'
     - cd App
