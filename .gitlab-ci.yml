@@ -32,6 +32,8 @@ build-lib:
 
 build-app:
   stage: build
+  needs:
+    - build-lib
   dependencies:
     - build-lib
   artifacts:
@@ -58,6 +60,8 @@ build-app:
 
 build-tests:
   stage: build
+  needs:
+    - build-lib
   dependencies:
     - build-lib
   artifacts:
