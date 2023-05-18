@@ -521,7 +521,6 @@ Graph<T>* Graph<T>::getMinimumSpanningTree()
         msTree->addPrebuiltEdge(top.source, top.edge);
         if(!this->isOriented()){
             auto hasSourceAsTarget = [&top](Edge<T>* edge){
-                std::cout << edge->getTarget() << " == " << top.source << std::endl;
                 return edge->getTarget() == top.source;
             };
 
