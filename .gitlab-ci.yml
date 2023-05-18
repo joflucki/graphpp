@@ -42,6 +42,11 @@ build-app:
     paths:
       - sources/Graphpp/App/App
   script:
+    - ls ./App
+    - ls ./Lib
+    - ls ../
+    - ls ~/
+    - ls /
     # Navigate to sources directory
     - cd sources/Graphpp
     # Change path in all *.pro files to match Linux
