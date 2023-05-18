@@ -12,7 +12,7 @@ build-lib:
   stage: build
   artifacts:
     name: "Library files"
-    untracked: false
+    untracked: true
     when: on_success
     expire_in: "30 days"
     paths:
@@ -36,7 +36,7 @@ build-app:
     - build-lib
   artifacts:
     name: "App Linux executable"
-    untracked: false
+    untracked: true
     when: on_success
     expire_in: "30 days"
     paths:
@@ -62,7 +62,7 @@ build-tests:
     - build-lib
   artifacts:
     name: "Test files"
-    untracked: false
+    untracked: true
     when: on_success
     expire_in: "30 days"
     paths:
@@ -91,7 +91,7 @@ documentation:
   stage: documentation
   artifacts:
     name: "Project documentation"
-    untracked: false
+    untracked: true
     when: on_success
     expire_in: "30 days"
     paths:
