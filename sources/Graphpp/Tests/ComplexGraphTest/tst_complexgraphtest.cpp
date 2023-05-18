@@ -77,18 +77,14 @@ void ComplexGraphTest::test_weight()
 
 void ComplexGraphTest::test_indegrees()
 {
-    //TODO uncomment with working Indegree method
     for(int i = 0; i < nbVertices; i++){
-        //QCOMPARE(graph->getVertexIndegree(&vertices[i]), 1);
+        QCOMPARE(graph->getVertexIndegree(&vertices[i]), 9);
     }
-    QVERIFY(false);
 }
 void ComplexGraphTest::test_outdegrees(){
-    //TODO uncomment with working Outdegree method
     for(int i = 0; i < nbVertices; i++){
-        //QCOMPARE(graph->getVertexOutdegree(&vertices[i]), 1);
+        QCOMPARE(graph->getVertexOutdegree(&vertices[i]), 9);
     }
-    QVERIFY(false);
 }
 
 void ComplexGraphTest::test_connectivity()

@@ -76,18 +76,14 @@ void BasicGraphTest::test_weight()
 
 void BasicGraphTest::test_indegrees()
 {
-    //TODO uncomment with working Indegree method
     for(int i = 0; i < nbVertices; i++){
-        //QCOMPARE(graph->getVertexIndegree(&vertices[i]), 1);
+        QCOMPARE(graph->getVertexIndegree(&vertices[i]), 2);
     }
-    QVERIFY(false);
 }
 void BasicGraphTest::test_outdegrees(){
-    //TODO uncomment with working Outdegree method
     for(int i = 0; i < nbVertices; i++){
-        //QCOMPARE(graph->getVertexOutdegree(&vertices[i]), 1);
+        QCOMPARE(graph->getVertexOutdegree(&vertices[i]), 2);
     }
-    QVERIFY(false);
 }
 
 void BasicGraphTest::test_connectivity()
