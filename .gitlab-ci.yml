@@ -91,7 +91,7 @@ test:
     # Navigate to sources directory
     - cd sources/Graphpp/Tests
     # Run test files
-    - find . -type f ! -name "*.*" -executable -exec ./{} -perf -o {}.csv -csv \;
+    - find . -type f ! -name "*.*" -executable -exec ./{} -perf -vb -o {}.xml -xml \;
 
 documentation:
   stage: documentation
