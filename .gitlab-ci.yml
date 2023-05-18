@@ -5,13 +5,43 @@ image:
 
 stages:
   - build
-  # - test
+  - test
   - documentation
 
-build:
+build-lib:
   stage: build
+  artifacts:
+    name: "Library files"
+    untracked: false
+    when: on_success
+    expire_in: "30 days"
+    paths:
+      - sources/Graphpp/Lib
   script:
-    - su
+    # Print/Check version of software
+    - qmake6 --version
+    - make --version
+    # Navigate to sources directory
+    - cd sources/Graphpp/
+    # Change path in all *.pro files to match Linux
+    - find . -type f -name "*.pro" -print0 | xargs -0 sed -i 's/Lib\/debug/Lib\//g'
+    - cd Lib
+    # Build the project
+    - qmake6
+    - make
+
+build-app:
+  stage: build
+  dependencies:
+    - build-lib
+  artifacts:
+    name: "App Linux executable"
+    untracked: false
+    when: on_success
+    expire_in: "30 days"
+    paths:
+      - sources/Graphpp/App/App
+  script:
     # Print/Check version of software
     - qmake6 --version
     - make --version
@@ -19,31 +49,54 @@ build:
     - cd sources/Graphpp
     # Change path in all *.pro files to match Linux
     - find . -type f -name "*.pro" -print0 | xargs -0 sed -i 's/Lib\/debug/Lib\//g'
-    - cat App/App.pro
+    - cd App
     # Build the project
     - qmake6
     - make
 
-# test:
-#   stage: test
-#   script:
-#     - su
-#     # Print/Check version of software
-#     - qmake6 --version
-#     - make --version
-#     # Navigate to sources directory
-#     - cd sources/Graphpp/Tests
-#     # Change path in all *.pro files to match Linux
-#     - find . -type f -name "*.pro" -print0 | xargs -0 sed -i 's/Lib\/debug/Lib\//g'
-#     # Build the project
-#     - qmake6
-#     - make
-#     # Run single test file (TODO: Run all test files)
-#     - ./Tests/BasicGraphTest/BasicGraphTest
+build-tests:
+  stage: build
+  dependencies:
+    - build-lib
+  artifacts:
+    name: "Test files"
+    untracked: false
+    when: on_success
+    expire_in: "30 days"
+    paths:
+      - sources/Graphpp/Tests
+  script:
+    # Print/Check version of software
+    - qmake6 --version
+    - make --version
+    # Navigate to sources directory
+    - cd sources/Graphpp
+    # Change path in all *.pro files to match Linux
+    - find . -type f -name "*.pro" -print0 | xargs -0 sed -i 's/Lib\/debug/Lib\//g'
+    - cd Tests
+    # Build the project
+    - qmake6
+    - make
+
+test:
+  stage: test
+  dependencies:
+    - build-tests
+  script:
+    # Navigate to sources directory
+    - cd sources/Graphpp/Tests
+    # Change path in all *.pro files to match Linux
+    - find . -type f -name "*.pro" -print0 | xargs -0 sed -i 's/Lib\/debug/Lib\//g'
+    # Build the project
+    - qmake6
+    - make
+    # Run test files (TODO: Scan for executables automatically)
+    - ./Tests/BasicGraphTest/BasicGraphTest
 
 documentation:
   stage: documentation
   artifacts:
+    name: "Project documentation"
     untracked: false
     when: on_success
     expire_in: "30 days"
