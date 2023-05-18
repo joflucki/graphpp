@@ -47,8 +47,8 @@ build-app:
     - ls ./App
     - ls ./Lib
     - ls ../
-    - ls ~/
-    - ls /
+    - ls .
+    - find / -type d -name 'Lib'
     # Change path in all *.pro files to match Linux
     - find . -type f -name "*.pro" -print0 | xargs -0 sed -i 's/Lib\/debug/Lib\//g'
     - cd App
