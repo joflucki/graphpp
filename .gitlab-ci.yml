@@ -44,13 +44,6 @@ build-app:
     paths:
       - sources/Graphpp/App/App
   script:
-    # Navigate to sources directory
-    - cd sources/Graphpp
-    - ls ./App
-    - ls ./Lib
-    - ls ../
-    - ls .
-    - find / -type d -name 'Lib'
     # Change path in all *.pro files to match Linux
     - find . -type f -name "*.pro" -print0 | xargs -0 sed -i 's/Lib\/debug/Lib\//g'
     - cd App
@@ -89,7 +82,7 @@ test:
     # Navigate to sources directory
     - cd sources/Graphpp/Tests
     # Run test files (TODO: Scan for executables automatically)
-    - ./Tests/BasicGraphTest/BasicGraphTest
+    - ./MinimumSpanningTreeTest/MinimumSpanningTreeTest
 
 documentation:
   stage: documentation
