@@ -67,6 +67,3 @@ documentation:
     - doxygen --version
     # Generate sources
     - doxygen
-    - cd docs/latex
-    - export PATH=$PATH:/usr/bin/pdflatex
-    - make
