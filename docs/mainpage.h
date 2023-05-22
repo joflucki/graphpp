@@ -31,7 +31,7 @@ Graph<int>* graph = new Graph<int>();
 
 // Add the vertices to the graph
 for(int i : vertices){
-    graph->addVertex(&i);
+    graph->addVertex(&vertices[i]);
 }
 
 // Add some edges to the graph (Circular graph)
