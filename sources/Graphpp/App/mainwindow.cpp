@@ -35,11 +35,6 @@ void MainWindow::createActions()
     newGraphAct->setStatusTip(tr("Créer un nouveau graphe..."));
     connect(newGraphAct, &QAction::triggered, this, &MainWindow::newGraph);
 
-    openGraphAct = new QAction(tr("&Ouvrir..."), this);
-    openGraphAct->setShortcut(QKeySequence(QKeySequence::Open));
-    openGraphAct->setStatusTip(tr("Ouvir un fichier JSON contant un graph créé à l'aide de graph++"));
-    connect(openGraphAct, &QAction::triggered, this, &MainWindow::openGraph);
-
     saveGraphAct = new QAction(tr("&Enregistrer"), this);
     saveGraphAct->setShortcut(QKeySequence(QKeySequence::Save));
     saveGraphAct->setStatusTip(tr("Enregistrer le travail au format JSON"));
@@ -52,6 +47,15 @@ void MainWindow::createActions()
     exportToPngAct = new QAction(tr("Export en &PNG"), this);
     exportToPngAct->setStatusTip(tr("Exporter le graph en une image PNG"));
     connect(exportToPngAct, &QAction::triggered, this, &MainWindow::exportToPng);
+
+    exportToJsonAct = new QAction(tr("Export en &JSON"), this);
+    exportToJsonAct->setStatusTip(tr("Exporter le graph en format JSON"));
+    connect(exportToJsonAct, &QAction::triggered, this, &MainWindow::exportToJson);
+
+    importFromJsonAct = new QAction(tr("&Importer depuis JSON"), this);
+    importFromJsonAct->setShortcut(QKeySequence(QKeySequence::Open));
+    importFromJsonAct->setStatusTip(tr("Ouvir un fichier JSON contant un graph créé à l'aide de graph++"));
+    connect(importFromJsonAct, &QAction::triggered, this, &MainWindow::importFromJson);
 
     exitAct = new QAction(tr("&Quitter"), this);
     exitAct->setShortcut(QKeySequence(QKeySequence::Quit));
@@ -139,7 +143,7 @@ void MainWindow::createActions()
     nextAct->setShortcut(QKeySequence(QKeySequence::NextChild));
     connect(nextAct, &QAction::triggered, this, &MainWindow::next);
 
-    prevAct = new QAction(tr("&Graphe suivant"), this);
+    prevAct = new QAction(tr("&Graphe précédent"), this);
     prevAct->setShortcut(QKeySequence(QKeySequence::PreviousChild));
     connect(prevAct, &QAction::triggered, this, &MainWindow::prev);
 
@@ -159,11 +163,16 @@ void MainWindow::createMenus()
 {
     fileMenu = menuBar()->addMenu(tr("&Fichier"));
     fileMenu->addAction(newGraphAct);
-    fileMenu->addAction(openGraphAct);
     fileMenu->addAction(saveGraphAct);
     fileMenu->addSeparator();
-    fileMenu->addAction(exportToDotAct);
-    fileMenu->addAction(exportToPngAct);
+    fileMenu->addAction(importFromJsonAct);
+    fileMenu->addSeparator();
+
+    QMenu* subMenuExport = fileMenu->addMenu(tr("Exporter"));
+    subMenuExport->addAction(exportToDotAct);
+    subMenuExport->addAction(exportToJsonAct);
+    subMenuExport->addAction(exportToPngAct);
+
     fileMenu->addSeparator();
     fileMenu->addAction(closeCurrentGrapheAct);
     fileMenu->addAction(closeAllGrapheAct);
@@ -232,13 +241,6 @@ void MainWindow::newGraph()
     updateSelectedTool(toolsActGroup->checkedAction());
 }
 
-/// @brief Open a graph
-/// @author Plumey Simon
-void MainWindow::openGraph()
-{
-
-}
-
 /// @brief Save a graph
 /// @author Plumey Simon
 void MainWindow::saveGraph()
@@ -256,6 +258,27 @@ void MainWindow::exportToDot()
 /// @brief Export to Png
 /// @author Plumey Simon
 void MainWindow::exportToPng()
+{
+    QMdiSubWindow* qMDISubWindow = this->mdi->activeSubWindow();
+    if (qMDISubWindow != nullptr)
+    {
+        QBoard* qBoard = (QBoard*)(qMDISubWindow->widget());
+
+        QString path = QFileDialog::getSaveFileName(this, tr("Sauvegarder en tant qu'image"), "", tr("Fichier PNG (*.png)"));
+        qBoard->exportToPng(path);
+    }
+}
+
+/// @brief Export to Json
+/// @author Plumey Simon
+void MainWindow::exportToJson()
+{
+
+}
+
+/// @brief Import from Json
+/// @author Plumey Simon
+void MainWindow::importFromJson()
 {
 
 }
