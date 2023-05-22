@@ -10,13 +10,6 @@ stages:
 
 build:
   stage: build
-  artifacts:
-    name: "Library files"
-    untracked: true
-    when: on_success
-    expire_in: "30 days"
-    paths:
-      - sources/Graphpp/Lib/
   script:
     # Print/Check version of software
     - qmake6 --version
