@@ -14,7 +14,8 @@ GraphDockWidget::GraphDockWidget(QWidget *parent) : QWidget(parent)
     stronglyConnected = new QLabel(tr("Fortement connexe: "), propertyPanel);
     oriented = new QLabel(tr("Orienté: "), propertyPanel);
     weighted = new QLabel(tr("Pondéré: "), propertyPanel);
-    chromaticNumber = new QLabel(tr("Nombre chromatique: "), propertyPanel);
+    chromaticNumber = new QLabel(tr("Estimation du nombre chromatique: "), propertyPanel);
+    chromaticNumber->setToolTip(tr("La méthode utilisée nous permet approcher la solution avec une complexité de O(n). Pour une solution exacte, il faudrait utiliser un 'brut force'"));
     nbEdges = new QLabel(tr("Nombre d'arrêtes: "), propertyPanel);
     nbVertices = new QLabel(tr("Nombre sommets: "), propertyPanel);
 
@@ -60,8 +61,8 @@ void GraphDockWidget::updateLabels()
         qDebug() << "Orienté done" << Qt::endl;
         weighted->setText(tr("Pondéré: ") + (selectedGraph->isWeighted() ? tr("Oui") : tr("Non")));
         qDebug() << "Pondéré done" << Qt::endl;
-        chromaticNumber->setText(tr("Nombre chromatique: ") + QString::number(selectedGraph->getChromaticNumber()));
-        qDebug() << "Nombre chromatique done" << Qt::endl;
+        chromaticNumber->setText(tr("Estimation du nombre chromatique: ") + QString::number(selectedGraph->getChromaticNumber()));
+        qDebug() << "Estimation du nombre chromatique done" << Qt::endl;
         nbEdges->setText(tr("Nombre d'arrêtes: ") + QString::number(selectedGraph->getNbEdges()));
         qDebug() << "Nombre d'arrêtes done" << Qt::endl;
         nbVertices->setText(tr("Nombre de sommets: ") + QString::number(selectedGraph->getNbVertices()));
