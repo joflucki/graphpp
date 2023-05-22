@@ -7,8 +7,7 @@ FROM ubuntu:22.04
 RUN apt update
 RUN apt install -y software-properties-common
 RUN add-apt-repository universe
-RUN apt update
-RUN apt install -y sudo
+RUN apt update -y && apt upgrade -y
 
 
 ############################################
@@ -17,6 +16,11 @@ RUN apt install -y sudo
 # Install Doxygen
 RUN apt install -y ninja-build
 
+############################################
+##                 Latex                  ##
+############################################
+# Install Latex without interactive prompt (LaTeX asks for the timezone at install for some reason)
+RUN DEBIAN_FRONTEND=noninteractive apt install -y texlive-latex-extra
 
 ############################################
 ##                Doxygen                 ##
