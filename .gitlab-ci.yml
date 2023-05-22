@@ -8,7 +8,7 @@ stages:
   - test
   - documentation
 
-build-lib:
+build:
   stage: build
   artifacts:
     name: "Library files"
@@ -25,72 +25,34 @@ build-lib:
     - cd sources/Graphpp/
     # Change path in all *.pro files to match Linux
     - find . -type f -name "*.pro" -print0 | xargs -0 sed -i 's/Lib\/debug/Lib\//g'
-    - cd Lib
     # Build the project
     - qmake6
     - make
 
-build-app:
-  stage: build
-  needs:
-    - build-lib
-  dependencies:
-    - build-lib
-  artifacts:
-    name: "App Linux executable"
-    untracked: true
-    when: on_success
-    expire_in: "30 days"
-    paths:
-      - sources/Graphpp/App/App
-  script:
-    # Navigate to sources directory
-    - cd sources/Graphpp
-    # Change path in all *.pro files to match Linux
-    - find . -type f -name "*.pro" -print0 | xargs -0 sed -i 's/Lib\/debug/Lib\//g'
-    - cd App
-    # Build the project
-    - qmake6
-    - make
-
-build-tests:
-  stage: build
-  needs:
-    - build-lib
-  dependencies:
-    - build-lib
-  artifacts:
-    name: "Test files"
-    untracked: true
-    when: on_success
-    expire_in: "30 days"
-    paths:
-      - sources/Graphpp/Tests/
-  script:
-    # Navigate to sources directory
-    - cd sources/Graphpp
-    # Change path in all *.pro files to match Linux
-    - find . -type f -name "*.pro" -print0 | xargs -0 sed -i 's/Lib\/debug/Lib\//g'
-    - cd Tests
-    # Build the project
-    - qmake6
-    - make
 
 test:
   stage: test
-  dependencies:
-    - build-tests
   artifacts:
     name: "Test results"
     untracked: true
     when: on_success
     expire_in: "30 days"
     paths:
-      - sources/Graphpp/Tests/*/*.csv
+      - sources/Graphpp/Tests/*/*.xml
   script:
+    # Print/Check version of software
+    - qmake6 --version
+    - make --version
     # Navigate to sources directory
-    - cd sources/Graphpp/Tests
-    # Run test files
+    - cd sources/Graphpp/
+    # Change path in all *.pro files to match Linux
+    - find . -type f -name "*.pro" -print0 | xargs -0 sed -i 's/Lib\/debug/Lib\//g'
+    # Build the project
+    - qmake6
+    - make
+    # Navigate to sources directory
+    - cd Tests
+    # Run all tests and export to XML
     - find . -type f ! -name "*.*" -executable -exec ./{} -perf -vb -o {}.xml -xml \;
 
 documentation:
