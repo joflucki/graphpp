@@ -66,3 +66,5 @@ documentation:
     - doxygen --version
     # Generate sources
     - doxygen
+    - cd docs/latex
+    - make
