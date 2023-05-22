@@ -45,6 +45,11 @@ public:
 
     // Paths, cycles, trees, subgraphs
     Graph<T>* getMinimumSpanningTree();
+
+    // Operators
+    friend std::ostream& operator<<(std::ostream& os, const Graph<T>& p);
+
+    friend std::istream& operator>>(std::istream& is, Graph<T>& p);
 };
 
 /// @brief Initializes a new graph
@@ -486,7 +491,6 @@ int Graph<T>::getVertexOutdegree(T *vertex)
 /// @brief Returns a new graph which is a minimum spanning tree of the initial graph
 /// @author Jonas Flückiger
 /// @date 15.05.2023
-///
 template <typename T>
 Graph<T>* Graph<T>::getMinimumSpanningTree()
 {
@@ -557,6 +561,27 @@ Graph<T>* Graph<T>::getMinimumSpanningTree()
         }
     }
     return msTree;
+
+}
+
+/// @brief Deserializes a graph into the DOT format
+/// @author Jonas Flückiger
+/// @date 22.05.2023
+template <typename T>
+std::istream& operator>>(std::istream& stream, Graph<T>& graph)
+{
+    // Dese
+    std::string test;
+    stream >> test;
+}
+
+/// @brief Sserializes a graph into the DOT format
+/// @author Jonas Flückiger
+/// @date 22.05.2023
+template <typename T>
+std::ostream& operator<<(std::ostream& stream, Graph<T>& graph)
+{
+    stream << "test";
 }
 
 #endif // GRAPH_H
