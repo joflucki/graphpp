@@ -3,7 +3,14 @@ image:
   entrypoint:
     ["/bin/bash", "-c", "ln  -snf  /bin/bash  /bin/sh  &&  /bin/bash  -c  $0"]
 
+
+stages:
+  - Build
+  - Test
+  - Documentation
+
 build-GUI:
+  stage: Build
   script:
     # Print/Check version of software
     - qmake6 --version
@@ -18,6 +25,7 @@ build-GUI:
 
 
 test:
+  stage: Test
   artifacts:
     name: "Test results"
     untracked: false
@@ -45,6 +53,7 @@ test:
     - find . -type f ! -name "*.*" -executable -exec ./{} -perf -vb -o {}.xml -xml \;
 
 documentation:
+  stage: Documentation
   artifacts:
     name: "Project documentation"
     untracked: false
