@@ -25,6 +25,7 @@ public:
     QBoard(VertexDockWidget *vertexDockWidget, QWidget *parent = nullptr);
     virtual ~QBoard();
     void setSelectedTool(Tool selectedTool);
+    void exportToPng(QString path);
     Graph<QVertex> *graph;
 
 private:
@@ -41,6 +42,7 @@ private:
     QPointF lastMousePos;
 
     // useful methods
+    void paint(QPainter &painter);
     void unselectVertices();
     bool hitVertex(QPointF position, QVertex*& hittedVertex);
     bool hitSegment(QPointF hitPoint, QPointF p1, QPointF p2, double margin);

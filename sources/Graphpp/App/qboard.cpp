@@ -26,7 +26,8 @@ QBoard::~QBoard()
 void QBoard::paintEvent(QPaintEvent *)
 {
     QPainter painter(this);
-    painter.setTransform(this->transform);
+
+    painter.setRenderHint(QPainter::Antialiasing);
 
     // draw origin (debug purpose)
     {
@@ -35,10 +36,21 @@ void QBoard::paintEvent(QPaintEvent *)
         painter.drawLine(QPoint(10,0), QPoint(-10,0));
     }
 
+    paint(painter);
+
+    painter.end();
+}
+
+
+/// @brief Paint method. Use to paint on screen or in image
+/// @param QPainter
+/// @author Plumey Simon
+void QBoard::paint(QPainter &painter)
+{
+    painter.setTransform(this->transform);
+
     painter.setBrush(Qt::black);
     painter.setPen(QPen(Qt::black, 2));
-
-    //    QPoint cursorPos = this->mapFromGlobal(QCursor::pos());
 
     if (!graph->adjacencyList.empty())
     {
@@ -74,6 +86,24 @@ void QBoard::paintEvent(QPaintEvent *)
 /***************************************************\
  * USEFUL METHODS                                  *
 \***************************************************/
+
+/// @brief Able to convert QPainter to a PNG image
+/// @author Plumey Simon
+void QBoard::exportToPng(QString path)
+{
+    if (path.isEmpty())
+        return;
+
+    QImage img(this->size().width(), this->size().height(), QImage::Format_ARGB32);
+
+    QPainter painter;
+    painter.begin(&img);
+    painter.setRenderHint(QPainter::Antialiasing);
+    paint(painter);
+    painter.end();
+
+    img.save(path);
+}
 
 /// @brief Set the selected Tool
 /// @param Tool: Selected
