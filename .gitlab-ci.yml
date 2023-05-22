@@ -45,13 +45,16 @@ test:
     - make --version
     # Navigate to sources directory
     - cd sources/Graphpp/
-    # Change path in all *.pro files to match Linux
+    # Change path in all *.pro files to match Linux ("Lib/Debug" becomes "Lib")
     - find . -type f -name "*.pro" -print0 | xargs -0 sed -i 's/Lib\/debug/Lib\//g'
-    # Build the project
+    # Build the Lib
+    - cd Lib
     - qmake6
     - make
-    # Navigate to sources directory
-    - cd Tests
+    # Build the tests
+    - cd ../Tests
+    - qmake6
+    - make
     # Run all tests and export to XML
     - find . -type f ! -name "*.*" -executable -exec ./{} -perf -vb -o {}.xml -xml \;
 
