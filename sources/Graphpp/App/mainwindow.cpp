@@ -291,6 +291,7 @@ void MainWindow::updateGraphDockWidget()
     {
         QBoard* qBoard = (QBoard*)(qMDISubWindow->widget());
         graphDockWidget->setSelectedGraph(qBoard->graph);
+        vertexDockWidget->setSelectedGraph(qBoard->graph);
     }
 }
 

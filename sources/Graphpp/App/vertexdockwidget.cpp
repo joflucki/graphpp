@@ -15,6 +15,11 @@ VertexDockWidget::VertexDockWidget(QWidget *parent) : QWidget(parent)
     labelTextColor = new QLabel(tr("Couleur du texte:"), propertyPanel);
     labelBackgroundColor = new QLabel(tr("Couleur de fond:"), propertyPanel);
     labelBorderColor = new QLabel(tr("Couleur de bordure:"), propertyPanel);
+    labelInDegree = new QLabel(tr("Degré entrant:"), propertyPanel);
+    labelOutDegree = new QLabel(tr("Degré sortant:"), propertyPanel);
+
+    inDegree = new QLabel("0", propertyPanel);
+    outDegree = new QLabel("0", propertyPanel);
 
     // instanciate fields
     name = new QLineEdit(propertyPanel);
@@ -32,6 +37,8 @@ VertexDockWidget::VertexDockWidget(QWidget *parent) : QWidget(parent)
 
     QFormLayout *layout = new QFormLayout();
     layout->addRow(labelName, name);
+    layout->addRow(labelInDegree, inDegree);
+    layout->addRow(labelOutDegree, outDegree);
     layout->addRow(labelPositionX, positionX);
     layout->addRow(labelPositionY, positionY);
     layout->addRow(labelTextColor, textColorBtn);
@@ -69,6 +76,8 @@ void VertexDockWidget::updateFields()
         this->textColorBtn->setColor(this->selectedVertex->getTextColor());
         this->backgroundColorBtn->setColor(this->selectedVertex->getBackgroundColor());
         this->borderColorBtn->setColor(this->selectedVertex->getBorderColor());
+        this->inDegree->setText(QString::number(this->selectedGraph->getVertexIndegree(this->selectedVertex)));
+        this->outDegree->setText(QString::number(this->selectedGraph->getVertexOutdegree(this->selectedVertex)));
     }
     else
     {
@@ -78,6 +87,8 @@ void VertexDockWidget::updateFields()
         this->textColorBtn->setColor(Qt::lightGray);
         this->backgroundColorBtn->setColor(Qt::lightGray);
         this->borderColorBtn->setColor(Qt::lightGray);
+        this->inDegree->setText("0");
+        this->outDegree->setText("0");
     }
 }
 
@@ -90,3 +101,11 @@ void VertexDockWidget::setSelectedVertex(QVertex* vertex)
     this->updateFields();
 }
 
+
+/// @brief Set the selected graph (graph is used to know the degree of the selected vertex)
+/// @param Graph<QVertex>*: graph of QVertex
+/// @author Plumey Simon
+void VertexDockWidget::setSelectedGraph(Graph<QVertex>* graph)
+{
+    this->selectedGraph = graph;
+}
