@@ -27,7 +27,7 @@ test:
   stage: test
   artifacts:
     name: "Test results"
-    untracked: true
+    untracked: false
     when: on_success
     expire_in: "30 days"
     paths:
@@ -55,7 +55,7 @@ documentation:
   stage: documentation
   artifacts:
     name: "Project documentation"
-    untracked: true
+    untracked: false
     when: on_success
     expire_in: "30 days"
     paths:
