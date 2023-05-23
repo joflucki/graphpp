@@ -9,7 +9,7 @@ stages:
   - Test
   - Documentation
 
-build-GUI:
+build:
   stage: Build
   script:
     # Print/Check version of software
@@ -33,6 +33,8 @@ test:
     expire_in: "30 days"
     paths:
       - sources/Graphpp/Tests/*/*.xml
+    reports:
+      junit: sources/Graphpp/Tests/*/*.xml
   script:
     # Print/Check version of software
     - qmake6 --version
@@ -50,7 +52,7 @@ test:
     - qmake6
     - make
     # Run all tests and export to XML
-    - find . -type f ! -name "*.*" -executable -exec ./{} -perf -vb -o {}.xml -xml \;
+    - find . -type f ! -name "*.*" -executable -exec ./{} -perf -vb -o {}.xml -junitxml \;
 
 documentation:
   stage: Documentation
