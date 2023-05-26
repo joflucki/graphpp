@@ -564,24 +564,27 @@ Graph<T>* Graph<T>::getMinimumSpanningTree()
 
 }
 
-/// @brief Deserializes a graph into the DOT format
+/// @brief Sserializes a graph into the DOT format.
+///
+/// The templated class will also be serialized using the out stream operator.
 /// @author Jonas Flückiger
-/// @date 22.05.2023
+/// @date 26.05.2023
 template <typename T>
-std::istream& operator>>(std::istream& stream, Graph<T>& graph)
+std::ostream& operator<<(std::ostream& os, Graph<T>& graph)
 {
-    // Dese
-    std::string test;
-    stream >> test;
-}
-
-/// @brief Sserializes a graph into the DOT format
-/// @author Jonas Flückiger
-/// @date 22.05.2023
-template <typename T>
-std::ostream& operator<<(std::ostream& stream, Graph<T>& graph)
-{
-    stream << "test";
+    // Serialize
+    for (auto &vertexPair : graph.adjacencyList){
+        for(auto &edge : vertexPair.second){
+            os << *vertexPair.first;
+            os << " -> ";
+            os << *edge->getTarget();
+            os << " [weight=";
+            os << edge->getWeight();
+            os << "]";
+            os << std::endl;
+        }
+    }
+    return os;
 }
 
 #endif // GRAPH_H
