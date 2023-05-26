@@ -28,6 +28,7 @@ public:
     void exportToPng(QString path);
     void exportToDOT(QString path);
     Graph<QVertex> *graph;
+    Graph<QVertex>* highlightedGraph;
 
 private:
     const int vertexRadius = 5;

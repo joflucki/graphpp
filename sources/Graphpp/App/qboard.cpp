@@ -9,6 +9,7 @@ QBoard::QBoard(VertexDockWidget *vertexDockWidget, QWidget *parent)
     : QWidget(parent)
 {
     this->graph = new Graph<QVertex>();
+    this->highlightedGraph = new Graph<QVertex>();
     this->vertexDockWidget = vertexDockWidget;
     connect(vertexDockWidget, &VertexDockWidget::vertexUpdated, this, qOverload<>(&QWidget::update));
 }
@@ -66,6 +67,21 @@ void QBoard::paint(QPainter &painter)
                 painter.drawLine(sourceVertexPos, targetVertexPos);
             }
         }
+
+        // Redraw highlighted edges
+        painter.setBrush(Qt::red);
+        painter.setPen(QPen(Qt::red, 3));
+        for (auto & mapRow : highlightedGraph->adjacencyList)
+        {
+            QPointF sourceVertexPos = mapRow.first->getPosition().toPoint();
+            for (auto & edge : mapRow.second)
+            {
+                QVertex* targetVertex = edge->getTarget();
+                QPointF targetVertexPos = targetVertex->getPosition().toPoint();
+                painter.drawLine(sourceVertexPos, targetVertexPos);
+            }
+        }
+
         // Display vertices
         for (auto const& mapRow : graph->adjacencyList)
         {
@@ -309,6 +325,12 @@ void QBoard::mouseMoveEvent(QMouseEvent *event)
 /// @author Plumey Simon
 void QBoard::wheelEvent(QWheelEvent *event)
 {
+    for (auto const& mapRow : graph->adjacencyList){
+        if(mapRow.first->isSelected()){
+            highlightedGraph = graph->getMinimumDistanceGraph(mapRow.first);
+        }
+    }
+
     // ATTENTION
     // Pas totalement fonctionnel, désactivé pour l'instant
     /*

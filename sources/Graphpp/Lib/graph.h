@@ -25,7 +25,7 @@ public:
     void addVertex(T *vertex);
     void addEdge(T *source, T *target, int weight = 1);
     void addDoubleEdge(T *vertex1, T *vertex2, int weight = 1);
-    void addPrebuiltEdge(T* source, Edge<T>*);
+    void addPrebuiltEdge(T *source, Edge<T> *);
     void removeVertex(T *vertex);
     void removeEdge(Edge<T> *edge);
 
@@ -45,16 +45,16 @@ public:
     int getVertexOutdegree(T *vertex); // OK, à tester
 
     // Paths, cycles, trees, subgraphs
-    Graph<T>* getMinimumSpanningTree();
-    Graph<T>* getMinimumDistanceGraph(T* startingVertex);
+    Graph<T> *getMinimumSpanningTree();
+    Graph<T> *getMinimumDistanceGraph(T *startingVertex);
 
-    //Serialization
+    // Serialization
     std::string exportToDOT();
 
     // Operators
-    friend std::ostream& operator<<(std::ostream& os, const Graph<T>& p);
+    friend std::ostream &operator<<(std::ostream &os, const Graph<T> &p);
 
-    friend std::istream& operator>>(std::istream& is, Graph<T>& p);
+    friend std::istream &operator>>(std::istream &is, Graph<T> &p);
 };
 
 /// @brief Initializes a new graph
@@ -72,7 +72,7 @@ Graph<T>::Graph()
 template <typename T>
 Graph<T>::~Graph()
 {
-    //delete this->adjacencyList;
+    // delete this->adjacencyList;
 }
 
 /// @brief Adds a vertex to the graph
@@ -139,7 +139,7 @@ void Graph<T>::addDoubleEdge(T *vertex1, T *vertex2, int weight)
 /// @author Jonas Flückiger
 /// @date 15.05.2023
 template <typename T>
-void Graph<T>::addPrebuiltEdge(T *source, Edge<T>* edge)
+void Graph<T>::addPrebuiltEdge(T *source, Edge<T> *edge)
 {
     this->adjacencyList[source].push_back(edge);
 }
@@ -210,7 +210,7 @@ bool Graph<T>::isEulerian()
     bool eulerian = true;
     for (auto &vertex : this->adjacencyList)
     {
-        if(this->getVertexIndegree(vertex.first) % 2 != 0 || this->getVertexOutdegree(vertex.first) % 2 != 0)
+        if (this->getVertexIndegree(vertex.first) % 2 != 0 || this->getVertexOutdegree(vertex.first) % 2 != 0)
         {
             return false;
         }
@@ -233,12 +233,12 @@ bool Graph<T>::isHamiltonian()
 template <typename T>
 bool Graph<T>::isConnected()
 {
-    if(this->adjacencyList.size() >= 1)
+    if (this->adjacencyList.size() >= 1)
     {
         T *vertex = this->adjacencyList.begin()->first;
 
-        std::list<T*> visited;
-        std::list<T*> toVisit;
+        std::list<T *> visited;
+        std::list<T *> toVisit;
 
         toVisit.push_back(vertex);
 
@@ -251,7 +251,7 @@ bool Graph<T>::isConnected()
             {
                 bool notVisited = std::find(visited.begin(), visited.end(), adjacentVertex->getTarget()) == visited.end();
                 bool notEncountered = std::find(toVisit.begin(), toVisit.end(), adjacentVertex->getTarget()) == toVisit.end();
-                if(notVisited && notEncountered)
+                if (notVisited && notEncountered)
                 {
                     toVisit.push_back(adjacentVertex->getTarget());
                 }
@@ -329,11 +329,11 @@ template <typename T>
 bool Graph<T>::isWeighted()
 {
     bool isWeighted = false;
-    for (auto const& vertex : this->adjacencyList)
+    for (auto const &vertex : this->adjacencyList)
     {
-        for (auto const& edge : vertex.second)
+        for (auto const &edge : vertex.second)
         {
-            if(edge->getWeight() != 1)
+            if (edge->getWeight() != 1)
             {
                 isWeighted = true;
             }
@@ -364,33 +364,35 @@ template <typename T>
 int Graph<T>::getChromaticNumber()
 {
 
-
     // SORTING THE VERTICES
     // Declare vector of pairs
-    std::vector<std::pair<T *, std::list<Edge<T> *>> > verticesOrderedByDegree;
+    std::vector<std::pair<T *, std::list<Edge<T> *>>> verticesOrderedByDegree;
 
     // Copy key-value pair from Map
     // to vector of pairs
-    for (auto& it : this->adjacencyList) {
+    for (auto &it : this->adjacencyList)
+    {
         verticesOrderedByDegree.push_back(it);
     }
 
     // Sort using comparator function
-    sort(verticesOrderedByDegree.begin(), verticesOrderedByDegree.end(), [this](std::pair<T *, std::list<Edge<T> *>> a, std::pair<T *, std::list<Edge<T> *>> b) {
+    sort(verticesOrderedByDegree.begin(), verticesOrderedByDegree.end(), [this](std::pair<T *, std::list<Edge<T> *>> a, std::pair<T *, std::list<Edge<T> *>> b)
+         {
         int aDegree = this->getVertexIndegree(a.first) + this->getVertexIndegree(a.first);
         int bDegree = this->getVertexIndegree(b.first) + this->getVertexIndegree(b.first);
-        return aDegree < bDegree;
-    });
-
+        return aDegree < bDegree; });
 
     // COLORING THE VERTICES
     // A map of pairs vertex <-> color
     // Colors are simply represented by an integer
-    std::unordered_map<T*, int> colorMap;
+    std::unordered_map<T *, int> colorMap;
     // Function to check if a vertex can be assigned a given color
-    auto canAssignColor = [&](T* vertex, int color) {
-        for (auto& adjacentVertex : this->adjacencyList[vertex]) {
-            if (colorMap[adjacentVertex->getTarget()] == color) {
+    auto canAssignColor = [&](T *vertex, int color)
+    {
+        for (auto &adjacentVertex : this->adjacencyList[vertex])
+        {
+            if (colorMap[adjacentVertex->getTarget()] == color)
+            {
                 return false;
             }
         }
@@ -401,16 +403,20 @@ int Graph<T>::getChromaticNumber()
     int chromaticNumber = 0;
 
     // Try to assign colors from 1 to max. number of colors
-    for (auto const& vertexStruct : verticesOrderedByDegree)
+    for (auto const &vertexStruct : verticesOrderedByDegree)
     {
         int colorNum = 1;
-        while(colorNum <= numVertices){
-            if(canAssignColor(vertexStruct.first, colorNum)){
+        while (colorNum <= numVertices)
+        {
+            if (canAssignColor(vertexStruct.first, colorNum))
+            {
                 // Assign a color
                 colorMap[vertexStruct.first] = colorNum;
                 chromaticNumber = colorNum > chromaticNumber ? colorNum : chromaticNumber;
                 break;
-            }else{
+            }
+            else
+            {
                 // Try with the next color
                 colorNum++;
             }
@@ -499,73 +505,84 @@ int Graph<T>::getVertexOutdegree(T *vertex)
 /// @author Jonas Flückiger
 /// @date 15.05.2023
 template <typename T>
-Graph<T>* Graph<T>::getMinimumSpanningTree()
+Graph<T> *Graph<T>::getMinimumSpanningTree()
 {
-    Graph<T>* msTree = new Graph<T>();
+    Graph<T> *msTree = new Graph<T>();
 
     // This method uses a standard library priority queue. Because this implementation does not allow
     // priority updates, we must check if each element we pop is the most up-to-date one
     // see https://stackoverflow.com/questions/649640/how-to-do-an-efficient-priority-update-in-stl-priority-queue
-    auto cmp = [](queue_element<T> left, queue_element<T> right) { return left.priority > right.priority; };
-    std::unordered_map<T*, int> upToDatePrios = std::unordered_map<T*, int>();
+    auto cmp = [](queue_element<T> left, queue_element<T> right)
+    { return left.priority > right.priority; };
+    std::unordered_map<T *, int> upToDatePrios = std::unordered_map<T *, int>();
     std::priority_queue<queue_element<T>, std::vector<queue_element<T>>, decltype(cmp)> toVisit(cmp);
 
     // Add first vertex and its edges
     msTree->addVertex(this->adjacencyList.begin()->first);
-    for (Edge<T>* &edge : this->adjacencyList.begin()->second)
+    for (Edge<T> *&edge : this->adjacencyList.begin()->second)
     {
         toVisit.push(queue_element<T>(edge->getWeight(), this->adjacencyList.begin()->first, edge));
         upToDatePrios.insert(std::make_pair(edge->getTarget(), edge->getWeight()));
     }
-    while(!toVisit.empty()){
+    while (!toVisit.empty())
+    {
         // Get the top element
         queue_element<T> top = toVisit.top();
         toVisit.pop();
 
         // Ignore out-of-date elements
-        if(top.priority > upToDatePrios[top.edge->getTarget()]){
+        if (top.priority > upToDatePrios[top.edge->getTarget()])
+        {
             continue;
         }
 
         // Visit the vertex and add it to the tree
         msTree->addVertex(top.edge->getTarget());
         msTree->addPrebuiltEdge(top.source, top.edge);
-        if(!this->isOriented()){
-            auto hasSourceAsTarget = [&top](Edge<T>* edge){
+        if (!this->isOriented())
+        {
+            auto hasSourceAsTarget = [&top](Edge<T> *edge)
+            {
                 return edge->getTarget() == top.source;
             };
 
             // Find corresponding edge
-            Edge<T>* reverseEdge = nullptr;
-            for(auto const &edge : this->adjacencyList[top.edge->getTarget()]){
-                if(hasSourceAsTarget(edge)){
+            Edge<T> *reverseEdge = nullptr;
+            for (auto const &edge : this->adjacencyList[top.edge->getTarget()])
+            {
+                if (hasSourceAsTarget(edge))
+                {
                     reverseEdge = edge;
                     continue;
                 }
             }
 
             // Add the reverse path
-            if(reverseEdge!=nullptr){
+            if (reverseEdge != nullptr)
+            {
                 msTree->addPrebuiltEdge(top.edge->getTarget(), reverseEdge);
             }
         }
 
         // Add all its neighbour and update edges weight
-        for(Edge<T>* &edge : this->adjacencyList[top.edge->getTarget()]){
+        for (Edge<T> *&edge : this->adjacencyList[top.edge->getTarget()])
+        {
             // Check if next vertex was already visited
             bool notVisited = msTree->adjacencyList.find(edge->getTarget()) == msTree->adjacencyList.end();
-            if(notVisited){
+            if (notVisited)
+            {
                 // Check if the next vertex wasnt already encountered and if it was, that the new prio is smaller
-                if(upToDatePrios.find(edge->getTarget()) == upToDatePrios.end()){
+                if (upToDatePrios.find(edge->getTarget()) == upToDatePrios.end())
+                {
                     upToDatePrios.insert(std::make_pair(edge->getTarget(), edge->getWeight()));
-                }else if(edge->getWeight() < upToDatePrios[edge->getTarget()]){
+                }
+                else if (edge->getWeight() < upToDatePrios[edge->getTarget()])
+                {
                     upToDatePrios.erase(edge->getTarget());
                     upToDatePrios.insert(std::make_pair(edge->getTarget(), edge->getWeight()));
                 }
                 toVisit.push(queue_element<T>(edge->getWeight(), top.edge->getTarget(), edge));
             }
-
-
         }
     }
     return msTree;
@@ -577,79 +594,89 @@ Graph<T>* Graph<T>::getMinimumSpanningTree()
 /// @author Jonas Flückiger
 /// @date 26.05.2023
 template <typename T>
-Graph<T>* Graph<T>::getMinimumDistanceGraph(T* startingVertex)
+Graph<T> *Graph<T>::getMinimumDistanceGraph(T *startingVertex)
 {
-    Graph<T>* mdGraph = new Graph<T>();
+    Graph<T> *mdGraph = new Graph<T>();
 
     // This method uses a standard library priority queue. Because this implementation does not allow
     // priority updates, we must check if each element we pop is the most up-to-date one
     // see https://stackoverflow.com/questions/649640/how-to-do-an-efficient-priority-update-in-stl-priority-queue
-    auto cmp = [](queue_element<T> left, queue_element<T> right) { return left.priority > right.priority; };
-    std::unordered_map<T*, int> upToDatePrios = std::unordered_map<T*, int>();
+    auto cmp = [](queue_element<T> left, queue_element<T> right)
+    { return left.priority > right.priority; };
+    std::unordered_map<T *, int> upToDatePrios = std::unordered_map<T *, int>();
     std::priority_queue<queue_element<T>, std::vector<queue_element<T>>, decltype(cmp)> toVisit(cmp);
 
     // Add first vertex and its edges
     mdGraph->addVertex(startingVertex);
-    for (Edge<T>* &edge : this->adjacencyList[startingVertex])
+    for (Edge<T> *&edge : this->adjacencyList[startingVertex])
     {
         toVisit.push(queue_element<T>(edge->getWeight(), startingVertex, edge));
         upToDatePrios.insert(std::make_pair(edge->getTarget(), edge->getWeight()));
     }
-    while(!toVisit.empty()){
+    while (!toVisit.empty())
+    {
         // Get the top element
         queue_element<T> top = toVisit.top();
         toVisit.pop();
 
         // Ignore out-of-date elements
-        if(top.priority > upToDatePrios[top.edge->getTarget()]){
+        if (top.priority > upToDatePrios[top.edge->getTarget()])
+        {
             continue;
         }
 
         // Visit the vertex and add it to the tree
         mdGraph->addVertex(top.edge->getTarget());
         mdGraph->addPrebuiltEdge(top.source, top.edge);
-        if(!this->isOriented()){
-            auto hasSourceAsTarget = [&top](Edge<T>* edge){
+        if (!this->isOriented())
+        {
+            auto hasSourceAsTarget = [&top](Edge<T> *edge)
+            {
                 return edge->getTarget() == top.source;
             };
 
             // Find corresponding edge
-            Edge<T>* reverseEdge = nullptr;
-            for(auto const &edge : this->adjacencyList[top.edge->getTarget()]){
-                if(hasSourceAsTarget(edge)){
+            Edge<T> *reverseEdge = nullptr;
+            for (auto const &edge : this->adjacencyList[top.edge->getTarget()])
+            {
+                if (hasSourceAsTarget(edge))
+                {
                     reverseEdge = edge;
                     continue;
                 }
             }
 
             // Add the reverse path
-            if(reverseEdge!=nullptr){
+            if (reverseEdge != nullptr)
+            {
                 mdGraph->addPrebuiltEdge(top.edge->getTarget(), reverseEdge);
             }
         }
 
         // Add all its neighbour and update edges weight
-        for(Edge<T>* &edge : this->adjacencyList[top.edge->getTarget()]){
+        for (Edge<T> *&edge : this->adjacencyList[top.edge->getTarget()])
+        {
             // Check if next vertex was already visited
             bool notVisited = mdGraph->adjacencyList.find(edge->getTarget()) == mdGraph->adjacencyList.end();
-            if(notVisited){
+            if (notVisited)
+            {
                 // Check if the next vertex wasnt already encountered and if it was, that the new prio is smaller
-                if(upToDatePrios.find(edge->getTarget()) == upToDatePrios.end()){
+                if (upToDatePrios.find(edge->getTarget()) == upToDatePrios.end())
+                {
                     upToDatePrios.insert(std::make_pair(edge->getTarget(), top.priority + edge->getWeight()));
-                }else if(top.priority + edge->getWeight() < upToDatePrios[edge->getTarget()]){
+                }
+                else if (top.priority + edge->getWeight() < upToDatePrios[edge->getTarget()])
+                {
                     upToDatePrios.erase(edge->getTarget());
                     upToDatePrios.insert(std::make_pair(edge->getTarget(), top.priority + edge->getWeight()));
                 }
                 upToDatePrios.insert(std::make_pair(edge->getTarget(), top.priority + edge->getWeight()));
                 toVisit.push(queue_element<T>(top.priority + edge->getWeight(), top.edge->getTarget(), edge));
             }
-
-
         }
     }
     return mdGraph;
 }
-
 
 /// @brief Serializes a graph into the DOT format.
 ///
@@ -657,14 +684,17 @@ Graph<T>* Graph<T>::getMinimumDistanceGraph(T* startingVertex)
 /// @author Jonas Flückiger
 /// @date 26.05.2023
 template <typename T>
-std::string Graph<T>::exportToDOT(){
+std::string Graph<T>::exportToDOT()
+{
     std::ostringstream os;
     os << "digraph {" << std::endl;
-    for (auto &vertexPair : this->adjacencyList){
-        for(auto &edge : vertexPair.second){
+    for (auto &vertexPair : this->adjacencyList)
+    {
+        for (auto &edge : vertexPair.second)
+        {
             os << '"' << vertexPair.first << '"';
             os << " -> ";
-            os << '"' << edge->getTarget() << '"' ;
+            os << '"' << edge->getTarget() << '"';
             os << " [weight=";
             os << edge->getWeight();
             os << "]";
