@@ -578,7 +578,7 @@ Graph<T>* Graph<T>::getMinimumSpanningTree()
 template <typename T>
 Graph<T>* Graph<T>::getMinimumDistanceGraph(T* startingVertex)
 {
-    Graph<T>* msTree = new Graph<T>();
+    Graph<T>* mdGraph = new Graph<T>();
 
     // This method uses a standard library priority queue. Because this implementation does not allow
     // priority updates, we must check if each element we pop is the most up-to-date one
@@ -588,8 +588,7 @@ Graph<T>* Graph<T>::getMinimumDistanceGraph(T* startingVertex)
     std::priority_queue<queue_element<T>, std::vector<queue_element<T>>, decltype(cmp)> toVisit(cmp);
 
     // Add first vertex and its edges
-    msTree->addVertex(startingVertex);
-    std::cout << "ADDING " << *startingVertex << std::endl;
+    mdGraph->addVertex(startingVertex);
     for (Edge<T>* &edge : this->adjacencyList[startingVertex])
     {
         toVisit.push(queue_element<T>(edge->getWeight(), startingVertex, edge));
@@ -606,8 +605,8 @@ Graph<T>* Graph<T>::getMinimumDistanceGraph(T* startingVertex)
         }
 
         // Visit the vertex and add it to the tree
-        msTree->addVertex(top.edge->getTarget());
-        msTree->addPrebuiltEdge(top.source, top.edge);
+        mdGraph->addVertex(top.edge->getTarget());
+        mdGraph->addPrebuiltEdge(top.source, top.edge);
         if(!this->isOriented()){
             auto hasSourceAsTarget = [&top](Edge<T>* edge){
                 return edge->getTarget() == top.source;
@@ -624,14 +623,14 @@ Graph<T>* Graph<T>::getMinimumDistanceGraph(T* startingVertex)
 
             // Add the reverse path
             if(reverseEdge!=nullptr){
-                msTree->addPrebuiltEdge(top.edge->getTarget(), reverseEdge);
+                mdGraph->addPrebuiltEdge(top.edge->getTarget(), reverseEdge);
             }
         }
 
         // Add all its neighbour and update edges weight
         for(Edge<T>* &edge : this->adjacencyList[top.edge->getTarget()]){
             // Check if next vertex was already visited
-            bool notVisited = msTree->adjacencyList.find(edge->getTarget()) == msTree->adjacencyList.end();
+            bool notVisited = mdGraph->adjacencyList.find(edge->getTarget()) == mdGraph->adjacencyList.end();
             if(notVisited){
                 // Check if the next vertex was already encountered and if it was, that the new prio is smaller
                 if(upToDatePrios.find(edge->getTarget()) != upToDatePrios.end() && top.priority + edge->getWeight() < upToDatePrios[edge->getTarget()]){
@@ -639,13 +638,14 @@ Graph<T>* Graph<T>::getMinimumDistanceGraph(T* startingVertex)
                     upToDatePrios.erase(edge->getTarget());
                     upToDatePrios.insert(std::make_pair(edge->getTarget(), top.priority + edge->getWeight()));
                 }
+                std::cout << "ADDING NEIGHBOURG " << *edge->getTarget() << " w=" << top.priority + edge->getWeight() << std::endl;
                 toVisit.push(queue_element<T>(top.priority + edge->getWeight(), top.edge->getTarget(), edge));
             }
 
 
         }
     }
-    return msTree;
+    return mdGraph;
 }
 
 

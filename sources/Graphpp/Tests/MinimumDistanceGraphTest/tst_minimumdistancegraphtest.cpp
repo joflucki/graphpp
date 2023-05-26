@@ -22,7 +22,7 @@ private:
     Graph<int>* expected;
     Graph<int>* actual;
     int* vertices;
-    int nbVertices = 10;
+    int nbVertices = 5;
 
 private slots:
     void test_vertices_nb();
@@ -43,23 +43,15 @@ MinimumDistanceGraphTest::MinimumDistanceGraphTest()
         initial->addVertex(&vertices[i]);
         expected->addVertex(&vertices[i]);
     }
-    for(int i = 0; i < nbVertices;i++){
-        for(int j = 0; j < nbVertices; j++){
-            if(i != j){
-                initial->addEdge(&vertices[i], &vertices[j], vertices[i]*vertices[j]);
-                if(i == 0 || j == 0){
-                    auto hasTarget = [this, j](Edge<int> edge){
-                        return &vertices[j] == edge.getTarget();
-                    };
-                    Edge<int>* edge = std::find_if(initial->adjacencyList[&vertices[i]].front(), initial->adjacencyList[&vertices[i]].back(), hasTarget);
-                    if(edge != nullptr){
-                        expected->addPrebuiltEdge(&vertices[i], edge);
-                    }
 
-                }
-            }
-        }
-    }
+    expected->addDoubleEdge(&vertices[0], &vertices[0], 2);
+    expected->addDoubleEdge(&vertices[0], &vertices[3], 7);
+
+    expected->addDoubleEdge(&vertices[1], &vertices[3], 8);
+    expected->addDoubleEdge(&vertices[1], &vertices[4], 10);
+    expected->addDoubleEdge(&vertices[1], &vertices[2], 3);
+
+    expected->addDoubleEdge(&vertices[1], &vertices[4], 5);
 
     actual = initial->getMinimumDistanceGraph(&vertices[0]);
 }
