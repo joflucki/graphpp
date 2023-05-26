@@ -76,6 +76,14 @@ void MainWindow::createActions()
     aboutAct->setStatusTip(tr("Affiche des informations sur le programme"));
     connect(aboutAct, &QAction::triggered, this, &MainWindow::about);
 
+    highlightMDGAct = new QAction(tr("Afficher le graphe des chemins les plus courts"), this);
+    highlightMDGAct->setStatusTip(tr("Indique le graphe des chemins les plus court"));
+    connect(highlightMDGAct, &QAction::triggered, this, &MainWindow::highlightMinimumDistanceGraph);
+
+    highlightMSTAct = new QAction(tr("Afficher l'arbre recouvrant minimal"), this);
+    highlightMSTAct->setStatusTip(tr("Indique l'arbre recouvrant minimal"));
+    connect(highlightMSTAct, &QAction::triggered, this, &MainWindow::highlightMinimumSpanningTree);
+
     // TOOLS actions
     selectToolAct = new QAction(QIcon(":/img/selector.png"), tr("&Outil de sélection"), this);
     selectToolAct->setShortcut(tr("Ctrl+1"));
@@ -189,6 +197,10 @@ void MainWindow::createMenus()
 
     aboutMenu = menuBar()->addMenu(tr("&A propos"));
     aboutMenu->addAction(aboutAct);
+
+    algorithmMenu = menuBar()->addMenu(tr("Algorithmes"));
+    algorithmMenu->addAction(highlightMDGAct);
+    algorithmMenu->addAction(highlightMSTAct);
 }
 
 /// @brief Create the tool bars
@@ -310,6 +322,30 @@ void MainWindow::about()
 {
     QMessageBox::about(this, tr("A Propos"),
                        tr("Graph++, Banger international"));
+}
+
+/// @brief Computes the minimum distance tree and highlights it.
+/// @author Flückiger Jonas
+void MainWindow::highlightMinimumDistanceGraph()
+{
+    QMdiSubWindow* qMDISubWindow = this->mdi->activeSubWindow();
+    if (qMDISubWindow != nullptr)
+    {
+        QBoard* qBoard = (QBoard*)(qMDISubWindow->widget());
+        qBoard->highlightMinimumDistanceGraph();
+    }
+}
+
+/// @brief Computes the minimum spanning tree and highlights it.
+/// @author Flückiger Jonas
+void MainWindow::highlightMinimumSpanningTree()
+{
+    QMdiSubWindow* qMDISubWindow = this->mdi->activeSubWindow();
+    if (qMDISubWindow != nullptr)
+    {
+        QBoard* qBoard = (QBoard*)(qMDISubWindow->widget());
+        qBoard->highlightMinimumSpanningTree();
+    }
 }
 
 /// @brief update the selected graph of the GraphDockWidget depending of the selected tab

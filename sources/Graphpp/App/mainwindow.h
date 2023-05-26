@@ -15,7 +15,7 @@ class MainWindow : public QMainWindow
 {
     Q_OBJECT
 private:
-    QMenu *fileMenu, *editMenu, *optionMenu, *aboutMenu;
+    QMenu *fileMenu, *editMenu, *optionMenu, *aboutMenu, *algorithmMenu;
     QToolBar *toolsToolBar;
     QAction *newGraphAct, *saveGraphAct, *importFromJsonAct,
     *exportToDotAct, *exportToPngAct, *exportToJsonAct,
@@ -23,7 +23,7 @@ private:
     *newVertexAct, *linkVertexAct, *eraserAct, *moveToolAct,
     *cycleGrapheAct, *completeGrapheAct, *bipartiteGrapheAct,
     *closeCurrentGrapheAct, *closeAllGrapheAct, *nextAct, *prevAct,
-    *toggleGraphDockAct, *toggleVertexDockAct;
+    *toggleGraphDockAct, *toggleVertexDockAct, *highlightMDGAct, *highlightMSTAct;
     QDockWidget *vertexDock, *graphDock;
     QMdiArea *mdi;
     QActionGroup *toolsActGroup;
@@ -43,6 +43,8 @@ private slots:
     void undo();
     void redo();
     void about();
+    void highlightMinimumDistanceGraph();
+    void highlightMinimumSpanningTree();
 
     void updateGraphDockWidget();
     void updateSelectedTool(QAction* action);

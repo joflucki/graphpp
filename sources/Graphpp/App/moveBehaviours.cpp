@@ -15,6 +15,7 @@ void QBoard::moveEraser(QPointF clickPos)
     if (hitVertex(hittedPoint, hittedVertex))
     {
         graph->removeVertex(hittedVertex);
+        this->highlightedGraph = nullptr;
     }
 
     // check if hit edge
@@ -39,6 +40,7 @@ void QBoard::moveEraser(QPointF clickPos)
         {
             graph->removeEdge(edge);
         }
+        this->highlightedGraph = nullptr;
     }
 }
 

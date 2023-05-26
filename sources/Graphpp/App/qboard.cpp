@@ -68,17 +68,19 @@ void QBoard::paint(QPainter &painter)
             }
         }
 
-        // Redraw highlighted edges
-        painter.setBrush(Qt::red);
-        painter.setPen(QPen(Qt::red, 3));
-        for (auto & mapRow : highlightedGraph->adjacencyList)
-        {
-            QPointF sourceVertexPos = mapRow.first->getPosition().toPoint();
-            for (auto & edge : mapRow.second)
+        // Redraw highlighted edges if needed
+        if(this->highlightedGraph != nullptr){
+            painter.setBrush(Qt::red);
+            painter.setPen(QPen(Qt::red, 3));
+            for (auto & mapRow : this->highlightedGraph->adjacencyList)
             {
-                QVertex* targetVertex = edge->getTarget();
-                QPointF targetVertexPos = targetVertex->getPosition().toPoint();
-                painter.drawLine(sourceVertexPos, targetVertexPos);
+                QPointF sourceVertexPos = mapRow.first->getPosition().toPoint();
+                for (auto & edge : mapRow.second)
+                {
+                    QVertex* targetVertex = edge->getTarget();
+                    QPointF targetVertexPos = targetVertex->getPosition().toPoint();
+                    painter.drawLine(sourceVertexPos, targetVertexPos);
+                }
             }
         }
 
@@ -354,5 +356,28 @@ void QBoard::wheelEvent(QWheelEvent *event)
     // force le widget à se redessiner
     update();
     */
+}
+
+/// @brief Highlights the current graph's minimum distance graph.
+/// @author Flückiger Jonas
+void QBoard::highlightMinimumDistanceGraph(){
+    for (auto const& mapRow : graph->adjacencyList){
+        if(mapRow.first->isSelected()){
+            this->highlightedGraph = graph->getMinimumDistanceGraph(mapRow.first);
+            this->update();
+            return;
+        }
+    }
+    QMessageBox msgBox;
+    msgBox.setText(tr("Veuillez sélectionner un sommet de départ"));
+    msgBox.setDefaultButton(QMessageBox::Ok);
+    msgBox.exec();
+}
+
+/// @brief Highlights the current graph's minimum spanning tree.
+/// @author Flückiger Jonas
+void QBoard::highlightMinimumSpanningTree(){
+    this->highlightedGraph = graph->getMinimumSpanningTree();
+    this->update();
 }
 

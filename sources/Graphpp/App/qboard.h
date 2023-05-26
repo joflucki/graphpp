@@ -27,6 +27,8 @@ public:
     void setSelectedTool(Tool selectedTool);
     void exportToPng(QString path);
     void exportToDOT(QString path);
+    void highlightMinimumDistanceGraph();
+    void highlightMinimumSpanningTree();
     Graph<QVertex> *graph;
     Graph<QVertex>* highlightedGraph;
 
