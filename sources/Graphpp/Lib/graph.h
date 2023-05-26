@@ -555,9 +555,10 @@ Graph<T>* Graph<T>::getMinimumSpanningTree()
             // Check if next vertex was already visited
             bool notVisited = msTree->adjacencyList.find(edge->getTarget()) == msTree->adjacencyList.end();
             if(notVisited){
-                // Check if the next vertex was already encountered and if it was, that the new prio is smaller
-                if(upToDatePrios.find(edge->getTarget()) != upToDatePrios.end() && edge->getWeight() < upToDatePrios[edge->getTarget()]){
-                    //If it is the case, update the priority
+                // Check if the next vertex wasnt already encountered and if it was, that the new prio is smaller
+                if(upToDatePrios.find(edge->getTarget()) == upToDatePrios.end()){
+                    upToDatePrios.insert(std::make_pair(edge->getTarget(), edge->getWeight()));
+                }else if(edge->getWeight() < upToDatePrios[edge->getTarget()]){
                     upToDatePrios.erase(edge->getTarget());
                     upToDatePrios.insert(std::make_pair(edge->getTarget(), edge->getWeight()));
                 }
@@ -589,10 +590,12 @@ Graph<T>* Graph<T>::getMinimumDistanceGraph(T* startingVertex)
 
     // Add first vertex and its edges
     mdGraph->addVertex(startingVertex);
+    std::cout << "VISITING " << *startingVertex << std::endl;
     for (Edge<T>* &edge : this->adjacencyList[startingVertex])
     {
         toVisit.push(queue_element<T>(edge->getWeight(), startingVertex, edge));
         upToDatePrios.insert(std::make_pair(edge->getTarget(), edge->getWeight()));
+        std::cout << "ADDING NEIGHBOURG " << *edge->getTarget() << " w=" << edge->getWeight() << std::endl;
     }
     while(!toVisit.empty()){
         // Get the top element
@@ -601,11 +604,13 @@ Graph<T>* Graph<T>::getMinimumDistanceGraph(T* startingVertex)
 
         // Ignore out-of-date elements
         if(top.priority > upToDatePrios[top.edge->getTarget()]){
+            std::cout << "IGNORED " << *top.edge->getTarget() << " WITH w=" << top.priority << std::endl;
             continue;
         }
 
         // Visit the vertex and add it to the tree
         mdGraph->addVertex(top.edge->getTarget());
+        std::cout << "VISITING " << *top.edge->getTarget() << std::endl;
         mdGraph->addPrebuiltEdge(top.source, top.edge);
         if(!this->isOriented()){
             auto hasSourceAsTarget = [&top](Edge<T>* edge){
@@ -632,13 +637,16 @@ Graph<T>* Graph<T>::getMinimumDistanceGraph(T* startingVertex)
             // Check if next vertex was already visited
             bool notVisited = mdGraph->adjacencyList.find(edge->getTarget()) == mdGraph->adjacencyList.end();
             if(notVisited){
-                // Check if the next vertex was already encountered and if it was, that the new prio is smaller
-                if(upToDatePrios.find(edge->getTarget()) != upToDatePrios.end() && top.priority + edge->getWeight() < upToDatePrios[edge->getTarget()]){
-                    //If it is the case, update the priority
+                // Check if the next vertex wasnt already encountered and if it was, that the new prio is smaller
+                if(upToDatePrios.find(edge->getTarget()) == upToDatePrios.end()){
+                    upToDatePrios.insert(std::make_pair(edge->getTarget(), top.priority + edge->getWeight()));
+                }else if(top.priority + edge->getWeight() < upToDatePrios[edge->getTarget()]){
                     upToDatePrios.erase(edge->getTarget());
                     upToDatePrios.insert(std::make_pair(edge->getTarget(), top.priority + edge->getWeight()));
+                    std::cout << "UPDATING " << *edge->getTarget() << " TO " <<top.priority + edge->getWeight() << std::endl;
                 }
                 std::cout << "ADDING NEIGHBOURG " << *edge->getTarget() << " w=" << top.priority + edge->getWeight() << std::endl;
+                upToDatePrios.insert(std::make_pair(edge->getTarget(), top.priority + edge->getWeight()));
                 toVisit.push(queue_element<T>(top.priority + edge->getWeight(), top.edge->getTarget(), edge));
             }
 

@@ -7,6 +7,7 @@ private:
     int weight;
 
 public:
+    Edge(); //Default constructor for arrays
     Edge(T *target, int weight = 1);
     T* getTarget();
     int getWeight();

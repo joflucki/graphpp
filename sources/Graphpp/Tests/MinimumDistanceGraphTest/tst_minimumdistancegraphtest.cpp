@@ -3,12 +3,14 @@
 
 // add necessary includes here
 #include <graph.h>
-
 /// @brief This class tests the minimum distance graph algorithm.
 ///
 /// The tested graph is the complete graph K10, where each edge's weight is equal to the
 /// index of the source vertex multiplied by the index of the target vertex (indices range from 1 to 10).
 /// Meaning that the minimum distance graph of this graph, starting from any vertex, is composed only of the edges connected to the '1' vertex.
+
+
+using namespace std;
 class MinimumDistanceGraphTest : public QObject
 {
     Q_OBJECT
@@ -22,7 +24,7 @@ private:
     Graph<int>* expected;
     Graph<int>* actual;
     int* vertices;
-    int nbVertices = 5;
+    int nbVertices = 10;
 
 private slots:
     void test_vertices_nb();
@@ -43,15 +45,23 @@ MinimumDistanceGraphTest::MinimumDistanceGraphTest()
         initial->addVertex(&vertices[i]);
         expected->addVertex(&vertices[i]);
     }
+    for(int i = 0; i < nbVertices;i++){
+        for(int j = 0; j < nbVertices; j++){
+            if(i != j){
+                initial->addEdge(&vertices[i], &vertices[j], vertices[i]*vertices[j]);
+                if(i == 0 || j == 0){
+                    auto hasTarget = [this, j](Edge<int> edge){
+                        return &vertices[j] == edge.getTarget();
+                    };
+                    Edge<int>* edge = std::find_if(initial->adjacencyList[&vertices[i]].front(), initial->adjacencyList[&vertices[i]].back(), hasTarget);
+                    if(edge != nullptr){
+                        expected->addPrebuiltEdge(&vertices[i], edge);
+                    }
 
-    expected->addDoubleEdge(&vertices[0], &vertices[0], 2);
-    expected->addDoubleEdge(&vertices[0], &vertices[3], 7);
-
-    expected->addDoubleEdge(&vertices[1], &vertices[3], 8);
-    expected->addDoubleEdge(&vertices[1], &vertices[4], 10);
-    expected->addDoubleEdge(&vertices[1], &vertices[2], 3);
-
-    expected->addDoubleEdge(&vertices[1], &vertices[4], 5);
+                }
+            }
+        }
+    }
 
     actual = initial->getMinimumDistanceGraph(&vertices[0]);
 }
