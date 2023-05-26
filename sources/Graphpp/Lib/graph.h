@@ -531,7 +531,8 @@ Graph<T> *Graph<T>::getMinimumSpanningTree()
         toVisit.pop();
 
         // Ignore out-of-date elements
-        if (top.priority > upToDatePrios[top.edge->getTarget()])
+        bool visited = msTree->adjacencyList.find(top.edge->getTarget()) != msTree->adjacencyList.end();
+        if (visited || top.priority > upToDatePrios[top.edge->getTarget()])
         {
             continue;
         }
@@ -620,7 +621,8 @@ Graph<T> *Graph<T>::getMinimumDistanceGraph(T *startingVertex)
         toVisit.pop();
 
         // Ignore out-of-date elements
-        if (top.priority > upToDatePrios[top.edge->getTarget()])
+        bool visited = mdGraph->adjacencyList.find(top.edge->getTarget()) != mdGraph->adjacencyList.end();
+        if (visited || top.priority > upToDatePrios[top.edge->getTarget()])
         {
             continue;
         }
