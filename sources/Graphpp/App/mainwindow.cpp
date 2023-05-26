@@ -77,11 +77,11 @@ void MainWindow::createActions()
     connect(aboutAct, &QAction::triggered, this, &MainWindow::about);
 
     highlightMDGAct = new QAction(tr("Afficher le graphe des chemins les plus courts"), this);
-    highlightMDGAct->setStatusTip(tr("Indique le graphe des chemins les plus court"));
+    highlightMDGAct->setStatusTip(tr("Indique l'un des graphes des chemins les plus courts"));
     connect(highlightMDGAct, &QAction::triggered, this, &MainWindow::highlightMinimumDistanceGraph);
 
     highlightMSTAct = new QAction(tr("Afficher l'arbre recouvrant minimal"), this);
-    highlightMSTAct->setStatusTip(tr("Indique l'arbre recouvrant minimal"));
+    highlightMSTAct->setStatusTip(tr("Indique l'un des arbres recouvrants minimaux"));
     connect(highlightMSTAct, &QAction::triggered, this, &MainWindow::highlightMinimumSpanningTree);
 
     // TOOLS actions
