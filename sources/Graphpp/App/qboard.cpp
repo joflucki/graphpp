@@ -86,6 +86,22 @@ void QBoard::paint(QPainter &painter)
 /***************************************************\
  * USEFUL METHODS                                  *
 \***************************************************/
+/// @brief Exports the graph of the board in a DOT text file.
+/// @author Plumey Simon
+void QBoard::exportToDOT(QString path)
+{
+    if (path.isEmpty())
+        return;
+
+    QFile file(path);
+    if ( file.open(QIODevice::ReadWrite) )
+    {
+        QTextStream stream(&file);
+        stream << QString::fromStdString(this->graph->exportToDOT());
+    }
+    file.close();
+}
+
 
 /// @brief Able to convert QPainter to a PNG image
 /// @author Plumey Simon

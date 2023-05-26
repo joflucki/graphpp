@@ -252,7 +252,14 @@ void MainWindow::saveGraph()
 /// @author Plumey Simon
 void MainWindow::exportToDot()
 {
+    QMdiSubWindow* qMDISubWindow = this->mdi->activeSubWindow();
+    if (qMDISubWindow != nullptr)
+    {
+        QBoard* qBoard = (QBoard*)(qMDISubWindow->widget());
 
+        QString path = QFileDialog::getSaveFileName(this, tr("Sauvegarder en tant que fichier DOT"), "", tr("Fichier DOT (*.dot)"));
+        qBoard->exportToDOT(path);
+    }
 }
 
 /// @brief Export to Png

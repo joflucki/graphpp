@@ -26,6 +26,7 @@ public:
     virtual ~QBoard();
     void setSelectedTool(Tool selectedTool);
     void exportToPng(QString path);
+    void exportToDOT(QString path);
     Graph<QVertex> *graph;
 
 private:
@@ -44,7 +45,7 @@ private:
     // useful methods
     void paint(QPainter &painter);
     void unselectVertices();
-    bool hitVertex(QPointF position, QVertex*& hittedVertex);
+    bool hitVertex(QPointF position, QVertex *&hittedVertex);
     bool hitSegment(QPointF hitPoint, QPointF p1, QPointF p2, double margin);
     void zoom(qreal scaleFactor, const QPointF &fixedViewPos);
     void translate(const QPointF &delta);
@@ -57,19 +58,19 @@ private:
     void clickCycleGraph(QPointF clickPos);
     void clickCompleteGraph(QPointF clickPos);
     void clickBipartiteGraph(QPointF clickPos);
-    void createRoundedVertices(QVertex* arrayVertices[], int nbOfVertices, double radius, QPointF center);
-    void createLineOfVertices(QVertex* arrayVertices[], int nbOfVertices, int width, int offsetY, QPointF center);
+    void createRoundedVertices(QVertex *arrayVertices[], int nbOfVertices, double radius, QPointF center);
+    void createLineOfVertices(QVertex *arrayVertices[], int nbOfVertices, int width, int offsetY, QPointF center);
 
     // move behaviours methods
     void moveEraser(QPointF clickPos);
     void moveHand(QPointF clickPos);
+
 protected:
     void paintEvent(QPaintEvent *) override;
     void mousePressEvent(QMouseEvent *event) override;
     void mouseMoveEvent(QMouseEvent *event) override;
     void mouseReleaseEvent(QMouseEvent *event) override;
     void wheelEvent(QWheelEvent *event) override;
-
 };
 
 #endif // QBOARD_H

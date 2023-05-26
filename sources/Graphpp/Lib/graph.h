@@ -7,6 +7,7 @@
 #include <cmath>
 #include <stack>
 #include <algorithm>
+#include <sstream>
 #include "edge.h"
 #include "queue_element.h"
 
@@ -45,6 +46,9 @@ public:
 
     // Paths, cycles, trees, subgraphs
     Graph<T>* getMinimumSpanningTree();
+
+    //Serialization
+    std::string exportToDOT();
 
     // Operators
     friend std::ostream& operator<<(std::ostream& os, const Graph<T>& p);
@@ -561,30 +565,28 @@ Graph<T>* Graph<T>::getMinimumSpanningTree()
         }
     }
     return msTree;
-
 }
-
-/// @brief Sserializes a graph into the DOT format.
+/// @brief Serializes a graph into the DOT format.
 ///
 /// The templated class will also be serialized using the out stream operator.
 /// @author Jonas Flückiger
 /// @date 26.05.2023
 template <typename T>
-std::ostream& operator<<(std::ostream& os, Graph<T>& graph)
-{
-    // Serialize
-    for (auto &vertexPair : graph.adjacencyList){
+std::string Graph<T>::exportToDOT(){
+    std::ostringstream os;
+    os << "digraph {" << std::endl;
+    for (auto &vertexPair : this->adjacencyList){
         for(auto &edge : vertexPair.second){
-            os << *vertexPair.first;
+            os << '"' << vertexPair.first << '"';
             os << " -> ";
-            os << *edge->getTarget();
+            os << '"' << edge->getTarget() << '"' ;
             os << " [weight=";
             os << edge->getWeight();
             os << "]";
             os << std::endl;
         }
     }
-    return os;
+    os << "}";
+    return os.str();
 }
-
 #endif // GRAPH_H
