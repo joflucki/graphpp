@@ -167,7 +167,7 @@ void QBoard::clickCompleteGraph(QPointF clickPos)
             {
                 if (vertexSource != vertexTarget)
                 {
-                    this->graph->addDoubleEdge(vertexSource, vertexTarget);
+                    this->graph->addEdge(vertexSource, vertexTarget);
                 }
             }
         }
