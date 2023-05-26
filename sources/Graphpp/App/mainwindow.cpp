@@ -249,7 +249,7 @@ void MainWindow::saveGraph()
 }
 
 /// @brief Export to dot
-/// @author Plumey Simon
+/// @author Flückiger Jonas
 void MainWindow::exportToDot()
 {
     QMdiSubWindow* qMDISubWindow = this->mdi->activeSubWindow();
