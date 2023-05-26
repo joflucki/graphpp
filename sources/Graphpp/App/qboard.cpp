@@ -74,6 +74,22 @@ void QBoard::paintEvent(QPaintEvent *)
 /***************************************************\
  * USEFUL METHODS                                  *
 \***************************************************/
+/// @brief Exports the graph of the board in a DOT text file.
+/// @author Plumey Simon
+void QBoard::exportToDOT(QString path)
+{
+    if (path.isEmpty())
+        return;
+
+    QFile file(path);
+    if ( file.open(QIODevice::ReadWrite) )
+    {
+        QTextStream stream(&file);
+        stream << QString::fromStdString(this->graph->exportToDOT());
+    }
+    file.close();
+}
+
 
 /// @brief Set the selected Tool
 /// @param Tool: Selected

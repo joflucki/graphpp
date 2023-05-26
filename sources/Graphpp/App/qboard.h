@@ -25,6 +25,7 @@ public:
     QBoard(VertexDockWidget *vertexDockWidget, QWidget *parent = nullptr);
     virtual ~QBoard();
     void setSelectedTool(Tool selectedTool);
+    void exportToDOT(QString path);
     Graph<QVertex> *graph;
 
 private:
