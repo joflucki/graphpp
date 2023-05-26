@@ -46,6 +46,7 @@ public:
 
     // Paths, cycles, trees, subgraphs
     Graph<T>* getMinimumSpanningTree();
+    Graph<T>* getMinimumDistanceGraph(T* startingVertex);
 
     //Serialization
     std::string exportToDOT();
@@ -492,7 +493,9 @@ int Graph<T>::getVertexOutdegree(T *vertex)
     }
 }
 
-/// @brief Returns a new graph which is a minimum spanning tree of the initial graph
+/// @brief Returns a new graph which is a minimum spanning tree of the initial graph.
+///
+/// This method uses Prim's algorithm.
 /// @author Jonas Flückiger
 /// @date 15.05.2023
 template <typename T>
@@ -566,6 +569,86 @@ Graph<T>* Graph<T>::getMinimumSpanningTree()
     }
     return msTree;
 }
+
+/// @brief Returns a new graph which is the shortest paths graph of the initial graph.
+///
+/// This method uses Dijkstra's algorithm.
+/// @author Jonas Flückiger
+/// @date 26.05.2023
+template <typename T>
+Graph<T>* Graph<T>::getMinimumDistanceGraph(T* startingVertex)
+{
+    Graph<T>* msTree = new Graph<T>();
+
+    // This method uses a standard library priority queue. Because this implementation does not allow
+    // priority updates, we must check if each element we pop is the most up-to-date one
+    // see https://stackoverflow.com/questions/649640/how-to-do-an-efficient-priority-update-in-stl-priority-queue
+    auto cmp = [](queue_element<T> left, queue_element<T> right) { return left.priority > right.priority; };
+    std::unordered_map<T*, int> upToDatePrios = std::unordered_map<T*, int>();
+    std::priority_queue<queue_element<T>, std::vector<queue_element<T>>, decltype(cmp)> toVisit(cmp);
+
+    // Add first vertex and its edges
+    msTree->addVertex(startingVertex);
+    std::cout << "ADDING " << *startingVertex << std::endl;
+    for (Edge<T>* &edge : this->adjacencyList[startingVertex])
+    {
+        toVisit.push(queue_element<T>(edge->getWeight(), startingVertex, edge));
+        upToDatePrios.insert(std::make_pair(edge->getTarget(), edge->getWeight()));
+    }
+    while(!toVisit.empty()){
+        // Get the top element
+        queue_element<T> top = toVisit.top();
+        toVisit.pop();
+
+        // Ignore out-of-date elements
+        if(top.priority > upToDatePrios[top.edge->getTarget()]){
+            continue;
+        }
+
+        // Visit the vertex and add it to the tree
+        msTree->addVertex(top.edge->getTarget());
+        msTree->addPrebuiltEdge(top.source, top.edge);
+        if(!this->isOriented()){
+            auto hasSourceAsTarget = [&top](Edge<T>* edge){
+                return edge->getTarget() == top.source;
+            };
+
+            // Find corresponding edge
+            Edge<T>* reverseEdge = nullptr;
+            for(auto const &edge : this->adjacencyList[top.edge->getTarget()]){
+                if(hasSourceAsTarget(edge)){
+                    reverseEdge = edge;
+                    continue;
+                }
+            }
+
+            // Add the reverse path
+            if(reverseEdge!=nullptr){
+                msTree->addPrebuiltEdge(top.edge->getTarget(), reverseEdge);
+            }
+        }
+
+        // Add all its neighbour and update edges weight
+        for(Edge<T>* &edge : this->adjacencyList[top.edge->getTarget()]){
+            // Check if next vertex was already visited
+            bool notVisited = msTree->adjacencyList.find(edge->getTarget()) == msTree->adjacencyList.end();
+            if(notVisited){
+                // Check if the next vertex was already encountered and if it was, that the new prio is smaller
+                if(upToDatePrios.find(edge->getTarget()) != upToDatePrios.end() && top.priority + edge->getWeight() < upToDatePrios[edge->getTarget()]){
+                    //If it is the case, update the priority
+                    upToDatePrios.erase(edge->getTarget());
+                    upToDatePrios.insert(std::make_pair(edge->getTarget(), top.priority + edge->getWeight()));
+                }
+                toVisit.push(queue_element<T>(top.priority + edge->getWeight(), top.edge->getTarget(), edge));
+            }
+
+
+        }
+    }
+    return msTree;
+}
+
+
 /// @brief Serializes a graph into the DOT format.
 ///
 /// The templated class will also be serialized using the out stream operator.
