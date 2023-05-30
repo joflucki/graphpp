@@ -1,4 +1,5 @@
 #include "qboard.h"
+#include "qcaretaker.h"
 
 /***************************************************\
  * MOVE BEHAVIOURS                                 *
@@ -20,6 +21,7 @@ void QBoard::moveEraser(QPointF clickPos)
     // check if hit edge
     if (!graph->adjacencyList.empty())
     {
+        this->qCaretaker->backup();
         std::list<Edge<QVertex>*> edgesToRemove;
         // add edges to the list
         for (auto & mapRow : graph->adjacencyList)

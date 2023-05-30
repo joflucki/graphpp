@@ -14,6 +14,7 @@ QBoard::QBoard(VertexDockWidget *vertexDockWidget, QWidget *parent)
     connect(vertexDockWidget, &VertexDockWidget::vertexUpdated, this, qOverload<>(&QWidget::update));
 
     qCaretaker = new QCaretaker(this);
+    qCaretaker->backup();
 }
 
 /// @brief Destructor of the QBoard
@@ -95,7 +96,6 @@ void QBoard::paint(QPainter &painter)
 /// @author Plumey Simon
 QMemento QBoard::save()
 {
-    // todo cloner la liste d'ajacence et la mettre dans un new memento
     return QMemento(this->graph->adjacencyList);
 }
 
@@ -104,9 +104,14 @@ QMemento QBoard::save()
 /// @author Plumey Simon
 void QBoard::restore(QMemento memento)
 {
-    // todo récupérer la liste du mémento et redessiner
     this->graph->adjacencyList = memento.getAdjencyList();
-    this->update();
+}
+
+/// @brief Return the caretaker
+/// @author Plumey Simon
+QCaretaker* QBoard::getQCaretaker()
+{
+    return this->qCaretaker;
 }
 
 /// @brief Able to convert QPainter to a PNG image

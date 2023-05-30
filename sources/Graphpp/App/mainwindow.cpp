@@ -1,6 +1,7 @@
 #include <QtWidgets>
 #include "mainwindow.h"
 #include "qboard.h"
+#include "qcaretaker.h"
 #include "graphdockwidget.h"
 #include "vertexdockwidget.h"
 
@@ -287,14 +288,24 @@ void MainWindow::importFromJson()
 /// @author Plumey Simon
 void MainWindow::undo()
 {
-
+    QMdiSubWindow* qMDISubWindow = this->mdi->activeSubWindow();
+    if (qMDISubWindow != nullptr)
+    {
+        QBoard* qBoard = (QBoard*)(qMDISubWindow->widget());
+        qBoard->getQCaretaker()->undo();
+    }
 }
 
 /// @brief Redo
 /// @author Plumey Simon
 void MainWindow::redo()
 {
-
+    QMdiSubWindow* qMDISubWindow = this->mdi->activeSubWindow();
+    if (qMDISubWindow != nullptr)
+    {
+        QBoard* qBoard = (QBoard*)(qMDISubWindow->widget());
+        qBoard->getQCaretaker()->redo();
+    }
 }
 
 /// @brief About message box

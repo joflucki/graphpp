@@ -27,7 +27,6 @@ SOURCES += \
     vertexdockwidget.cpp
 
 HEADERS += \
-    action.h \
     graphdockwidget.h \
     mainwindow.h \
     qboard.h \
