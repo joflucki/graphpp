@@ -40,6 +40,7 @@ public:
     // methods for undo/redo function
     QMemento save();
     void restore(QMemento memento);
+    QCaretaker* getQCaretaker();
 
 private:
     const int vertexRadius = 5;

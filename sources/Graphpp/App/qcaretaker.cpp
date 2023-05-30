@@ -17,10 +17,10 @@ void QCaretaker::undo()
 {
     if (this->undoStack.length() > 0) {
         QMemento currentMemento = this->undoStack.pop();
-
         // save current state of app in redo stack
         this->redoStack.push(this->qboard->save());
         this->qboard->restore(currentMemento);
+        this->qboard->update();
     }
 }
 void QCaretaker::redo()
@@ -30,5 +30,6 @@ void QCaretaker::redo()
 
         this->undoStack.push(this->qboard->save());
         this->qboard->restore(currentMemento);
+        this->qboard->update();
     }
 }

@@ -1,5 +1,6 @@
 #include "qboard.h"
 #include "graph.h"
+#include "qcaretaker.h"
 #include "qmultipleinputdialog.h"
 
 /***************************************************\
@@ -11,6 +12,7 @@
 /// @author Plumey Simon
 void QBoard::clickCreateVertex(QPointF clickPos)
 {
+    this->qCaretaker->backup();
     QString vertexName = "Vertex " + QString::number(this->graph->adjacencyList.size()+1); //start at 0
     this->graph->addVertex(new QVertex(vertexName, clickPos));
 }
@@ -63,10 +65,9 @@ void QBoard::clickCreateEdge(QPointF clickPos)
     {
         try
         {
+            this->qCaretaker->backup();
             // create edge
             this->graph->addDoubleEdge(firstVertex, secondVertex);
-
-            qDebug() << "Edge created";
             this->unselectVertices();
         }
         catch (std::exception &e)
@@ -109,6 +110,8 @@ void QBoard::clickCycleGraph(QPointF clickPos)
     {
         int nbVertices = output.at(0);
         double radius = output.at(1);
+
+        this->qCaretaker->backup();
 
         QVertex* arrayVertices[nbVertices];
         createRoundedVertices(arrayVertices, nbVertices, radius, clickPos);
@@ -156,6 +159,8 @@ void QBoard::clickCompleteGraph(QPointF clickPos)
     {
         int nbVertices = output.at(0);
         double radius = output.at(1);
+
+        this->qCaretaker->backup();
 
         QVertex* arrayVertices[nbVertices];
         createRoundedVertices(arrayVertices, nbVertices, radius, clickPos);
@@ -255,6 +260,8 @@ void QBoard::clickBipartiteGraph(QPointF clickPos)
         createLineOfVertices(arrayVertices1, nbVertices1, width, height/2, clickPos);
         createLineOfVertices(arrayVertices2, nbVertices2, width, -height/2, clickPos);
 
+        this->qCaretaker->backup();
+
         // add edges to the graph
         for (auto * vertexSource: arrayVertices1)
         {
@@ -266,6 +273,7 @@ void QBoard::clickBipartiteGraph(QPointF clickPos)
                 }
             }
         }
+
     }
 }
 
