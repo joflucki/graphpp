@@ -1,6 +1,7 @@
 #include "qboard.h"
 #include <QPainter>
 #include <cstdlib>
+#include "qcaretaker.h"
 
 /// @brief Constructor of the QBoard
 /// @param QWidget: parent
@@ -11,6 +12,8 @@ QBoard::QBoard(VertexDockWidget *vertexDockWidget, QWidget *parent)
     this->graph = new Graph<QVertex>();
     this->vertexDockWidget = vertexDockWidget;
     connect(vertexDockWidget, &VertexDockWidget::vertexUpdated, this, qOverload<>(&QWidget::update));
+
+    qCaretaker = new QCaretaker(this);
 }
 
 /// @brief Destructor of the QBoard
@@ -86,6 +89,25 @@ void QBoard::paint(QPainter &painter)
 /***************************************************\
  * USEFUL METHODS                                  *
 \***************************************************/
+
+
+/// @brief Function to save current QBoard state and return a new QMemento
+/// @author Plumey Simon
+QMemento QBoard::save()
+{
+    // todo cloner la liste d'ajacence et la mettre dans un new memento
+    return QMemento(this->graph->adjacencyList);
+}
+
+/// @brief Function to restore QBoard state from a QMemento
+/// @param QMemento used to restore state of QBoard
+/// @author Plumey Simon
+void QBoard::restore(QMemento memento)
+{
+    // todo récupérer la liste du mémento et redessiner
+    this->graph->adjacencyList = memento.getAdjencyList();
+    this->update();
+}
 
 /// @brief Able to convert QPainter to a PNG image
 /// @author Plumey Simon

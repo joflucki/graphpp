@@ -6,6 +6,9 @@
 #include "qvertex.h"
 #include "vertexdockwidget.h"
 #include <graph.h>
+#include "qmemento.h"
+
+class QCaretaker;
 
 enum Tool
 {
@@ -28,6 +31,10 @@ public:
     void exportToPng(QString path);
     Graph<QVertex> *graph;
 
+    // methods for undo/redo function
+    QMemento save();
+    void restore(QMemento memento);
+
 private:
     const int vertexRadius = 5;
     Tool selectedTool = Tool::SELECTOR;
@@ -41,6 +48,9 @@ private:
     bool isDragging = false;
     QPointF lastMousePos;
 
+    // undo redo function
+    QCaretaker* qCaretaker;
+
     // useful methods
     void paint(QPainter &painter);
     void unselectVertices();
@@ -49,6 +59,7 @@ private:
     void zoom(qreal scaleFactor, const QPointF &fixedViewPos);
     void translate(const QPointF &delta);
     QPointF convertRelativToTransform(QPointF globalPosition);
+
 
     // click behaviours methods
     void clickCreateVertex(QPointF clickPos);

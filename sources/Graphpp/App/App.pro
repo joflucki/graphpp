@@ -19,15 +19,20 @@ SOURCES += \
     mainwindow.cpp \
     moveBehaviours.cpp \
     qboard.cpp \
+    qcaretaker.cpp \
+    qmemento.cpp \
     qmultipleinputdialog.cpp \
     qvertex.cpp \
     selectcolorbutton.cpp \
     vertexdockwidget.cpp
 
 HEADERS += \
+    action.h \
     graphdockwidget.h \
     mainwindow.h \
     qboard.h \
+    qcaretaker.h \
+    qmemento.h \
     qmultipleinputdialog.h \
     qvertex.h \
     selectcolorbutton.h \
