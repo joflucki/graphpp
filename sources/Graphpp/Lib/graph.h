@@ -110,8 +110,20 @@ void Graph<T>::addEdge(T *source, T *target, int weight)
     {
         if (this->adjacencyList.find(target) != this->adjacencyList.end())
         {
-            Edge<T> *newEdge = new Edge(target, weight);
-            this->adjacencyList[source].push_back(newEdge);
+            std::list<Edge<T>*> existingEdges = this->adjacencyList[source];
+            bool edgeAlreadyExists = false;
+            for(Edge<T>* existingEdge : existingEdges)
+            {
+                if(existingEdge->getTarget() == target)
+                {
+                    edgeAlreadyExists = true;
+                }
+            }
+            if(!edgeAlreadyExists)
+            {
+                Edge<T> *newEdge = new Edge(target, weight);
+                this->adjacencyList[source].push_back(newEdge);
+            }
         }
         else
         {
