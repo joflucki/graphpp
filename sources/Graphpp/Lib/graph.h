@@ -229,6 +229,186 @@ bool Graph<T>::isEulerian()
 template <typename T>
 bool Graph<T>::isHamiltonian()
 {
+    if(this->isConnected())
+    {
+        /*bool isPathAdmissible = [] (std::list<T*> vertices, std::list<T*> partialPath, std::unordered_map<Edge<T*>*, int> edgesStatus)
+        {
+            return false;
+        };
+
+        std::list<T*> allVertices;
+        std::list<T*> toVisit;
+        std::list<T*> partialPath;
+        std::unordered_map<Edge<T*>*, int> edgesStatus; // 0 = Undecided, 1 = Required, 2 = Deleted
+        int state = 1;
+
+        for (auto &vertex : this->adjacencyList)
+        {
+            allVertices.push_back(vertex.first);
+            for (auto const *edge : vertex.second)
+            {
+                edgesStatus[edge] = 0;
+            }
+        }
+
+        // S1. Select any single node as the initial path.
+        partialPath.push_back(allVertices.begin());
+
+        while(partialPath.end() != partialPath.begin() && partialPath.length != this->getNbVertices()+1 && toVisit.length != 0)
+        {
+            // S2. Test the path for admissibility.
+            bool pathAdmissible = isPathAdmissible(allVertices, partialPath, edgesStatus);
+
+            // S3. If the path so far is admissible, list the successors of the last node chosen, and extend the path
+            //      to the first of these.
+            if(pathAdmissible)
+            {
+                partialPath.push_back(toVisit.pop_back());
+                state++;
+            }
+            // S4. If the path so far is inadmissible, delete the last node chosen and choose the next listed successor
+            //      of the preceding node. Repeat step $2.
+            else
+            {
+                toVisit.push_back(partialPath.pop_back());
+                state--;
+            }
+
+            // S5. If all extensions from a given node have been shown inadmissible, repeat step $4.
+            // S6. If all extensions from the initial node have been shown inadmissible, then no circuit exists.
+            if(state == 0)
+            {
+                return false;
+            }
+        }
+
+        //std::advance(partialPath.begin(), 4);
+
+        // S7. If a successor of the last node is the origin, a Hamilton circuit is formed; if all Hamilton circuits
+        //      are required, then list the circuit found, mark the partial path inadmissible, and repeat step $4.
+    }
+
+
+
+
+
+
+
+
+
+
+
+
+    if(this->isConnected())
+    {
+
+
+
+        for(T* vertex : vertices)
+        {
+            // === RULES TREATED IN THE NEXT SECTION ===
+            // R. Required edge rules, A. Direction assignment rules, D. Deleted edge rules, F. Failure, or termination rules
+            // ---
+            // R1. If a vertex has only one directed arc entering (leaving), then that arc is required.
+            // F1. Fail if any vertex becomes isolated, that is, has no incident arc.
+            // F2. Fail if any vertex has only one incident arc.
+            // F3. Fail if any vertex has no directed arc entering (leaving).
+
+            int edgeCount = 0;
+            Edge<T> *requiredEdge = NULL;
+
+            // ENTERING
+            for(Edge<T> *edge : edgesStatus)
+            {
+                if(edge->first->getTarget() == vertex)
+                {
+                    if(edge->second == 0)
+                    {
+                        if(edgeCount == 0)
+                        {
+                            requiredEdge = edge;
+                        }
+                        edgeCount++;
+                    }
+                    if(edge->second == 1)
+                    {
+                        edgeCount = 100;
+                        break;
+                    }
+                }
+            }
+
+            if(edgeCount == 1)
+            {
+                edgesStatus[requiredEdge] = 1;
+            }
+
+            if(edgeCount == 0)
+            {
+                admissiblePath = false;
+            }
+
+            // LEAVING
+            for(auto *edges : this->adjacencyList[vertex])
+            {
+                for(Edge<T> *edge : edges)
+                {
+                    if(edgesStatus.find(edge) != edgesStatus.end())
+                    {
+                        if(edgesStatus[edge] == 0)
+                        {
+                            if(edgeCount == 0)
+                            {
+                                requiredEdge = edge;
+                            }
+                            edgeCount++;
+                        }
+                        if (edgesStatus[edge] == 1)
+                        {
+                            edgeCount = 100;
+                            break;
+                        }
+                    }
+                }
+            }
+
+            if(edgeCount == 1)
+            {
+                edgesStatus[requiredEdge] = 1;
+            }
+
+            if(edgeCount == 0)
+            {
+                admissiblePath = false;
+            }
+
+            // R2. If a vertex has only two arcs incident, then both arcs are required.
+            // A1. If a vertex has a required directed arc entering (leaving), then all incident undirected
+            //     arcs are assigned the direction leaving (entering) that vertex.
+
+            // A2. If a vertex has a required undirected arc incident, and all other incident arcs are
+            //     leaving (entering) the vertex, then the required arc is assigned the direction entering
+            //     (leaving) the vertex.
+            // D1. If a vertex has two required arcs incident, then all undecided arcs incident may
+            //     be deleted.
+            // D2. If a vertex has a required directed arc entering (leaving), then all undecided
+            //     directed arcs entering (leaving) may be deleted.
+            // D3. Delete any arc which forms a closed circuit with required arcs, unless it completes
+            //     the Hamilton circuit.
+            // F4. Fail if any vertex has two required directed arcs entering (leaving).
+            // F5. Fail if any vertex has three required arcs incident.
+            // F6. Fail if any set of required arcs forms a closed circuit, other than a Hamilton circuit
+        }
+
+
+        /*Since the algorithm and deduction rules are oriented toward directed graphs, the
+        Hamilton circuits in an undirected graph will be generated twice each, with the nodes
+        named in opposite order. To prevent this redundancy, in step S3 of the search the successors
+        of the origin node may be numbered. Then the undirected arcs to successor nodes
+        which are numbered lower than the successor presently being considered should be
+        deleted. Thus if 0 is the origin and 1, 2, ... , K are its successors, delete arcs (0, 1),
+        (0, 2), - . . , (0, i - 1) when considering successor i.*/
+    }
     return false;
 }
 
@@ -239,7 +419,7 @@ bool Graph<T>::isHamiltonian()
 template <typename T>
 bool Graph<T>::isConnected()
 {
-    if (this->adjacencyList.size() >= 1)
+    if (this->adjacencyList.size() >= 2)
     {
         T *vertex = this->adjacencyList.begin()->first;
 
@@ -288,8 +468,6 @@ bool Graph<T>::isStronglyConnected()
 /// @returns Whether the graph is oriented
 /// @author Damien Tschan
 /// @date 24.04.2023
-///
-/// As oriented graphs are not supported by this version of the app, isOriented() will always return false.
 template <typename T>
 bool Graph<T>::isOriented()
 {
