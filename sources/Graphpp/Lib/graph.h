@@ -11,6 +11,11 @@
 #include "edge.h"
 #include "queue_element.h"
 
+/// @brief Represents a mathematical graph and allows to handle the creation, modification and analysis of it.
+/// @author The Graph++ Development Team
+/// @date spring 2023
+///
+/// Un méga pavé
 template <typename T>
 class Graph
 {
@@ -18,10 +23,11 @@ public:
     Graph();
     ~Graph();
 
-    // attributes
+    // -- attributes --
+    /// @brief Represents a graph as an adjacency list
     std::unordered_map<T *, std::list<Edge<T> *>> adjacencyList;
 
-    // modifiers
+    // -- modifiers --
     void addVertex(T *vertex);
     void addEdge(T *source, T *target, int weight = 1);
     void addDoubleEdge(T *vertex1, T *vertex2, int weight = 1);
@@ -29,20 +35,19 @@ public:
     void removeVertex(T *vertex);
     void removeEdge(Edge<T> *edge);
 
-    // analysis
+    // -- analysis --
     bool isEulerian();
-    bool isHamiltonian();
+    bool isHamiltonian();//TODO
     bool isConnected();
     bool isStronglyConnected();
-    bool isOriented(); // Not
-    bool isWeighted(); // OK
-    bool isPlanar();
+
+    bool isOriented();
+    bool isWeighted();
     int getChromaticNumber();
-    int getNbFaces();
-    int getNbEdges();                  // OK
-    int getNbVertices();               // OK
-    int getVertexIndegree(T *vertex);  // OK, à tester
-    int getVertexOutdegree(T *vertex); // OK, à tester
+    int getNbEdges();
+    int getNbVertices();
+    int getVertexIndegree(T *vertex);
+    int getVertexOutdegree(T *vertex);
 
     // Paths, cycles, trees, subgraphs
     Graph<T> *getMinimumSpanningTree();
@@ -76,7 +81,7 @@ Graph<T>::~Graph()
 }
 
 /// @brief Adds a vertex to the graph
-/// @param A vertex
+/// @param vertex A vertex
 /// @author Damien Tschan
 /// @date 17.04.2023
 template <typename T>
@@ -94,9 +99,9 @@ void Graph<T>::addVertex(T *vertex)
 }
 
 /// @brief Adds an edge between two vertices
-/// @param Source vertex
-/// @param Target vertex
-/// @param The weight of the edge
+/// @param source Source vertex
+/// @param target Target vertex
+/// @param weight The weight of the edge
 /// @author Damien Tschan
 /// @date 17.04.2023
 template <typename T>
@@ -121,9 +126,9 @@ void Graph<T>::addEdge(T *source, T *target, int weight)
 }
 
 /// @brief Adds two edges in opposite directions between two vertices
-/// @param A vertex
-/// @param Another vertex
-/// @param The weight of the edge
+/// @param vertex1 A vertex
+/// @param vertex2 Another vertex
+/// @param weight The weight of the edge
 /// @author Damien Tschan
 /// @date 17.04.2023
 template <typename T>
@@ -145,7 +150,7 @@ void Graph<T>::addPrebuiltEdge(T *source, Edge<T> *edge)
 }
 
 /// @brief Removes a vertex and its linked edges from the graph
-/// @param A vertex
+/// @param vertex A vertex
 /// @author Damien Tschan
 /// @date 17.04.2023
 template <typename T>
@@ -176,7 +181,7 @@ void Graph<T>::removeVertex(T *vertex)
 }
 
 /// @brief Removes an edge from the graph
-/// @param An edge
+/// @param edge An edge
 /// @author Damien Tschan
 /// @date 17.04.2023
 template <typename T>
@@ -201,13 +206,12 @@ void Graph<T>::removeEdge(Edge<T> *edge)
     }
 }
 
-/// @brief Returns whether the graph is eulerian or not
+/// @brief Returns whether the graph is eulerian
 /// @author Damien Tschan
 /// @date 08.05.2023
 template <typename T>
 bool Graph<T>::isEulerian()
 {
-    bool eulerian = true;
     for (auto &vertex : this->adjacencyList)
     {
         if (this->getVertexIndegree(vertex.first) % 2 != 0 || this->getVertexOutdegree(vertex.first) % 2 != 0)
@@ -218,16 +222,16 @@ bool Graph<T>::isEulerian()
     return true && this->isConnected();
 }
 
-/// @brief Returns whether the graph is hamiltonian or not
-/// @author TODO
-/// @date
+/// @brief Returns whether the graph is hamiltonian
+/// @author Damien Tschan
+/// @date TODO
 template <typename T>
 bool Graph<T>::isHamiltonian()
 {
     return false;
 }
 
-/// @brief Returns whether the graph is connected or not
+/// @brief Returns whether the graph is connected
 /// @author Damien Tschan
 /// @date 08.05.2023
 template <typename T>
@@ -268,7 +272,7 @@ bool Graph<T>::isConnected()
     }
 }
 
-/// @brief Returns whether the graph is strongly connected or not
+/// @brief Returns whether the graph is strongly connected
 /// @author Damien Tschan
 /// @date 24.04.2023
 template <typename T>
@@ -277,7 +281,7 @@ bool Graph<T>::isStronglyConnected()
     return this->getNbVertices() * log2(this->getNbVertices()) < this->getNbEdges();
 }
 
-/// @brief Returns whether the graph is oriented or not
+/// @brief Returns whether the graph is oriented
 /// @author Damien Tschan
 /// @date 24.04.2023
 ///
@@ -285,7 +289,7 @@ bool Graph<T>::isStronglyConnected()
 template <typename T>
 bool Graph<T>::isOriented()
 {
-    /*std::list<std::pair<bool,std::pair<T*,T*>>> edgeList;
+    std::list<std::pair<bool,std::pair<T*,T*>>> edgeList;
     for (auto & vertex : this->adjacencyList)
     {
         for(auto const& edge : vertex.second)
@@ -318,11 +322,10 @@ bool Graph<T>::isOriented()
             oriented = true;
         }
     }
-    return oriented;*/
-    return false;
+    return oriented;
 }
 
-/// @brief Returns whether the graph is weighted or not
+/// @brief Returns whether the graph is weighted
 /// @author Damien Tschan
 /// @date 24.04.2023
 template <typename T>
@@ -340,15 +343,6 @@ bool Graph<T>::isWeighted()
         }
     }
     return isWeighted;
-    return false;
-}
-
-/// @brief Returns whether the graph is planar or not
-/// @author TODO
-/// @date
-template <typename T>
-bool Graph<T>::isPlanar()
-{
     return false;
 }
 
@@ -426,15 +420,6 @@ int Graph<T>::getChromaticNumber()
     return chromaticNumber;
 }
 
-/// @brief Returns the amount of faces in the graph as an integer
-/// @author TODO
-/// @date
-template <typename T>
-int Graph<T>::getNbFaces()
-{
-    return 0;
-}
-
 /// @brief Returns the amount of edges in the graph as an integer
 /// @author Damien Tschan
 /// @date 17.04.2023
@@ -463,7 +448,7 @@ int Graph<T>::getNbVertices()
 }
 
 /// @brief Returns the indegree of a vertex
-/// @param A vertex
+/// @param vertex A vertex
 /// @author Damien Tschan
 /// @date 17.04.2023
 template <typename T>
@@ -487,7 +472,7 @@ int Graph<T>::getVertexIndegree(T *vertex)
 }
 
 /// @brief Returns the outdegree of a vertex
-/// @param A vertex
+/// @param vertex A vertex
 /// @author Damien Tschan
 /// @date 17.04.2023
 template <typename T>
