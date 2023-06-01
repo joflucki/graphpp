@@ -14,8 +14,6 @@
 /// @brief Represents a mathematical graph and allows to handle the creation, modification and analysis of it.
 /// @author The Graph++ Development Team
 /// @date spring 2023
-///
-/// [Un méga pavé]
 template <typename T> class Graph
 {
 public:
@@ -32,7 +30,9 @@ public:
     void addDoubleEdge(T *vertex1, T *vertex2, int weight = 1);
     void addPrebuiltEdge(T *source, Edge<T> *);
     void removeVertex(T *vertex);
+    std::list<Edge<T>*> popVertex(T *vertex);
     void removeEdge(Edge<T> *edge);
+    void popEdge(Edge<T> *edge);
 
     // -- analysis --
     bool isEulerian();
@@ -148,14 +148,37 @@ void Graph<T>::addPrebuiltEdge(T *source, Edge<T> *edge)
     this->adjacencyList[source].push_back(edge);
 }
 
-/// @brief Removes a vertex and its linked edges from the graph
+/// @brief Removes a vertex and its linked edges from the graph and deletes them
 /// @param vertex A vertex
 /// @author Damien Tschan
-/// @date 17.04.2023
+/// @date 01.06.2023
 template <typename T>
 void Graph<T>::removeVertex(T *vertex)
 {
     // Remove all edges related to the vertex
+    std::list<Edge<T>*> poppedEdges = popVertex(vertex);
+    for(auto *edge : poppedEdges)
+    {
+        delete edge;
+    }
+
+    // Remove the vertex from the map
+    delete vertex;
+}
+
+/// @brief Removes a vertex and its linked edges from the graph but doesn't delete anything
+/// @param vertex A vertex
+/// @author Damien Tschan
+/// @date 01.06.2023
+/// @return a list of all removed edges (removed from the graph but not deleted)
+///
+/// As the targeted vertex is a parameter of the function, it doesn't need to be returned (the caller already knows it)
+template <typename T>
+std::list<Edge<T>*> Graph<T>::popVertex(T *vertex)
+{
+    std::list<Edge<T>*> poppedEdges;
+
+    // Remove all edges targeting the vertex
     for (auto &vertexPair : this->adjacencyList)
     {
         auto &edgeList = vertexPair.second;
@@ -164,7 +187,7 @@ void Graph<T>::removeVertex(T *vertex)
         {
             if ((*edgeIt)->getTarget() == vertex)
             {
-                delete *edgeIt;
+                poppedEdges.push_back(*edgeIt);
                 edgeIt = edgeList.erase(edgeIt);
             }
             else
@@ -174,17 +197,42 @@ void Graph<T>::removeVertex(T *vertex)
         }
     }
 
+    // Remove all edges sourcing from the vertex
+    auto &edgeList = this->adjacencyList[vertex];
+    auto edgeIt = edgeList.begin();
+    while (edgeIt != edgeList.end())
+    {
+        poppedEdges.push_back(*edgeIt);
+        this->adjacencyList[vertex].erase(edgeIt);
+        ++edgeIt;
+    }
+
     // Remove the vertex from the map
     adjacencyList.erase(vertex);
-    delete vertex;
+
+    return poppedEdges;
 }
 
-/// @brief Removes an edge from the graph
+/// @brief Removes an edge from the graph and deletes it completely
 /// @param edge An edge
 /// @author Damien Tschan
-/// @date 17.04.2023
+/// @date 01.06.2023
 template <typename T>
 void Graph<T>::removeEdge(Edge<T> *edge)
+{
+    popEdge(edge);
+    delete edge;
+    edge = nullptr;
+}
+
+/// @brief Removes an edge from the graph but doesn't delete it
+/// @param edge An edge
+/// @author Damien Tschan
+/// @date 01.06.2023
+///
+/// As the targeted edge is a parameter of the function, it doesn't need to be returned (the caller already knows it)
+template <typename T>
+void Graph<T>::popEdge(Edge<T> *edge)
 {
     for (auto &vertex : this->adjacencyList)
     {
@@ -194,8 +242,6 @@ void Graph<T>::removeEdge(Edge<T> *edge)
             if (*it == edge)
             {
                 it = vertex.second.erase(it);
-                delete edge;
-                edge = nullptr;
             }
             else
             {
