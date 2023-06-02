@@ -148,6 +148,51 @@ void QBoard::setSelectedTool(Tool selectedTool)
     this->selectedTool = selectedTool;
 }
 
+/// @brief Save current graph to a file.
+/// @param path: the path to the file
+/// @author Flückiger Jonas
+void QBoard::saveToFile(QString path){
+    if (path.isEmpty())
+        return;
+
+    QFile file(path);
+    if ( file.open(QIODevice::ReadWrite) )
+    {
+        QJsonObject json;
+        for(auto pair: this->graph->adjacencyList){
+            //Get the vertex address as a string
+            std::ostringstream address;
+            address << (void const *)pair.first;
+            std::string id = address.str();
+
+            QJsonObject vertexJson;
+            vertexJson["name"] = pair.first->getName();
+            vertexJson["positionX"] = pair.first->getPosition().x();
+            vertexJson["positionY"] = pair.first->getPosition().y();
+            vertexJson["textColor"] = pair.first->getTextColor().name();
+            vertexJson["backgroundColor"] = pair.first->getBackgroundColor().name();
+            vertexJson["borderColor"] = pair.first->getBorderColor().name();
+            QJsonArray edgesJson = QJsonArray();
+            for(auto edge : pair.second){
+                //Get the target address as a string
+                std::ostringstream address;
+                address << (void const *)edge->getTarget();
+                std::string id = address.str();
+
+                QJsonObject edgeJson = QJsonObject();
+                edgeJson["target"] = QString::fromStdString(id);
+                edgeJson["weight"] = edge->getWeight();
+                edgesJson.append(edgeJson);
+            }
+            vertexJson["edges"] = edgesJson;
+            json[QString::fromStdString(id)] = vertexJson;
+        }
+        QTextStream stream(&file);
+        stream << QJsonDocument(json).toJson();
+    }
+    file.close();
+}
+
 /// @brief Test if a vertex is hit or not
 /// @param QPointF: position of click
 /// @param QVertex*&: nullptr by default, if vertex hit, set the the vertex hitted

@@ -17,8 +17,8 @@ class MainWindow : public QMainWindow
 private:
     QMenu *fileMenu, *editMenu, *optionMenu, *aboutMenu, *algorithmMenu;
     QToolBar *toolsToolBar;
-    QAction *newGraphAct, *saveGraphAct, *importFromJsonAct,
-    *exportToDotAct, *exportToPngAct, *exportToJsonAct,
+    QAction *newGraphAct, *saveGraphAct, *openGraphAct,
+    *exportToDotAct, *exportToPngAct,
     *exitAct, *undoAct, *redoAct, *aboutAct, *selectToolAct,
     *newVertexAct, *linkVertexAct, *eraserAct, *moveToolAct,
     *cycleGrapheAct, *completeGrapheAct, *bipartiteGrapheAct,
@@ -36,10 +36,9 @@ public:
 private slots:
     void newGraph();
     void saveGraph();
+    void openGraph();
     void exportToDot();
     void exportToPng();
-    void exportToJson();
-    void importFromJson();
     void undo();
     void redo();
     void about();
