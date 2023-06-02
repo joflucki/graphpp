@@ -292,7 +292,7 @@ bool Graph<T>::isHamiltonian()
 {
     if(this->isConnected())
     {
-        /*bool isPathAdmissible = [] (std::list<T*> vertices, std::list<T*> partialPath, std::unordered_map<Edge<T*>*, int> edgesStatus)
+        bool isPathAdmissible = [] (std::list<T*> vertices, std::list<T*> partialPath, std::unordered_map<Edge<T*>*, int> edgesStatus)
         {
             return false;
         };
@@ -300,67 +300,95 @@ bool Graph<T>::isHamiltonian()
         std::list<T*> allVertices;
         std::list<T*> toVisit;
         std::list<T*> partialPath;
-        std::unordered_map<Edge<T*>*, int> edgesStatus; // 0 = Undecided, 1 = Required, 2 = Deleted
-        int state = 1;
+        std::unordered_map<int,std::unordered_map<Edge<T>*, int>> edgesStatus;
+        //map<step<map<Edge, status>>
+        // at each step : the status of the edge : 0 = Undecided, 1 = Required, 2 = Deleted
+        // step (= partialPath.length) : 1 = start - when step = nbVertices -> path found, when step = 0 -> no path
+        std::unordered_map<int, int> nextAdjacentVertex;
+        //map<step, nextVertex>
+        //at each step, which would be the next neighbouring vertex to be visited
 
         for (auto &vertex : this->adjacencyList)
         {
             allVertices.push_back(vertex.first);
             for (auto const *edge : vertex.second)
             {
-                edgesStatus[edge] = 0;
+                edgesStatus[1][edge] = 0;
             }
         }
 
         // S1. Select any single node as the initial path.
         partialPath.push_back(allVertices.begin());
+        nextAdjacentVertex[1]=0;
 
-        while(partialPath.end() != partialPath.begin() && partialPath.length != this->getNbVertices()+1 && toVisit.length != 0)
+        // Conditions that make the algorithm end successfully
+        bool endLoopPathFound = false;
+
+        // Conditions that make the algorithm end unsuccessfully
+        bool endLoopNoPath = false;
+
+        while(!(endLoopPathFound || endLoopNoPath))
         {
             // S2. Test the path for admissibility.
-            bool pathAdmissible = isPathAdmissible(allVertices, partialPath, edgesStatus);
+            bool pathAdmissible = isPathAdmissible(allVertices, toVisit, partialPath, edgesStatus);
 
             // S3. If the path so far is admissible, list the successors of the last node chosen, and extend the path
             //      to the first of these.
             if(pathAdmissible)
             {
-                partialPath.push_back(toVisit.pop_back());
-                state++;
+                std::list<T*> neighboursToVisit;
+                T* lastVertex = partialPath.back();
+                for (auto edgeToNeighbouringVertex : this->adjacencyList[lastVertex])
+                {
+                    if (toVisit.find(edgeToNeighbouringVertex->getTarget()) != toVisit.end())
+                    {
+                        if(edgesStatus[partialPath.length][edgeToNeighbouringVertex] == 1)
+                        {
+                            neighboursToVisit.push_front(edgeToNeighbouringVertex->getTarget());
+                        }
+                        if(edgesStatus[partialPath.length][edgeToNeighbouringVertex] != 2)
+                        {
+                            neighboursToVisit.push_back(edgeToNeighbouringVertex->getTarget());
+                        }
+                    }
+
+                }
+                if(nextAdjacentVertex[partialPath.size()] < neighboursToVisit.size())
+                {
+                    auto firstNeighbourUnvisited = neighboursToVisit.begin();
+                    std::advance(firstNeighbourUnvisited, nextAdjacentVertex[partialPath.size()]++);
+                    toVisit.remove(firstNeighbourUnvisited);
+                    partialPath.push_back(firstNeighbourUnvisited);
+                }
+                // S5. If all extensions from a given node have been shown inadmissible, repeat step $4.
+                else
+                {
+                    pathAdmissible = false;
+                }
             }
             // S4. If the path so far is inadmissible, delete the last node chosen and choose the next listed successor
             //      of the preceding node. Repeat step $2.
-            else
+            if(!pathAdmissible)
             {
+                nextAdjacentVertex[partialPath.size()] = 0;
+                edgesStatus[partialPath.size()].clear();
                 toVisit.push_back(partialPath.pop_back());
-                state--;
+                // S6. If all extensions from the initial node have been shown inadmissible, then no circuit exists.
+                if(partialPath.size() == 0)
+                {
+                    endLoopNoPath = true;
+                }
             }
-
-            // S5. If all extensions from a given node have been shown inadmissible, repeat step $4.
-            // S6. If all extensions from the initial node have been shown inadmissible, then no circuit exists.
-            if(state == 0)
+            // S7. If a successor of the last node is the origin, a Hamilton circuit is formed; if all Hamilton circuits
+            //      are required, then list the circuit found, mark the partial path inadmissible, and repeat step $4.
+            if(partialPath.begin() == partialPath.end() && partialPath.size() == this->adjacencyList.size()+1)
             {
-                return false;
+                endLoopPathFound = true;
             }
         }
-
-        //std::advance(partialPath.begin(), 4);
-
-        // S7. If a successor of the last node is the origin, a Hamilton circuit is formed; if all Hamilton circuits
-        //      are required, then list the circuit found, mark the partial path inadmissible, and repeat step $4.
     }
 
-
-
-
-
-
-
-
-
-
-
-
-    if(this->isConnected())
+    /*if(this->isConnected())
     {
 
 
@@ -469,7 +497,6 @@ bool Graph<T>::isHamiltonian()
         which are numbered lower than the successor presently being considered should be
         deleted. Thus if 0 is the origin and 1, 2, ... , K are its successors, delete arcs (0, 1),
         (0, 2), - . . , (0, i - 1) when considering successor i.*/
-    }
     return false;
 }
 
