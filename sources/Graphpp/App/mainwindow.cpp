@@ -265,7 +265,16 @@ void MainWindow::saveGraph()
 /// @author Flückiger Jonas
 void MainWindow::openGraph()
 {
-
+    QString path = QFileDialog::getOpenFileName(this, tr("Ouvrir"), "", tr("Fichier Graph++ (*.gpp)"));
+    if(path != nullptr){
+        QBoard *qBoard= new QBoard(vertexDockWidget);
+        mdi->addSubWindow(qBoard);
+        qBoard->setWindowTitle(path);
+        qBoard->openFile(path);
+        qBoard->show();
+        // set right tool
+        updateSelectedTool(toolsActGroup->checkedAction());
+    }
 }
 
 /// @brief Export to dot

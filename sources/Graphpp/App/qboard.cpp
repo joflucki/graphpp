@@ -192,6 +192,82 @@ void QBoard::saveToFile(QString path){
     }
     file.close();
 }
+/// @brief Imports the graph contained in the file.
+/// @param path: the path to the file
+/// @author Flückiger Jonas
+void QBoard::openFile(QString path)
+{
+    if (path.isEmpty())
+        return;
+
+    QFile file(path);
+    if ( file.open(QIODevice::ReadOnly) )
+    {
+        // Read file
+        QString data = file.readAll();
+        file.close();
+
+        // Parse JSON data
+        QJsonDocument doc = QJsonDocument::fromJson(data.toUtf8());
+
+        std::unordered_map<QString, QVertex*> vertices;
+        if(!doc.isNull()){
+            this->graph = new Graph<QVertex>();
+            QJsonObject obj = doc.object();
+
+            QJsonObject::const_iterator it = obj.constBegin();
+            QJsonObject::const_iterator end = obj.constEnd();
+
+            // Add all vertices first
+            do
+            {
+                if(it.value().isObject())
+                {
+                    qDebug() << "isobject";
+                    QString id = QString::fromStdString(it.key().toStdString());
+                    QJsonObject vertexJson = it.value().toObject();
+                    QString name = vertexJson["name"].toString("");
+                    QPointF position = QPointF(vertexJson["positionX"].toDouble(0), vertexJson["positionY"].toDouble(0));
+                    QColor textColor = QColor(vertexJson["textColor"].toString("#000000"));
+                    QColor backgroundColor = QColor(vertexJson["backgroundColor"].toString("#000000"));
+                    QColor borderColor = QColor(vertexJson["borderColor"].toString("#000000"));
+                    QVertex* vertex = new QVertex(name, position, textColor, backgroundColor, borderColor);
+                    vertices.insert(std::make_pair(id, vertex));
+                    this->graph->addVertex(vertex);
+
+                }
+                it++;
+            }
+            while(it != end);
+
+            // Add all edges next
+            it = obj.constBegin();
+            do
+            {
+                if(it.value().isObject())
+                {
+                    QString id = QString::fromStdString(it.key().toStdString());
+                    QJsonObject vertexJson = it.value().toObject();
+                    QJsonArray edgesJson = vertexJson["edges"].toArray();
+                    for(auto edgeRef : edgesJson){
+                        if(edgeRef.isObject()){
+                            QJsonObject edgeJson = edgeRef.toObject();
+                            QVertex* source = vertices[id];
+                            QVertex* target = vertices[edgeJson["target"].toString()];
+                            int weight = edgeJson["weight"].toInt(1);
+                            this->graph->addEdge(source, target, weight);
+                        }
+                    }
+                }
+                it++;
+            }
+            while(it != end);
+        }
+
+
+    }
+}
+
 
 /// @brief Test if a vertex is hit or not
 /// @param QPointF: position of click
