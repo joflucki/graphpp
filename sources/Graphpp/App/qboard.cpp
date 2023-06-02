@@ -2,6 +2,7 @@
 #include <QPainter>
 #include <cstdlib>
 #include "qcaretaker.h"
+#include <cmath>
 
 /// @brief Constructor of the QBoard
 /// @param QWidget: parent
@@ -37,15 +38,14 @@ void QBoard::paintEvent(QPaintEvent *)
     // draw origin (debug purpose)
     {
         painter.setPen(Qt::gray);
-        painter.drawLine(QPoint(0,10), QPoint(0,-10));
-        painter.drawLine(QPoint(10,0), QPoint(-10,0));
+        painter.drawLine(QPoint(0, 10), QPoint(0, -10));
+        painter.drawLine(QPoint(10, 0), QPoint(-10, 0));
     }
 
     paint(painter);
 
     painter.end();
 }
-
 
 /// @brief Paint method. Use to paint on screen or in image
 /// @param QPainter
@@ -55,33 +55,34 @@ void QBoard::paint(QPainter &painter)
     painter.setTransform(this->transform);
 
     painter.setBrush(Qt::black);
-    painter.setPen(QPen(Qt::black, 2));
 
     if (!graph->adjacencyList.empty())
     {
         // Display edges
         // NOT CONST
-        for (auto & mapRow : graph->adjacencyList)
+        for (auto &mapRow : graph->adjacencyList)
         {
             QPointF sourceVertexPos = mapRow.first->getPosition().toPoint();
-            for (auto & edge : mapRow.second)
+            for (auto &edge : mapRow.second)
             {
-                QVertex* targetVertex = edge->getTarget();
+                painter.setPen(QPen(Qt::black, log(edge->getWeight()) + 1, Qt::SolidLine, Qt::RoundCap));
+                QVertex *targetVertex = edge->getTarget();
                 QPointF targetVertexPos = targetVertex->getPosition().toPoint();
                 painter.drawLine(sourceVertexPos, targetVertexPos);
             }
         }
 
         // Redraw highlighted edges if needed
-        if(this->highlightedGraph != nullptr){
+        if (this->highlightedGraph != nullptr)
+        {
             painter.setBrush(Qt::red);
-            painter.setPen(QPen(Qt::red, 3));
-            for (auto & mapRow : this->highlightedGraph->adjacencyList)
+            for (auto &mapRow : this->highlightedGraph->adjacencyList)
             {
                 QPointF sourceVertexPos = mapRow.first->getPosition().toPoint();
-                for (auto & edge : mapRow.second)
+                for (auto &edge : mapRow.second)
                 {
-                    QVertex* targetVertex = edge->getTarget();
+                    painter.setPen(QPen(Qt::red, log(edge->getWeight()) + 1, Qt::SolidLine, Qt::RoundCap));
+                    QVertex *targetVertex = edge->getTarget();
                     QPointF targetVertexPos = targetVertex->getPosition().toPoint();
                     painter.drawLine(sourceVertexPos, targetVertexPos);
                 }
@@ -89,18 +90,18 @@ void QBoard::paint(QPainter &painter)
         }
 
         // Display vertices
-        for (auto const& mapRow : graph->adjacencyList)
+        for (auto const &mapRow : graph->adjacencyList)
         {
-            QVertex* vertex = mapRow.first;
+            QVertex *vertex = mapRow.first;
             if (vertex->isSelected())
             {
                 painter.setBrush(Qt::lightGray);
                 painter.setPen(QPen(Qt::black, 2));
-                painter.drawEllipse(vertex->getPosition().toPoint(),this->vertexRadius+5,this->vertexRadius+5); // bigger outlined for selected vertices
+                painter.drawEllipse(vertex->getPosition().toPoint(), this->vertexRadius + 5, this->vertexRadius + 5); // bigger outlined for selected vertices
             }
             painter.setBrush(vertex->getBackgroundColor());
             painter.setPen(vertex->getBorderColor());
-            painter.drawEllipse(vertex->getPosition().toPoint(),this->vertexRadius,this->vertexRadius);
+            painter.drawEllipse(vertex->getPosition().toPoint(), this->vertexRadius, this->vertexRadius);
         }
     }
 }
@@ -116,15 +117,13 @@ void QBoard::exportToDOT(QString path)
         return;
 
     QFile file(path);
-    if ( file.open(QIODevice::ReadWrite) )
+    if (file.open(QIODevice::ReadWrite))
     {
         QTextStream stream(&file);
         stream << QString::fromStdString(this->graph->exportToDOT());
     }
     file.close();
 }
-
-
 
 /// @brief Function to save current QBoard state and return a new QMemento
 /// @author Plumey Simon
@@ -143,7 +142,7 @@ void QBoard::restore(QMemento memento)
 
 /// @brief Return the caretaker
 /// @author Plumey Simon
-QCaretaker* QBoard::getQCaretaker()
+QCaretaker *QBoard::getQCaretaker()
 {
     return this->qCaretaker;
 }
@@ -178,16 +177,18 @@ void QBoard::setSelectedTool(Tool selectedTool)
 /// @brief Save current graph to a file.
 /// @param path: the path to the file
 /// @author Flückiger Jonas
-void QBoard::saveToFile(QString path){
+void QBoard::saveToFile(QString path)
+{
     if (path.isEmpty())
         return;
 
     QFile file(path);
-    if ( file.open(QIODevice::ReadWrite) )
+    if (file.open(QIODevice::ReadWrite))
     {
         QJsonObject json;
-        for(auto pair: this->graph->adjacencyList){
-            //Get the vertex address as a string
+        for (auto pair : this->graph->adjacencyList)
+        {
+            // Get the vertex address as a string
             std::ostringstream address;
             address << (void const *)pair.first;
             std::string id = address.str();
@@ -200,8 +201,9 @@ void QBoard::saveToFile(QString path){
             vertexJson["backgroundColor"] = pair.first->getBackgroundColor().name();
             vertexJson["borderColor"] = pair.first->getBorderColor().name();
             QJsonArray edgesJson = QJsonArray();
-            for(auto edge : pair.second){
-                //Get the target address as a string
+            for (auto edge : pair.second)
+            {
+                // Get the target address as a string
                 std::ostringstream address;
                 address << (void const *)edge->getTarget();
                 std::string id = address.str();
@@ -228,7 +230,7 @@ void QBoard::openFile(QString path)
         return;
 
     QFile file(path);
-    if ( file.open(QIODevice::ReadOnly) )
+    if (file.open(QIODevice::ReadOnly))
     {
         // Read file
         QString data = file.readAll();
@@ -237,8 +239,9 @@ void QBoard::openFile(QString path)
         // Parse JSON data
         QJsonDocument doc = QJsonDocument::fromJson(data.toUtf8());
 
-        std::unordered_map<QString, QVertex*> vertices;
-        if(!doc.isNull()){
+        std::unordered_map<QString, QVertex *> vertices;
+        if (!doc.isNull())
+        {
             this->graph = new Graph<QVertex>();
             QJsonObject obj = doc.object();
 
@@ -248,7 +251,7 @@ void QBoard::openFile(QString path)
             // Add all vertices first
             do
             {
-                if(it.value().isObject())
+                if (it.value().isObject())
                 {
                     qDebug() << "isobject";
                     QString id = QString::fromStdString(it.key().toStdString());
@@ -258,60 +261,56 @@ void QBoard::openFile(QString path)
                     QColor textColor = QColor(vertexJson["textColor"].toString("#000000"));
                     QColor backgroundColor = QColor(vertexJson["backgroundColor"].toString("#000000"));
                     QColor borderColor = QColor(vertexJson["borderColor"].toString("#000000"));
-                    QVertex* vertex = new QVertex(name, position, textColor, backgroundColor, borderColor);
+                    QVertex *vertex = new QVertex(name, position, textColor, backgroundColor, borderColor);
                     vertices.insert(std::make_pair(id, vertex));
                     this->graph->addVertex(vertex);
-
                 }
                 it++;
-            }
-            while(it != end);
+            } while (it != end);
 
             // Add all edges next
             it = obj.constBegin();
             do
             {
-                if(it.value().isObject())
+                if (it.value().isObject())
                 {
                     QString id = QString::fromStdString(it.key().toStdString());
                     QJsonObject vertexJson = it.value().toObject();
                     QJsonArray edgesJson = vertexJson["edges"].toArray();
-                    for(auto edgeRef : edgesJson){
-                        if(edgeRef.isObject()){
+                    for (auto edgeRef : edgesJson)
+                    {
+                        if (edgeRef.isObject())
+                        {
                             QJsonObject edgeJson = edgeRef.toObject();
-                            QVertex* source = vertices[id];
-                            QVertex* target = vertices[edgeJson["target"].toString()];
+                            QVertex *source = vertices[id];
+                            QVertex *target = vertices[edgeJson["target"].toString()];
                             int weight = edgeJson["weight"].toInt(1);
                             this->graph->addEdge(source, target, weight);
                         }
                     }
                 }
                 it++;
-            }
-            while(it != end);
+            } while (it != end);
         }
-
-
     }
 }
-
 
 /// @brief Test if a vertex is hit or not
 /// @param QPointF: position of click
 /// @param QVertex*&: nullptr by default, if vertex hit, set the the vertex hitted
 /// @return bool: if a vertex is hitted or not
 /// @author Plumey Simon
-bool QBoard::hitVertex(QPointF position, QVertex*& hittedVertex)
+bool QBoard::hitVertex(QPointF position, QVertex *&hittedVertex)
 {
     hittedVertex = nullptr;
     if (!graph->adjacencyList.empty())
     {
-        for (auto const& mapRow : graph->adjacencyList)
+        for (auto const &mapRow : graph->adjacencyList)
         {
-            QVertex* vertex = mapRow.first;
+            QVertex *vertex = mapRow.first;
             QPoint vertexPos = vertex->getPosition().toPoint();
-            if (abs(vertexPos.x()-position.toPoint().x()) < this->vertexRadius + 10 // adding a bit of margin
-                    && abs(vertexPos.y()-position.toPoint().y()) < this->vertexRadius + 10)
+            if (abs(vertexPos.x() - position.toPoint().x()) < this->vertexRadius + 10 // adding a bit of margin
+                && abs(vertexPos.y() - position.toPoint().y()) < this->vertexRadius + 10)
             {
                 hittedVertex = vertex;
                 return true;
@@ -337,13 +336,15 @@ bool QBoard::hitSegment(QPointF hitPoint, QPointF p1, QPointF p2, double margin)
 
     // Check if the point is inside the bounding box (performance)
     if (hitPoint.rx() < xmin || hitPoint.rx() > xmax ||
-            hitPoint.ry() < ymin || hitPoint.ry() > ymax) {
+        hitPoint.ry() < ymin || hitPoint.ry() > ymax)
+    {
         return false;
     }
 
     // Check if the point is on the line segment
-    double dist = std::abs((p2.ry() - p1.ry())*hitPoint.rx() - (p2.rx() - p1.rx())*hitPoint.ry() + p2.rx()*p1.ry() - p2.ry()*p1.rx()) / std::sqrt(std::pow(p2.ry() - p1.ry(), 2) + std::pow(p2.rx() - p1.rx(), 2));
-    if (dist <= margin) {
+    double dist = std::abs((p2.ry() - p1.ry()) * hitPoint.rx() - (p2.rx() - p1.rx()) * hitPoint.ry() + p2.rx() * p1.ry() - p2.ry() * p1.rx()) / std::sqrt(std::pow(p2.ry() - p1.ry(), 2) + std::pow(p2.rx() - p1.rx(), 2));
+    if (dist <= margin)
+    {
         return true;
     }
 
@@ -354,9 +355,9 @@ bool QBoard::hitSegment(QPointF hitPoint, QPointF p1, QPointF p2, double margin)
 /// @author Plumey Simon
 void QBoard::unselectVertices()
 {
-    for (auto const& mapRow : graph->adjacencyList)
+    for (auto const &mapRow : graph->adjacencyList)
     {
-        QVertex* vertex = mapRow.first;
+        QVertex *vertex = mapRow.first;
         vertex->setSelected(false);
     }
     this->update();
@@ -394,7 +395,7 @@ void QBoard::translate(const QPointF &delta)
 QPointF QBoard::convertRelativToTransform(QPointF globalPosition)
 {
     QPointF clickPos = mapFromGlobal(globalPosition); // convert it relativ to QBoard
-    return transform.inverted().map(clickPos); // apply transformation with transform matrix
+    return transform.inverted().map(clickPos);        // apply transformation with transform matrix
 }
 
 /***************************************************\
@@ -410,13 +411,17 @@ void QBoard::mousePressEvent(QMouseEvent *event)
 
     switch (this->selectedTool)
     {
-    case CREATE_VERTEX: clickCreateVertex(clickPos);
+    case CREATE_VERTEX:
+        clickCreateVertex(clickPos);
         break;
-    case SELECTOR: clickSelector(clickPos);
+    case SELECTOR:
+        clickSelector(clickPos);
         break;
-    case CREATE_EDGE: clickCreateEdge(clickPos);
+    case CREATE_EDGE:
+        clickCreateEdge(clickPos);
         break;
-    case ERASER: moveEraser(clickPos);
+    case ERASER:
+        moveEraser(clickPos);
         break;
     case HAND:
         isDragging = true;
@@ -424,13 +429,17 @@ void QBoard::mousePressEvent(QMouseEvent *event)
         setCursor(QCursor(Qt::ClosedHandCursor));
         break;
 
-    case CYCLE_GRAPH: clickCycleGraph(clickPos);
+    case CYCLE_GRAPH:
+        clickCycleGraph(clickPos);
         break;
-    case COMPLETE_GRAPH: clickCompleteGraph(clickPos);
+    case COMPLETE_GRAPH:
+        clickCompleteGraph(clickPos);
         break;
-    case BIPARTITE_GRAPH: clickBipartiteGraph(clickPos);
+    case BIPARTITE_GRAPH:
+        clickBipartiteGraph(clickPos);
         break;
-    default: qDebug() << "click: Not implemented" << Qt::endl;
+    default:
+        qDebug() << "click: Not implemented" << Qt::endl;
     }
 }
 
@@ -445,7 +454,8 @@ void QBoard::mouseReleaseEvent(QMouseEvent *event)
         setCursor(QCursor(Qt::OpenHandCursor));
         isDragging = false;
         break;
-    default: break;
+    default:
+        break;
     }
     this->update();
 }
@@ -459,13 +469,15 @@ void QBoard::mouseMoveEvent(QMouseEvent *event)
 
     switch (this->selectedTool)
     {
-    case ERASER: moveEraser(clickPos);
+    case ERASER:
+        moveEraser(clickPos);
         break;
     case HAND:
         setCursor(QCursor(Qt::ClosedHandCursor));
         moveHand(clickPos);
         break;
-    default: qDebug() << "move: Not implemented" << Qt::endl;
+    default:
+        qDebug() << "move: Not implemented" << Qt::endl;
     }
     this->update();
 }
@@ -475,8 +487,10 @@ void QBoard::mouseMoveEvent(QMouseEvent *event)
 /// @author Plumey Simon
 void QBoard::wheelEvent(QWheelEvent *event)
 {
-    for (auto const& mapRow : graph->adjacencyList){
-        if(mapRow.first->isSelected()){
+    for (auto const &mapRow : graph->adjacencyList)
+    {
+        if (mapRow.first->isSelected())
+        {
             highlightedGraph = graph->getMinimumDistanceGraph(mapRow.first);
         }
     }
@@ -508,9 +522,12 @@ void QBoard::wheelEvent(QWheelEvent *event)
 
 /// @brief Highlights the current graph's minimum distance graph.
 /// @author Flückiger Jonas
-void QBoard::highlightMinimumDistanceGraph(){
-    for (auto const& mapRow : graph->adjacencyList){
-        if(mapRow.first->isSelected()){
+void QBoard::highlightMinimumDistanceGraph()
+{
+    for (auto const &mapRow : graph->adjacencyList)
+    {
+        if (mapRow.first->isSelected())
+        {
             this->highlightedGraph = graph->getMinimumDistanceGraph(mapRow.first);
             this->update();
             return;
@@ -524,8 +541,8 @@ void QBoard::highlightMinimumDistanceGraph(){
 
 /// @brief Highlights the current graph's minimum spanning tree.
 /// @author Flückiger Jonas
-void QBoard::highlightMinimumSpanningTree(){
+void QBoard::highlightMinimumSpanningTree()
+{
     this->highlightedGraph = graph->getMinimumSpanningTree();
     this->update();
 }
-

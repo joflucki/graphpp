@@ -2,6 +2,9 @@
 #include "graph.h"
 #include "qcaretaker.h"
 #include "qmultipleinputdialog.h"
+#include <iostream>
+#include <sstream>
+#include <string>
 
 /***************************************************\
  * CLICK BEHAVIOURS                                *
@@ -27,8 +30,33 @@ void QBoard::clickSelector(QPointF clickPos)
     if (hitVertex(clickPos, hittedVertex))
     {
         hittedVertex->setSelected(true);
+        this->vertexDockWidget->setSelectedVertex(hittedVertex);
+    } else {
+        for (auto & mapRow : graph->adjacencyList)
+        {
+            QPointF sourcePoint = mapRow.first->getPosition().toPoint();
+            for (auto * edge : mapRow.second)
+            {
+                QPointF targetPoint = edge->getTarget()->getPosition().toPoint();
+
+                if (hitSegment(clickPos, sourcePoint, targetPoint, 3))
+                {
+                    std::stringstream stream;
+                    stream <<"Veuillez insérer la nouvelle pondération de l'arc ";
+                    stream << mapRow.first->getName().toStdString() << " -> " << edge->getTarget()->getName().toStdString();
+                    int newWeight = QInputDialog::getInt(
+                        this,
+                        "Pondération de l'arc ",
+                        QString::fromStdString(stream.str()),
+                        edge->getWeight(),
+                        1
+                    );
+                    edge->setWeight(newWeight);
+
+                }
+            }
+        }
     }
-    this->vertexDockWidget->setSelectedVertex(hittedVertex);
 }
 
 /// @brief Create an edge between two selected vertices
