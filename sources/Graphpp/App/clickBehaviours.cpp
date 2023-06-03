@@ -41,18 +41,7 @@ void QBoard::clickSelector(QPointF clickPos)
 
                 if (hitSegment(clickPos, sourcePoint, targetPoint, 3))
                 {
-                    std::stringstream stream;
-                    stream <<"Veuillez insérer la nouvelle pondération de l'arc ";
-                    stream << mapRow.first->getName().toStdString() << " -> " << edge->getTarget()->getName().toStdString();
-                    int newWeight = QInputDialog::getInt(
-                        this,
-                        "Pondération de l'arc ",
-                        QString::fromStdString(stream.str()),
-                        edge->getWeight(),
-                        1
-                    );
-                    edge->setWeight(newWeight);
-
+                    askEdgeNewWeight(mapRow.first, edge);
                 }
             }
         }

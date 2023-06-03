@@ -45,6 +45,7 @@ public:
 private:
     const int vertexRadius = 5;
     Tool selectedTool = Tool::SELECTOR;
+    Edge<QVertex>* selectedEdge;
 
     QTransform transform; // actual transform matrix
 
@@ -66,6 +67,7 @@ private:
     void zoom(qreal scaleFactor, const QPointF &fixedViewPos);
     void translate(const QPointF &delta);
     QPointF convertRelativToTransform(QPointF globalPosition);
+    void askEdgeNewWeight(QVertex* source, Edge<QVertex>* edge);
 
 
     // click behaviours methods

@@ -253,7 +253,6 @@ void QBoard::openFile(QString path)
             {
                 if (it.value().isObject())
                 {
-                    qDebug() << "isobject";
                     QString id = QString::fromStdString(it.key().toStdString());
                     QJsonObject vertexJson = it.value().toObject();
                     QString name = vertexJson["name"].toString("");
@@ -396,6 +395,40 @@ QPointF QBoard::convertRelativToTransform(QPointF globalPosition)
 {
     QPointF clickPos = mapFromGlobal(globalPosition); // convert it relativ to QBoard
     return transform.inverted().map(clickPos);        // apply transformation with transform matrix
+}
+
+void QBoard::askEdgeNewWeight(QVertex* source, Edge<QVertex>* edge){
+    if(!this->graph->isOriented()){
+        if(this->selectedEdge == nullptr) {
+            this->selectedEdge = edge;
+            std::stringstream stream;
+            stream <<"Veuillez insérer la nouvelle pondération de l'arc ";
+            stream << source->getName().toStdString() << " <-> " << edge->getTarget()->getName().toStdString();
+            int newWeight = QInputDialog::getInt(
+                this,
+                "Pondération de l'arc ",
+                QString::fromStdString(stream.str()),
+                edge->getWeight(),
+                1
+                );
+            edge->setWeight(newWeight);
+        } else {
+            edge->setWeight(this->selectedEdge->getWeight());
+            this->selectedEdge = nullptr;
+        }
+    }else{
+        std::stringstream stream;
+        stream <<"Veuillez insérer la nouvelle pondération de l'arc ";
+        stream << source->getName().toStdString() << " -> " << edge->getTarget()->getName().toStdString();
+        int newWeight = QInputDialog::getInt(
+            this,
+            "Pondération de l'arc ",
+            QString::fromStdString(stream.str()),
+            edge->getWeight(),
+            1
+            );
+        edge->setWeight(newWeight);
+    }
 }
 
 /***************************************************\
