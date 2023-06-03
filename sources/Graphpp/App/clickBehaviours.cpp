@@ -22,7 +22,7 @@ void QBoard::clickCreateVertex(QPointF clickPos)
 
 /// @brief Select a vertex if the click coordinates hit a vertex
 /// @param QPointF: click coordinates
-/// @author Plumey Simon
+/// @author Plumey Simon & Flückiger Jonas
 void QBoard::clickSelector(QPointF clickPos)
 {
     this->unselectVertices();

@@ -49,7 +49,7 @@ void QBoard::paintEvent(QPaintEvent *)
 
 /// @brief Paint method. Use to paint on screen or in image
 /// @param QPainter
-/// @author Plumey Simon
+/// @author Plumey Simon & Flückiger Jonas
 void QBoard::paint(QPainter &painter)
 {
     painter.setTransform(this->transform);
