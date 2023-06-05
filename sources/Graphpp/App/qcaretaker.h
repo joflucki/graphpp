@@ -16,6 +16,8 @@ public:
     void backup();
     void undo();
     void redo();
+    void deleteDifferences(std::unordered_map<QVertex*, std::list<Edge<QVertex>*>> graphMap,
+                           std::unordered_map<QVertex*, std::list<Edge<QVertex>*>> mementoMap);
 };
 
 #endif // QCARETAKER_H

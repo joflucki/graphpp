@@ -210,6 +210,7 @@ std::list<Edge<T>*> Graph<T>::popVertex(T *vertex)
     }
 
     // Remove all edges sourcing from the vertex
+    /*
     auto &edgeList = this->adjacencyList[vertex];
     auto edgeIt = edgeList.begin();
     while (edgeIt != edgeList.end())
@@ -217,7 +218,9 @@ std::list<Edge<T>*> Graph<T>::popVertex(T *vertex)
         poppedEdges.push_back(*edgeIt);
         this->adjacencyList[vertex].erase(edgeIt);
         ++edgeIt;
-    }
+    }*/
+
+    this->adjacencyList[vertex].clear();
 
     // Remove the vertex from the map
     adjacencyList.erase(vertex);
