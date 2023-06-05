@@ -15,14 +15,16 @@ void QBoard::moveEraser(QPointF clickPos)
     // check if hit vertex
     if (hitVertex(hittedPoint, hittedVertex))
     {
-        graph->removeVertex(hittedVertex);
+        this->qCaretaker->backup();
+        qDebug() << "Before pop" << Qt::endl;
+        graph->popVertex(hittedVertex);
+        qDebug() << "After pop" << Qt::endl;
         this->highlightedGraph = nullptr;
     }
 
     // check if hit edge
     if (!graph->adjacencyList.empty())
     {
-        this->qCaretaker->backup();
         std::list<Edge<QVertex>*> edgesToRemove;
         // add edges to the list
         for (auto & mapRow : graph->adjacencyList)
@@ -40,7 +42,8 @@ void QBoard::moveEraser(QPointF clickPos)
         // remove edges
         for (auto * edge : edgesToRemove)
         {
-            graph->removeEdge(edge);
+            this->qCaretaker->backup();
+            graph->popEdge(edge);
         }
         this->highlightedGraph = nullptr;
     }
