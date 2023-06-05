@@ -4,6 +4,9 @@
 #include <QColor>
 #include <QPointF>
 
+/// @brief Represent a vertex in the graph
+/// @author Plumey Simon
+/// @date spring 2023
 class QVertex
 {
 public:

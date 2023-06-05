@@ -11,6 +11,9 @@ QT_END_NAMESPACE
 class GraphDockWidget;
 class VertexDockWidget;
 
+/// @brief MainWindow of the application. It contains a MDI, menu, tools,...
+/// @author Plumey Simon & Jonas Flückiger
+/// @date spring 2023
 class MainWindow : public QMainWindow
 {
     Q_OBJECT

@@ -6,6 +6,9 @@
 
 class QVertex;
 
+/// @brief QWidget displaying all informations about graph analysis. Like eulerian, oriented,...
+/// @author Plumey Simon
+/// @date spring 2023
 class GraphDockWidget : public QWidget
 {
 private:

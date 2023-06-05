@@ -22,6 +22,9 @@ enum Tool
     BIPARTITE_GRAPH
 };
 
+/// @brief QBoard is a widget on which we paint the graph. Like a whiteboard.
+/// @author Plumey Simon & Jonas Flückiger
+/// @date spring 2023
 class QBoard : public QWidget
 {
 public:

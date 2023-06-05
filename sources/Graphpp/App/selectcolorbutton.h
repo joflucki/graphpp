@@ -3,11 +3,11 @@
 
 #include <QPushButton>
 #include <QColor>
-/**
- * @brief A simple button to select color
- * This code comes from here: https://stackoverflow.com/questions/18257281/qt-color-picker-widget
- * @author Alexis Wilke
- */
+
+/// @brief A simple button to select color
+/// This code comes from here: https://stackoverflow.com/questions/18257281/qt-color-picker-widget
+/// @author Alexis Wilke
+/// @date spring 2023
 class SelectColorButton : public QPushButton
 {
     Q_OBJECT

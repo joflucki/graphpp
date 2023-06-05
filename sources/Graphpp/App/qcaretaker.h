@@ -4,6 +4,9 @@
 #include "qmemento.h"
 #include "qboard.h"
 
+/// @brief Caretaker of qboard state. It's part of the memento design pattern
+/// @author Plumey Simon
+/// @date spring 2023
 class QCaretaker
 {
 private:

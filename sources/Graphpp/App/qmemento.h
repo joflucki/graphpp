@@ -5,6 +5,9 @@
 #include "qvertex.h"
 #include <edge.h>
 
+/// @brief Memento of qboard state. It's part of the memento design pattern
+/// @author Plumey Simon
+/// @date spring 2023
 class QMemento
 {
 public:

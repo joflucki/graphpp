@@ -6,6 +6,9 @@
 #include "selectcolorbutton.h"
 #include "graph.h"
 
+/// @brief QWidget displaying all informations about the selected vertex. Like colors, positions,...
+/// @author Plumey Simon
+/// @date spring 2023
 class VertexDockWidget: public QWidget
 {
     Q_OBJECT

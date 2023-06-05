@@ -4,10 +4,9 @@
 #include <QDialog>
 #include <QtWidgets>
 
-/**
- * @brief This class create a multiple input dialog. It can manage inputs from a list of spinBox
- * @author Simon Plumey, inspired by Bobur (https://stackoverflow.com/a/53332748)
- */
+/// @brief This class create a multiple input dialog. It can manage inputs from a list of spinBox
+/// @author Plumey Simon, inspired by Bobur (https://stackoverflow.com/a/53332748)
+/// @date spring 2023
 class QMultipleInputDialog : public QDialog
 {
     Q_OBJECT
