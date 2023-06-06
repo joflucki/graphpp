@@ -580,3 +580,10 @@ void QBoard::highlightMinimumSpanningTree()
     this->highlightedGraph = graph->getMinimumSpanningTree();
     this->update();
 }
+
+/// @brief Highlights the current graph's hamiltonian path.
+/// @author Tschan Damien
+void QBoard::highlightHamiltonianPath(){
+    this->highlightedGraph = graph->getHamiltonianPath();
+    this->update();
+}

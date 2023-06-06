@@ -26,7 +26,7 @@ private:
     *newVertexAct, *linkVertexAct, *eraserAct, *moveToolAct,
     *cycleGrapheAct, *completeGrapheAct, *bipartiteGrapheAct,
     *closeCurrentGrapheAct, *closeAllGrapheAct, *nextAct, *prevAct,
-    *toggleGraphDockAct, *toggleVertexDockAct, *highlightMDGAct, *highlightMSTAct;
+    *toggleGraphDockAct, *toggleVertexDockAct, *highlightMDGAct, *highlightMSTAct, *highlightHamPathAct;
     QDockWidget *vertexDock, *graphDock;
     QMdiArea *mdi;
     QActionGroup *toolsActGroup;
@@ -47,6 +47,7 @@ private slots:
     void about();
     void highlightMinimumDistanceGraph();
     void highlightMinimumSpanningTree();
+    void highlightHamiltonianPath();
 
     void updateGraphDockWidget();
     void updateSelectedTool(QAction* action);
