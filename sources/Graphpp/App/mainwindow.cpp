@@ -84,6 +84,10 @@ void MainWindow::createActions()
     highlightMSTAct->setStatusTip(tr("Indique l'un des arbres recouvrants minimaux"));
     connect(highlightMSTAct, &QAction::triggered, this, &MainWindow::highlightMinimumSpanningTree);
 
+    highlightHamPathAct = new QAction(tr("Afficher un chemin hamiltonien"), this);
+    highlightHamPathAct->setStatusTip(tr("Indique l'un des chemins hamiltoniens possibles"));
+    connect(highlightHamPathAct, &QAction::triggered, this, &MainWindow::highlightHamiltonianPath);
+
     // TOOLS actions
     selectToolAct = new QAction(QIcon(":/img/selector.png"), tr("&Outil de sélection"), this);
     selectToolAct->setShortcut(tr("Ctrl+1"));
@@ -201,6 +205,7 @@ void MainWindow::createMenus()
     algorithmMenu = menuBar()->addMenu(tr("Algorithmes"));
     algorithmMenu->addAction(highlightMDGAct);
     algorithmMenu->addAction(highlightMSTAct);
+    algorithmMenu->addAction(highlightHamPathAct);
 }
 
 /// @brief Create the tool bars
@@ -345,6 +350,18 @@ void MainWindow::highlightMinimumSpanningTree()
     {
         QBoard* qBoard = (QBoard*)(qMDISubWindow->widget());
         qBoard->highlightMinimumSpanningTree();
+    }
+}
+
+/// @brief Computes a hamiltonian path and highlights it.
+/// @author Tschan Damien
+void MainWindow::highlightHamiltonianPath()
+{
+    QMdiSubWindow* qMDISubWindow = this->mdi->activeSubWindow();
+    if (qMDISubWindow != nullptr)
+    {
+        QBoard* qBoard = (QBoard*)(qMDISubWindow->widget());
+        qBoard->highlightHamiltonianPath();
     }
 }
 

@@ -29,6 +29,7 @@ public:
     void exportToDOT(QString path);
     void highlightMinimumDistanceGraph();
     void highlightMinimumSpanningTree();
+    void highlightHamiltonianPath();
     Graph<QVertex> *graph;
     Graph<QVertex>* highlightedGraph;
 
