@@ -8,7 +8,7 @@ TEMPLATE = app
 
 INCLUDEPATH += $$PWD/../../Lib/
 DEPENDPATH += $$PWD/../../Lib/
-LIBS += -L$$OUT_PWD/../../Lib/debug -lLib
+LIBS += -L$$OUT_PWD/../../Lib/release -lLib
 
 
 SOURCES +=  tst_basicgraphtest.cpp

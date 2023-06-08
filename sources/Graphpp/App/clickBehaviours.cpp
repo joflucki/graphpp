@@ -141,6 +141,7 @@ void QBoard::clickCycleGraph(QPointF clickPos)
         // add last connexion between the last and the first
         this->graph->addDoubleEdge(arrayVertices[nbVertices-1], arrayVertices[0]);
     }
+    this->update();
 }
 
 /// @brief Create a complete graph on the clicked coordinates
@@ -194,6 +195,7 @@ void QBoard::clickCompleteGraph(QPointF clickPos)
             }
         }
     }
+    this->update();
 }
 
 /// @brief Useful method to create a base rounded vertices
@@ -292,6 +294,7 @@ void QBoard::clickBipartiteGraph(QPointF clickPos)
         }
 
     }
+    this->update();
 }
 
 /// @brief Useful method to create a line of vertices
