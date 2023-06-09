@@ -662,6 +662,7 @@ Graph<T>* Graph<T>::getHamiltonianPath()
                 //For each edge sourcing from the last vertex and targeting an unvisited vertex
                 for (auto edgeToNeighbouringVertex : this->adjacencyList[lastVertex])
                 {
+                    //std::cout << "edge : " << edgeToNeighbouringVertex << ", target : " << edgeToNeighbouringVertex->getTarget() << std::endl;
                     if (std::find(toVisit.begin(), toVisit.end(), edgeToNeighbouringVertex->getTarget()) != toVisit.end())
                     {
                         // If an edge is required by the previous steps of the algorithm, it's target is pushed at the front of the list
