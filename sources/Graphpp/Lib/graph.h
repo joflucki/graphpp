@@ -304,21 +304,20 @@ bool Graph<T>::isEulerian()
 template <typename T>
 bool Graph<T>::isHamiltonian()
 {
+    //checks if getHamiltonianPath founds a path or not
     return !getHamiltonianPath()->isEmpty();
 }
 
 /// @brief Returns the hamiltonian path of a graph
 /// @returns A subgraph containing the hamiltonian path if it exists, an empty graph otherwise
 /// @author Damien Tschan
-/// @date 05.06.2023
+/// @date 09.06.2023
 ///
-/// Since the algorithm and deduction rules are oriented toward directed graphs, the
-/// Hamilton circuits in an undirected graph will be generated twice each, with the nodes
-/// named in opposite order. To prevent this redundancy, in step S3 of the search the successors
-/// of the origin node may be numbered. Then the undirected arcs to successor nodes
-/// which are numbered lower than the successor presently being considered should be
-/// deleted. Thus if 0 is the origin and 1, 2, ... , K are its successors, delete arcs (0, 1),
-/// (0, 2), - . . , (0, i - 1) when considering successor i.
+/// Since the algorithm and deduction rules are oriented toward directed graphs, each Edge is counted twice.
+/// To prevent that, when an Edge is added to the partial path, the opposite Edge is deleted.
+/// This means that this method has to be updated to fully support oriented graphs.
+///
+/// As not all rules are implemented, it is almost a brute force algorithm, with a complexity of O(n!)
 template <typename T>
 Graph<T>* Graph<T>::getHamiltonianPath()
 {
@@ -336,8 +335,12 @@ Graph<T>* Graph<T>::getHamiltonianPath()
         //map<step, nextVertex>
         //at each step, which would be the next neighbouring vertex to be visited
 
+        //Add all vertices to a list that contains all vertices and a list that contains those that haven't been visited yet
+        //Add all edges in the edgesStatus list (described just above)
+        int i = 0;
         for (auto &vertex : this->adjacencyList)
         {
+            nextAdjacentVertex[i] = 0;
             allVertices.push_back(vertex.first);
             toVisit.push_back(vertex.first);
             for (Edge<T>* edge : vertex.second)
@@ -346,11 +349,16 @@ Graph<T>* Graph<T>::getHamiltonianPath()
             }
         }
 
-        //CHECK IF PATH IS ADMISSIBLE FOR EACH VERTEX / CONNECTION (lambda function automatically gets all variable from parent function)
-        auto isPathAdmissible = [=]() mutable -> bool
+        //Lambda function : CHECK IF PATH IS ADMISSIBLE FOR EACH VERTEX / CONNECTION (lambda function automatically gets all variable from parent function)
+        auto isPathAdmissible = [&]() mutable -> bool
         {
             bool admissible = true;
+            // Step is the length of the partialPath (step=1 means that only 1 vertex has been added to the partialPath)
+            // this variable is used to go back when no admissible path is found
             int step = partialPath.size();
+            std::cout << step << std::endl;
+
+            //Reset edgesStatus for all edges for this step
             for (auto &vertex : this->adjacencyList)
             {
                 for (Edge<T>* edge : vertex.second)
@@ -359,6 +367,9 @@ Graph<T>* Graph<T>::getHamiltonianPath()
                 }
             }
 
+            //Loop through all vertices and test if the partialPath is globally admissible up to now
+            //This part contains RULES that define if an edge is undecided/required/deleted for the next steps
+            //It also determines if the path is suitable for an extension and if not, admissible is set to false and the loop is exited
             for(T* vertex : allVertices)
             {
                 // === RULES TREATED IN THE NEXT SECTION ===
@@ -418,7 +429,7 @@ Graph<T>* Graph<T>::getHamiltonianPath()
                 if(edgeCount == 0)
                 {
                     admissible = false;
-                    std::cout << "not admissible 1" << std::endl;
+                    std::cout << "not admissible 1 : entering edges" << std::endl;
                 }
 
                 // LEAVING
@@ -467,7 +478,7 @@ Graph<T>* Graph<T>::getHamiltonianPath()
                 if(edgeCount == 0)
                 {
                     admissible = false;
-                    std::cout << "not admissible 2" << std::endl;
+                    std::cout << "not admissible 2 : exiting edges" << std::endl;
                 }
 
                 // === RULES TREATED IN THE NEXT SECTION ===
@@ -485,7 +496,7 @@ Graph<T>* Graph<T>::getHamiltonianPath()
                             else if(edge.second == 2)
                             {
                                 admissible = false;
-                                std::cout << "not admissible 3" << std::endl;
+                                std::cout << "not admissible 3 : only two arcs, but one already deleted" << std::endl;
                             }
                         }
                         for(auto vertex : this->adjacencyList)
@@ -516,7 +527,7 @@ Graph<T>* Graph<T>::getHamiltonianPath()
                                 else if(edge.second == 2)
                                 {
                                     admissible = false;
-                                    std::cout << "not admissible 4" << std::endl;
+                                    std::cout << "not admissible 4 : only two arcs, but one already deleted" << std::endl;
                                 }
                             }
                         }
@@ -593,13 +604,15 @@ Graph<T>* Graph<T>::getHamiltonianPath()
                 if(requEntering >= 2 || requLeaving >= 2)
                 {
                     admissible = false;
-                    std::cout << "not admissible 5" << std::endl;
+                    std::cout << "not admissible 5 : two or more entering/leaving edges required" << std::endl;
                 }
                 if(requEntering + requLeaving >= 3)
                 {
                     admissible = false;
-                    std::cout << "not admissible 6" << std::endl;
+                    std::cout << "not admissible 6 : three or more edges required" << std::endl;
                 }
+
+                //The following rules are described in the algorithm but have not been implemented.
 
                 // === RULES NOT IMPLEMENTED (implementation could improve computing time) ===
                 // R. Required edge rules, A. Direction assignment rules, D. Deleted edge rules, F. Failure, or termination rules
@@ -612,9 +625,10 @@ Graph<T>* Graph<T>::getHamiltonianPath()
                 // D3. Delete any arc which forms a closed circuit with required arcs, unless it completes the Hamilton circuit.
                 // F6. Fail if any set of required arcs forms a closed circuit, other than a Hamilton circuit
             }
+            //Print state of all edges
             for(std::pair<Edge<T>*, int> edge : edgesStatus[step])
             {
-                std::cout << "STATUS [" << step << "] : " << edge.first << " - " << edge.second << std::endl;
+                //std::cout << "STATUS [" << step << "] : " << edge.first << " - " << edge.second << std::endl;
             }
             std::cout << "END [" << step << "], admissible : " << admissible << std::endl;
             return admissible;
@@ -622,7 +636,6 @@ Graph<T>* Graph<T>::getHamiltonianPath()
 
         // S1. Select any single node as the initial path.
         partialPath.push_back(*allVertices.begin());
-        nextAdjacentVertex[1]=0;
 
         // Conditions that make the algorithm end successfully
         bool endLoopPathFound = false;
@@ -630,6 +643,8 @@ Graph<T>* Graph<T>::getHamiltonianPath()
         // Conditions that make the algorithm end unsuccessfully
         bool endLoopNoPath = false;
 
+        // This loop adds and removes vertices/edges from the partial path and launches isPathAdmissible() at each step
+        // It only ends either when a full hamiltonian path is found or when no path can be found
         while(!(endLoopPathFound || endLoopNoPath))
         {
             // S2. Test the path for admissibility.
@@ -639,34 +654,42 @@ Graph<T>* Graph<T>::getHamiltonianPath()
             //      to the first of these.
             if(pathAdmissible)
             {
+                //NeighboursToVisit is a list of the vertices that are adjacent to the last vertex visited and have not been visited
+                //Vertices at the front of the list are prioritized when visiting the next vertex
                 std::list<T*> neighboursToVisit;
                 T* lastVertex = partialPath.back();
+
+                //For each edge sourcing from the last vertex and targeting an unvisited vertex
                 for (auto edgeToNeighbouringVertex : this->adjacencyList[lastVertex])
                 {
-                    //std::cout << "edge : " << edgeToNeighbouringVertex << ", target : " << edgeToNeighbouringVertex->getTarget() << std::endl;
                     if (std::find(toVisit.begin(), toVisit.end(), edgeToNeighbouringVertex->getTarget()) != toVisit.end())
                     {
+                        // If an edge is required by the previous steps of the algorithm, it's target is pushed at the front of the list
                         if(edgesStatus[partialPath.size()][edgeToNeighbouringVertex] == 1)
                         {
                             neighboursToVisit.push_front(edgeToNeighbouringVertex->getTarget());
                         }
+                        // If an edge is still undecided by the previous steps of the algorithm, it's target is pushed at the back of the list
                         if(edgesStatus[partialPath.size()][edgeToNeighbouringVertex] == 0)
                         {
                             neighboursToVisit.push_back(edgeToNeighbouringVertex->getTarget());
                         }
                     }
                 }
-                for(std::pair<int, int> i : nextAdjacentVertex)
-                {
-                    //std::cout << "[" << i.first << "] " << i.second << std::endl;
-                }
-                std::cout << "neighboursToVisit : " << (int)neighboursToVisit.size() << std::endl;
+                //nextAdjacentVertex is used to cycle through the available adjacentVertices to visit
+                //if nextAdjacentVertex is inferior to the number of neighbours to visit, visit the next vertex
                 if(nextAdjacentVertex[partialPath.size()] < (int)neighboursToVisit.size())
                 {
+                    //picking the first unvisited vertex of the neighbours available (the first one has the highest priority)
                     auto firstNeighbourUnvisited = neighboursToVisit.begin();
-                    std::advance(firstNeighbourUnvisited, nextAdjacentVertex[partialPath.size()]++);
+                    std::advance(firstNeighbourUnvisited, nextAdjacentVertex[partialPath.size()]);
+                    nextAdjacentVertex[partialPath.size()]++;
+                    //remove it from the toVisit list and push it into the partialPath
+                    //this extends the partial path and requires a new cycle to be launched (path was admissible and a new vertex has been added to the path)
                     toVisit.remove(*firstNeighbourUnvisited);
                     partialPath.push_back(*firstNeighbourUnvisited);
+                    //As the partial path is a list of vertices (probably a bad choice, but that's too late),
+                    // it is needed to build a list of all vertices/edges that will be added to the subgraph at the end
                     for(Edge<T>* edge : this->adjacencyList[lastVertex])
                     {
                         if(edge->getTarget() == *firstNeighbourUnvisited)
@@ -676,29 +699,38 @@ Graph<T>* Graph<T>::getHamiltonianPath()
                     }
                 }
                 // S7. If a successor of the last node is the origin, a Hamilton circuit is formed
+                //if no vertex is left to visit and the last node is the first, a path has been found
                 else if(toVisit.size() == 0 && partialPath.back() == partialPath.front())
                 {
                     endLoopPathFound = true;
                 }
                 // S5. If all extensions from a given node have been shown inadmissible, repeat step $4.
+                //if nextAdjacentVertex reaches the max amount of vertices neighbouring the last vertex visited,
+                // it means that all neighbours have all been unsuccessfully visited
+                // the algorithm then goes back a step by declaring the path inadmissible
                 else
                 {
                     pathAdmissible = false;
                 }
             }
             // S4. If the path so far is inadmissible, delete the last node chosen and choose the next listed successor
-            //      of the preceding node. Repeat step $2.
+            //      of the preceding node. Repeat step S2.
             if(!pathAdmissible)
             {
+                //Reset the nextAdjacentVertex for when the algorithm will come back at this step
                 nextAdjacentVertex[partialPath.size()] = 0;
+                //Clear the status of all edges at this step for when the algorithm will come back
                 edgesStatus[partialPath.size()].clear();
+                //Remove the last vertex added to the partial path and put it back in the toVisit list
                 toVisit.push_back(partialPath.back());
                 partialPath.pop_back();
+                //if the list of vertices/edges to be added to the graph is not empty (if empty -> partial path empty too), remove the last pair added
                 if(!finalGraphPath.empty())
                 {
                     finalGraphPath.pop_back();
                 }
                 // S6. If all extensions from the initial node have been shown inadmissible, then no circuit exists.
+                // if the partial path is reduced until it reaches 0, no hamiltonian path can be found in this graph
                 if(partialPath.size() == 0)
                 {
                     endLoopNoPath = true;
@@ -707,6 +739,7 @@ Graph<T>* Graph<T>::getHamiltonianPath()
             std::cout << "toVisit : " << toVisit.size() << std::endl;
         }
 
+        //if a path has been found, build a new graph from the vertices/edges list and return it
         if(endLoopPathFound)
         {
             Graph<T>* returnGraph = new Graph<T>();
@@ -721,6 +754,7 @@ Graph<T>* Graph<T>::getHamiltonianPath()
             return returnGraph;
         }
     }
+    //if no hamiltonian path can be found or if the graph is not connected, return an empty graph
     Graph<T>* returnGraph = new Graph<T>();
     return returnGraph;
 }
