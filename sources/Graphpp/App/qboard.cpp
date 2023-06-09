@@ -65,7 +65,6 @@ void QBoard::paint(QPainter &painter)
             QPointF sourceVertexPos = mapRow.first->getPosition().toPoint();
             for (auto &edge : mapRow.second)
             {
-                qDebug() << "EDGE THICKNESS : " << log(edge->getWeight()) + 1;
                 painter.setPen(QPen(Qt::black, log(edge->getWeight()) + 1, Qt::SolidLine, Qt::RoundCap));
                 QVertex *targetVertex = edge->getTarget();
                 QPointF targetVertexPos = targetVertex->getPosition().toPoint();
