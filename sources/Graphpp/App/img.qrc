@@ -10,6 +10,6 @@
         <file>img/selector.png</file>
         <file>img/undo.png</file>
         <file>img/vertex.png</file>
-        <file>img/graphpp.ico</file>
+        <file>img/graphpp-logo.ico</file>
     </qresource>
 </RCC>
