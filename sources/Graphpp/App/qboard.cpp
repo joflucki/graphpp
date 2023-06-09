@@ -65,6 +65,7 @@ void QBoard::paint(QPainter &painter)
             QPointF sourceVertexPos = mapRow.first->getPosition().toPoint();
             for (auto &edge : mapRow.second)
             {
+                qDebug() << "EDGE THICKNESS : " << log(edge->getWeight()) + 1;
                 painter.setPen(QPen(Qt::black, log(edge->getWeight()) + 1, Qt::SolidLine, Qt::RoundCap));
                 QVertex *targetVertex = edge->getTarget();
                 QPointF targetVertexPos = targetVertex->getPosition().toPoint();
@@ -402,8 +403,8 @@ void QBoard::askEdgeNewWeight(QVertex* source, Edge<QVertex>* edge){
         if(this->selectedEdge == nullptr) {
             this->selectedEdge = edge;
             std::stringstream stream;
-            stream <<"Veuillez insérer la nouvelle pondération de l'arc ";
-            stream << source->getName().toStdString() << " <-> " << edge->getTarget()->getName().toStdString();
+            stream <<"Veuillez insérer la nouvelle pondération de l'arc entre ";
+            stream << source->getName().toStdString() << " et " << edge->getTarget()->getName().toStdString();
             int newWeight = QInputDialog::getInt(
                 this,
                 "Pondération de l'arc ",
@@ -412,14 +413,14 @@ void QBoard::askEdgeNewWeight(QVertex* source, Edge<QVertex>* edge){
                 1
                 );
             edge->setWeight(newWeight);
-        } else {
+        } else if(this->selectedEdge->getTarget() == source) {
             edge->setWeight(this->selectedEdge->getWeight());
             this->selectedEdge = nullptr;
         }
-    }else{
+    } else {
         std::stringstream stream;
-        stream <<"Veuillez insérer la nouvelle pondération de l'arc ";
-        stream << source->getName().toStdString() << " -> " << edge->getTarget()->getName().toStdString();
+        stream <<"Veuillez insérer la nouvelle pondération de l'arc de ";
+        stream << source->getName().toStdString() << " à " << edge->getTarget()->getName().toStdString();
         int newWeight = QInputDialog::getInt(
             this,
             "Pondération de l'arc ",
@@ -429,6 +430,7 @@ void QBoard::askEdgeNewWeight(QVertex* source, Edge<QVertex>* edge){
             );
         edge->setWeight(newWeight);
     }
+    this->update();
 }
 
 /***************************************************\

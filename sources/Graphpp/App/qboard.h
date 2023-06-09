@@ -45,7 +45,7 @@ public:
 private:
     const int vertexRadius = 5;
     Tool selectedTool = Tool::SELECTOR;
-    Edge<QVertex>* selectedEdge;
+    Edge<QVertex>* selectedEdge = nullptr;
 
     QTransform transform; // actual transform matrix
 
