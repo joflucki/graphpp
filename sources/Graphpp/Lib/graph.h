@@ -336,11 +336,29 @@ Graph<T>* Graph<T>::getHamiltonianPath()
         //map<step, nextVertex>
         //at each step, which would be the next neighbouring vertex to be visited
 
+        for (auto &vertex : this->adjacencyList)
+        {
+            allVertices.push_back(vertex.first);
+            toVisit.push_back(vertex.first);
+            for (Edge<T>* edge : vertex.second)
+            {
+                edgesStatus[1][edge] = 0;
+            }
+        }
+
+        //CHECK IF PATH IS ADMISSIBLE FOR EACH VERTEX / CONNECTION (lambda function automatically gets all variable from parent function)
         auto isPathAdmissible = [=]() mutable -> bool
         {
             bool admissible = true;
             int step = partialPath.size();
-            std::cout << "BEGIN : " << step << std::endl;
+            for (auto &vertex : this->adjacencyList)
+            {
+                for (Edge<T>* edge : vertex.second)
+                {
+                    edgesStatus[step][edge] = 0;
+                }
+            }
+
             for(T* vertex : allVertices)
             {
                 // === RULES TREATED IN THE NEXT SECTION ===
@@ -355,7 +373,7 @@ Graph<T>* Graph<T>::getHamiltonianPath()
                 Edge<T> *requiredEdge = NULL;
 
                 // ENTERING
-                for(auto edge : edgesStatus[step])
+                for(std::pair<Edge<T>*, int> edge : edgesStatus[step])
                 {
                     if(edge.first->getTarget() == vertex)
                     {
@@ -378,11 +396,29 @@ Graph<T>* Graph<T>::getHamiltonianPath()
                 if(edgeCount == 1)
                 {
                     edgesStatus[step][requiredEdge] = 1;
+                    //delete reverse edge (if exists) : delete all edges B of which target Bt are source As of an edge A (our edge) of which At is Bs
+                    for(std::pair<T*,std::list<Edge<T>*>> vertexAsBt : this->adjacencyList)
+                    {
+                        for(Edge<T>* edgeA : vertexAsBt.second)
+                        {
+                            if(edgeA == requiredEdge)
+                            {
+                                for(Edge<T>* reverseEdgeB : this->adjacencyList[edgeA->getTarget()])
+                                {
+                                    if(reverseEdgeB->getTarget() == vertexAsBt.first)
+                                    {
+                                        edgesStatus[step][requiredEdge] = 2;
+                                    }
+                                }
+                            }
+                        }
+                    }
                 }
 
                 if(edgeCount == 0)
                 {
                     admissible = false;
+                    std::cout << "not admissible 1" << std::endl;
                 }
 
                 // LEAVING
@@ -409,42 +445,180 @@ Graph<T>* Graph<T>::getHamiltonianPath()
                 if(edgeCount == 1)
                 {
                     edgesStatus[step][requiredEdge] = 1;
+                    //delete reverse edge (if exists) : delete all edges B of which target Bt are source As of an edge A (our edge) of which At is Bs
+                    for(std::pair<T*,std::list<Edge<T>*>> vertexAsBt : this->adjacencyList)
+                    {
+                        for(Edge<T>* edgeA : vertexAsBt.second)
+                        {
+                            if(edgeA == requiredEdge)
+                            {
+                                for(Edge<T>* reverseEdgeB : this->adjacencyList[edgeA->getTarget()])
+                                {
+                                    if(reverseEdgeB->getTarget() == vertexAsBt.first)
+                                    {
+                                        edgesStatus[step][requiredEdge] = 2;
+                                    }
+                                }
+                            }
+                        }
+                    }
                 }
 
                 if(edgeCount == 0)
                 {
                     admissible = false;
+                    std::cout << "not admissible 2" << std::endl;
                 }
 
+                // === RULES TREATED IN THE NEXT SECTION ===
+                // R. Required edge rules, A. Direction assignment rules, D. Deleted edge rules, F. Failure, or termination rules
+                // ---
                 // R2. If a vertex has only two arcs incident, then both arcs are required.
-                // A1. If a vertex has a required directed arc entering (leaving), then all incident undirected
-                //     arcs are assigned the direction leaving (entering) that vertex.
+                if(this->getVertexIndegree(vertex)+this->getVertexOutdegree(vertex) == 2)
+                {
+                    for(auto edge : edgesStatus[step])
+                    {
+                        if(edge.first->getTarget() == vertex)
+                        {
+                            if(edge.second == 0)
+                                edge.second = 1;
+                            else if(edge.second == 2)
+                            {
+                                admissible = false;
+                                std::cout << "not admissible 3" << std::endl;
+                            }
+                        }
+                        for(auto vertex : this->adjacencyList)
+                        {
+                            if(std::find(vertex.second.begin(),vertex.second.end(),edge.first) != vertex.second.end())
+                            {
+                                if(edge.second == 0)
+                                {
+                                    edge.second = 1;
+                                    //delete reverse edge (if exists) : delete all edges B of which target Bt are source As of an edge A (our edge) of which At is Bs
+                                    for(std::pair<T*,std::list<Edge<T>*>> vertexAsBt : this->adjacencyList)
+                                    {
+                                        for(Edge<T>* edgeA : vertexAsBt.second)
+                                        {
+                                            if(edgeA == edge.first)
+                                            {
+                                                for(Edge<T>* reverseEdgeB : this->adjacencyList[edgeA->getTarget()])
+                                                {
+                                                    if(reverseEdgeB->getTarget() == vertexAsBt.first)
+                                                    {
+                                                        edgesStatus[step][requiredEdge] = 2;
+                                                    }
+                                                }
+                                            }
+                                        }
+                                    }
+                                }
+                                else if(edge.second == 2)
+                                {
+                                    admissible = false;
+                                    std::cout << "not admissible 4" << std::endl;
+                                }
+                            }
+                        }
+                    }
+                }
+                // === RULES TREATED IN THE NEXT SECTION ===
+                // R. Required edge rules, A. Direction assignment rules, D. Deleted edge rules, F. Failure, or termination rules
+                // ---
+                // D2. If a vertex has a required directed arc entering (leaving), then all undecided directed arcs entering (leaving) may be deleted.
+                for(auto edge : edgesStatus[step])
+                {
+                    if(edge.first->getTarget() == vertex)
+                    {
+                        if(edge.second == 1)
+                        {
+                            for(auto edge2 : edgesStatus[step])
+                            {
+                                if(edge2.first->getTarget() == vertex && edge2.first != edge.first)
+                                {
+                                    if(edge2.second == 0)
+                                        edge2.second = 2;
+                                }
+                            }
+                        }
+                    }
+                    for(auto vertex2 : this->adjacencyList)
+                    {
+                        if(std::find(vertex2.second.begin(),vertex2.second.end(),edge.first) != vertex2.second.end())
+                        {
+                            if(edge.second == 1)
+                            {
+                                for(auto edge2 : edgesStatus[step])
+                                {
+                                    for(auto vertex3 : this->adjacencyList)
+                                    {
+                                        if(std::find(vertex3.second.begin(),vertex3.second.end(),edge2.first) != vertex3.second.end())
+                                        {
+                                            if(edge2.first->getTarget() == vertex3.first && edge2 != edge)
+                                            {
+                                                if(edge2.second == 0)
+                                                    edge2.second = 2;
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
 
-                // A2. If a vertex has a required undirected arc incident, and all other incident arcs are
-                //     leaving (entering) the vertex, then the required arc is assigned the direction entering
-                //     (leaving) the vertex.
-                // D1. If a vertex has two required arcs incident, then all undecided arcs incident may
-                //     be deleted.
-                // D2. If a vertex has a required directed arc entering (leaving), then all undecided
-                //     directed arcs entering (leaving) may be deleted.
-                // D3. Delete any arc which forms a closed circuit with required arcs, unless it completes
-                //     the Hamilton circuit.
+                // === RULES TREATED IN THE NEXT SECTION ===
+                // R. Required edge rules, A. Direction assignment rules, D. Deleted edge rules, F. Failure, or termination rules
+                // ---
                 // F4. Fail if any vertex has two required directed arcs entering (leaving).
                 // F5. Fail if any vertex has three required arcs incident.
+                int requEntering = 0;
+                int requLeaving = 0;
+                for(auto edge : edgesStatus[step])
+                {
+                    if(edge.first->getTarget() == vertex)
+                    {
+                        if(edge.second == 1)
+                            requLeaving++;
+                    }
+                    for(auto vertex2 : this->adjacencyList)
+                    {
+                        if(std::find(vertex2.second.begin(),vertex2.second.end(),edge.first) != vertex2.second.end())
+                        {
+                            if(edge.second == 1)
+                                requEntering++;
+                        }
+                    }
+                }
+                if(requEntering >= 2 || requLeaving >= 2)
+                {
+                    admissible = false;
+                    std::cout << "not admissible 5" << std::endl;
+                }
+                if(requEntering + requLeaving >= 3)
+                {
+                    admissible = false;
+                    std::cout << "not admissible 6" << std::endl;
+                }
+
+                // === RULES NOT IMPLEMENTED (implementation could improve computing time) ===
+                // R. Required edge rules, A. Direction assignment rules, D. Deleted edge rules, F. Failure, or termination rules
+                // ---
+                // A1. If a vertex has a required directed arc entering (leaving), then all incident undirected
+                //     arcs are assigned the direction leaving (entering) that vertex.
+                // A2. If a vertex has a required undirected arc incident, and all other incident arcs are
+                //     leaving (entering) the vertex, then the required arc is assigned the direction entering (leaving) the vertex.
+                // D1. If a vertex has two required arcs incident, then all undecided arcs incident may be deleted.
+                // D3. Delete any arc which forms a closed circuit with required arcs, unless it completes the Hamilton circuit.
                 // F6. Fail if any set of required arcs forms a closed circuit, other than a Hamilton circuit
             }
-            std::cout << "END : " << step << ":" << admissible << std::endl;
+            for(std::pair<Edge<T>*, int> edge : edgesStatus[step])
+            {
+                std::cout << "STATUS [" << step << "] : " << edge.first << " - " << edge.second << std::endl;
+            }
+            std::cout << "END [" << step << "], admissible : " << admissible << std::endl;
             return admissible;
         };
-
-        for (auto &vertex : this->adjacencyList)
-        {
-            allVertices.push_back(vertex.first);
-            for (Edge<T>* edge : vertex.second)
-            {
-                edgesStatus[1][edge] = 0;
-            }
-        }
 
         // S1. Select any single node as the initial path.
         partialPath.push_back(*allVertices.begin());
@@ -469,19 +643,24 @@ Graph<T>* Graph<T>::getHamiltonianPath()
                 T* lastVertex = partialPath.back();
                 for (auto edgeToNeighbouringVertex : this->adjacencyList[lastVertex])
                 {
+                    //std::cout << "edge : " << edgeToNeighbouringVertex << ", target : " << edgeToNeighbouringVertex->getTarget() << std::endl;
                     if (std::find(toVisit.begin(), toVisit.end(), edgeToNeighbouringVertex->getTarget()) != toVisit.end())
                     {
                         if(edgesStatus[partialPath.size()][edgeToNeighbouringVertex] == 1)
                         {
                             neighboursToVisit.push_front(edgeToNeighbouringVertex->getTarget());
                         }
-                        if(edgesStatus[partialPath.size()][edgeToNeighbouringVertex] != 2)
+                        if(edgesStatus[partialPath.size()][edgeToNeighbouringVertex] == 0)
                         {
                             neighboursToVisit.push_back(edgeToNeighbouringVertex->getTarget());
                         }
                     }
-
                 }
+                for(std::pair<int, int> i : nextAdjacentVertex)
+                {
+                    //std::cout << "[" << i.first << "] " << i.second << std::endl;
+                }
+                std::cout << "neighboursToVisit : " << (int)neighboursToVisit.size() << std::endl;
                 if(nextAdjacentVertex[partialPath.size()] < (int)neighboursToVisit.size())
                 {
                     auto firstNeighbourUnvisited = neighboursToVisit.begin();
@@ -495,6 +674,11 @@ Graph<T>* Graph<T>::getHamiltonianPath()
                             finalGraphPath.push_back(std::make_pair(lastVertex, edge));
                         }
                     }
+                }
+                // S7. If a successor of the last node is the origin, a Hamilton circuit is formed
+                else if(toVisit.size() == 0 && partialPath.back() == partialPath.front())
+                {
+                    endLoopPathFound = true;
                 }
                 // S5. If all extensions from a given node have been shown inadmissible, repeat step $4.
                 else
@@ -520,12 +704,7 @@ Graph<T>* Graph<T>::getHamiltonianPath()
                     endLoopNoPath = true;
                 }
             }
-            // S7. If a successor of the last node is the origin, a Hamilton circuit is formed; if all Hamilton circuits
-            //      are required, then list the circuit found, mark the partial path inadmissible, and repeat step $4.
-            if(partialPath.begin() == partialPath.end() && partialPath.size() == this->adjacencyList.size()+1)
-            {
-                endLoopPathFound = true;
-            }
+            std::cout << "toVisit : " << toVisit.size() << std::endl;
         }
 
         if(endLoopPathFound)
