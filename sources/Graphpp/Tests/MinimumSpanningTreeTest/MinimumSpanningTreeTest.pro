@@ -8,6 +8,6 @@ TEMPLATE = app
 
 INCLUDEPATH += $$PWD/../../Lib/
 DEPENDPATH += $$PWD/../../Lib/
-LIBS += -L$$OUT_PWD/../../Lib/release -lLib
+LIBS += -L$$OUT_PWD/../../Lib/debug -lLib
 
 SOURCES +=  tst_minimumspanningtreetest.cpp

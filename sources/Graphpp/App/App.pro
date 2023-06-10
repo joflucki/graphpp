@@ -10,7 +10,7 @@ RC_ICONS = img/graphpp-logo.ico
 INCLUDEPATH += ../Lib/
 DEPENDPATH += ../Lib/
 
-LIBS += -L../Lib/release -lLib
+LIBS += -L../Lib/debug -lLib
 
 SOURCES += \
     clickBehaviours.cpp \
