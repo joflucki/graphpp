@@ -73,5 +73,4 @@ void GraphDockWidget::updateLabels()
 void GraphDockWidget::setSelectedGraph(Graph<QVertex>* graph)
 {
     this->selectedGraph = graph;
-    qDebug() << graph;
 }

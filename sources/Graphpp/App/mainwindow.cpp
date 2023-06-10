@@ -435,6 +435,9 @@ void MainWindow::initialiseGraphSettings()
         }
         // set right tool
         updateSelectedTool(toolsActGroup->checkedAction());
+    }else{
+        graphDockWidget->setSelectedGraph(nullptr);
+        vertexDockWidget->setSelectedGraph(nullptr);
     }
 }
 
