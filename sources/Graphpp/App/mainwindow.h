@@ -54,6 +54,7 @@ private slots:
 
     void closeCurrentGraphe();
     void closeAllGraphe();
+    virtual void closeEvent(QCloseEvent* event) override;
     void next();
     void prev();
 

@@ -11,7 +11,6 @@ MainWindow::MainWindow() : QMainWindow()
 {
     mdi = new QMdiArea(this);
     mdi->setViewMode(QMdiArea::TabbedView);
-    mdi->setTabsClosable(true);
     setCentralWidget(mdi);
 
     createDockWindows();
@@ -330,7 +329,6 @@ void MainWindow::undo()
         redoAct->setEnabled(true);
         if (!qBoard->getQCaretaker()->canUndo())
         {
-            qDebug() << "gris undo" << Qt::endl;
             undoAct->setEnabled(false);
         }
     }
@@ -348,7 +346,6 @@ void MainWindow::redo()
         undoAct->setEnabled(true);
         if (!qBoard->getQCaretaker()->canRedo())
         {
-            qDebug() << "gris redo" << Qt::endl;
             redoAct->setEnabled(false);
         }
     }
@@ -506,15 +503,66 @@ void MainWindow::updateSelectedTool(QAction* action)
 /// @author Plumey Simon
 void MainWindow::closeCurrentGraphe()
 {
-    mdi->closeActiveSubWindow();
-    initialiseGraphSettings();
+    QMdiSubWindow* activeSubWindow = mdi->activeSubWindow();
+    if (activeSubWindow) {
+        QMessageBox::StandardButton response = QMessageBox::question(
+                    this, tr("Confirmation - Fermeture d'onglet"),
+                    tr("Toute modification non enregistrée sera perdue! Voulez-vous vraiment fermer ce graphe ?"),
+                    QMessageBox::Yes | QMessageBox::No,
+                    QMessageBox::No
+                    );
+
+        if (response == QMessageBox::Yes) {
+            mdi->closeActiveSubWindow();
+            initialiseGraphSettings();
+        }
+    }
+}
+
+/// @brief Called when user quit the application
+/// @author Plumey Simon
+void MainWindow::closeEvent(QCloseEvent* event)
+{
+    QMdiSubWindow* activeSubWindow = mdi->activeSubWindow();
+
+    if (activeSubWindow) {
+        // Demander une confirmation à l'utilisateur
+        QMessageBox::StandardButton response = QMessageBox::question(
+                    this, tr("Confirmation - Fermeture d'application"),
+                    tr("Tout graphe non enregistré sera perdu! Voulez-vous vraiment quitter l'application ?"),
+                    QMessageBox::Yes | QMessageBox::No,
+                    QMessageBox::No
+                    );
+
+        if (response == QMessageBox::No) {
+            // Ignorer l'événement de fermeture
+            event->ignore();
+            return;
+        }
+    }
+
+    // Continuer le traitement de l'événement de fermeture
+    QMainWindow::closeEvent(event);
 }
 
 /// @brief close all graphs
 /// @author Plumey Simon
 void MainWindow::closeAllGraphe()
 {
-    mdi->closeAllSubWindows();
+    QMdiSubWindow* activeSubWindow = mdi->activeSubWindow();
+    if (activeSubWindow) {
+        QMessageBox::StandardButton response = QMessageBox::question(
+                    this, tr("Confirmation - Fermeture d'onglet"),
+                    tr("Toutes modifications non enregistrées seront perdues! Voulez-vous vraiment fermer TOUS les graphes ?"),
+                    QMessageBox::Yes | QMessageBox::No,
+                    QMessageBox::No
+                    );
+
+        if (response == QMessageBox::Yes) {
+            mdi->closeAllSubWindows();
+            initialiseGraphSettings();
+        }
+    }
 }
 
 /// @brief select next graph
