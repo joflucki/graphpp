@@ -249,7 +249,8 @@ void MainWindow::newGraph()
 {
     QBoard *qBoard= new QBoard(vertexDockWidget);
     mdi->addSubWindow(qBoard);
-    qBoard->setWindowTitle("Graphe");
+    ++graphCounter;
+    qBoard->setWindowTitle(tr("Nouveau graphe ") + QString::number(graphCounter));
     qBoard->show();
     initialiseGraphSettings();
 }
@@ -264,7 +265,10 @@ void MainWindow::saveGraph()
         QBoard* qBoard = (QBoard*)(qMDISubWindow->widget());
 
         QString path = QFileDialog::getSaveFileName(this, tr("Sauvegarder"), "", tr("Fichier Graph++ (*.gpp)"));
-        qBoard->saveToFile(path);
+        QFileInfo fileInfo(path);
+
+        qBoard->saveToFile(fileInfo.absoluteFilePath());
+        qBoard->setWindowTitle(fileInfo.fileName());
     }
 }
 
@@ -274,12 +278,14 @@ void MainWindow::openGraph()
 {
     QString path = QFileDialog::getOpenFileName(this, tr("Ouvrir"), "", tr("Fichier Graph++ (*.gpp)"));
     if(path != nullptr){
+        QFileInfo fileInfo(path);
         QBoard *qBoard= new QBoard(vertexDockWidget);
         mdi->addSubWindow(qBoard);
-        qBoard->setWindowTitle(path);
-        qBoard->openFile(path);
+        qBoard->setWindowTitle(fileInfo.fileName());
+        qBoard->openFile(fileInfo.absoluteFilePath());
         qBoard->show();
 
+        ++graphCounter;
         initialiseGraphSettings();
     }
 }

@@ -32,7 +32,7 @@ private:
     QActionGroup *toolsActGroup;
     GraphDockWidget *graphDockWidget;
     VertexDockWidget *vertexDockWidget;
-
+    int graphCounter = 0;
 public:
     MainWindow();
 
