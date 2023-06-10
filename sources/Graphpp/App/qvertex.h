@@ -16,6 +16,8 @@ public:
                       QColor backgroundColor = Qt::black,
                       QColor borderColor = Qt::black);
 
+    virtual ~QVertex();
+
     //getters
     QString getName();
     QPointF getPosition();

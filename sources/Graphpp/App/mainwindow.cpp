@@ -278,7 +278,7 @@ void MainWindow::openGraph()
     QString path = QFileDialog::getOpenFileName(this, tr("Ouvrir"), "", tr("Fichier Graph++ (*.gpp)"));
     if(path != nullptr){
         QFileInfo fileInfo(path);
-        QBoard *qBoard= new QBoard(vertexDockWidget);
+        QBoard *qBoard= new QBoard(vertexDockWidget, this);
         mdi->addSubWindow(qBoard);
         qBoard->setWindowTitle(fileInfo.fileName());
         qBoard->openFile(fileInfo.absoluteFilePath());
