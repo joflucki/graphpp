@@ -1,5 +1,11 @@
 #include "qmemento.h"
 
+/**
+ * @brief Default constructor for data structs
+ * @author Flückiger Jonas
+ */
+QMemento::QMemento(){}
+
 /// @brief Constructor of QMemento
 /// @author Plumey Simon
 QMemento::QMemento(std::unordered_map<QVertex *, std::list<Edge<QVertex> *>> adjencyList)
