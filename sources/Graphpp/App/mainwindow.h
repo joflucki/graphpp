@@ -51,9 +51,9 @@ private slots:
 
     void initialiseGraphSettings();
     void updateSelectedTool(QAction* action);
-
-    void closeCurrentGraphe();
-    void closeAllGraphe();
+    
+    void closeCurrentGraph();
+    void closeAllGraph();
     virtual void closeEvent(QCloseEvent* event) override;
     void next();
     void prev();

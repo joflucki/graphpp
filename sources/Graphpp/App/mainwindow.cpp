@@ -143,11 +143,11 @@ void MainWindow::createActions()
     closeCurrentGrapheAct = new QAction(tr("Fermer &le graphe actif"), this);
     closeCurrentGrapheAct->setShortcut(QKeySequence(QKeySequence::Close));
     closeCurrentGrapheAct->setStatusTip(tr("Ferme le graphe qui est actuellement ouvert et visible"));
-    connect(closeCurrentGrapheAct, &QAction::triggered, this, &MainWindow::closeCurrentGraphe);
+    connect(closeCurrentGrapheAct, &QAction::triggered, this, &MainWindow::closeCurrentGraph);
 
     closeAllGrapheAct = new QAction(tr("Fermer &tous les graphes"), this);
     closeAllGrapheAct->setStatusTip(tr("Ferme tous les graphes qui sont actuellement ouverts SANS les enregistrer"));
-    connect(closeAllGrapheAct, &QAction::triggered, this, &MainWindow::closeAllGraphe);
+    connect(closeAllGrapheAct, &QAction::triggered, this, &MainWindow::closeAllGraph);
 
     nextAct = new QAction(tr("&Graphe suivant"), this);
     nextAct->setShortcut(QKeySequence(QKeySequence::NextChild));
@@ -355,8 +355,8 @@ void MainWindow::redo()
 /// @author Plumey Simon
 void MainWindow::about()
 {
-    QMessageBox::about(this, tr("A Propos"),
-                       tr("Graph++, Banger international"));
+    QMessageBox::about(this, tr("À Propos"),
+                       tr("Développé par Damien Tschan, Jonas Flückiger et Simon Plumey\n© Copyright HE-Arc Ingénerie 2023"));
 }
 
 /// @brief Computes the minimum distance tree and highlights it.
@@ -504,13 +504,13 @@ void MainWindow::updateSelectedTool(QAction* action)
 
 /// @brief close current graph
 /// @author Plumey Simon
-void MainWindow::closeCurrentGraphe()
+void MainWindow::closeCurrentGraph()
 {
     QMdiSubWindow* activeSubWindow = mdi->activeSubWindow();
     if (activeSubWindow) {
         QMessageBox::StandardButton response = QMessageBox::question(
                     this, tr("Confirmation - Fermeture d'onglet"),
-                    tr("Toute modification non enregistrée sera perdue! Voulez-vous vraiment fermer ce graphe ?"),
+                    tr("Êtes-vous sûr de vouloir fermer ce graphe ?\nTout travail non enregistré sera perdu."),
                     QMessageBox::Yes | QMessageBox::No,
                     QMessageBox::No
                     );
@@ -532,7 +532,7 @@ void MainWindow::closeEvent(QCloseEvent* event)
         // Demander une confirmation à l'utilisateur
         QMessageBox::StandardButton response = QMessageBox::question(
                     this, tr("Confirmation - Fermeture d'application"),
-                    tr("Tout graphe non enregistré sera perdu! Voulez-vous vraiment quitter l'application ?"),
+                    tr("Êtes-vous sûr de vouloir quitter l'application ?\nTout travail non enregistré sera perdu."),
                     QMessageBox::Yes | QMessageBox::No,
                     QMessageBox::No
                     );
@@ -550,13 +550,13 @@ void MainWindow::closeEvent(QCloseEvent* event)
 
 /// @brief close all graphs
 /// @author Plumey Simon
-void MainWindow::closeAllGraphe()
+void MainWindow::closeAllGraph()
 {
     QMdiSubWindow* activeSubWindow = mdi->activeSubWindow();
     if (activeSubWindow) {
         QMessageBox::StandardButton response = QMessageBox::question(
                     this, tr("Confirmation - Fermeture d'onglet"),
-                    tr("Toutes modifications non enregistrées seront perdues! Voulez-vous vraiment fermer TOUS les graphes ?"),
+                    tr("Êtes-vous sûr de vouloir fermer tous les graphes ?\nTout travail non enregistré sera perdu."),
                     QMessageBox::Yes | QMessageBox::No,
                     QMessageBox::No
                     );
