@@ -20,6 +20,11 @@ QVertex::QVertex(QString name,
     this->borderColor = borderColor;
 }
 
+QVertex::~QVertex()
+{
+    // nothing to delete
+}
+
 // GETTERS
 QString QVertex::getName()
 {

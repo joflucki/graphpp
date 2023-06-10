@@ -24,6 +24,7 @@ void QCaretaker::backup()
 
     // remove object in redo stack
     this->undoStack.push(graphMemento);
+    emit backupAction();
 }
 
 /// @brief Restore the current state from the previous memento
@@ -95,4 +96,18 @@ void QCaretaker::deleteDifferences(std::unordered_map<QVertex*, std::list<Edge<Q
             }
         }
     }
+}
+
+/// @return true if the caretaker can undo something. Otherwise, return false
+/// @author Plumey Simon
+bool QCaretaker::canUndo()
+{
+    return this->undoStack.length() > 1;
+}
+
+/// @return true if the caretaker can redo something. Otherwise, return false
+/// @author Plumey Simon
+bool QCaretaker::canRedo()
+{
+    return this->redoStack.length() > 0;
 }

@@ -11,7 +11,6 @@ MainWindow::MainWindow() : QMainWindow()
 {
     mdi = new QMdiArea(this);
     mdi->setViewMode(QMdiArea::TabbedView);
-    mdi->setTabsClosable(true);
     setCentralWidget(mdi);
 
     createDockWindows();
@@ -62,11 +61,13 @@ void MainWindow::createActions()
     undoAct = new QAction(QIcon(":/img/undo.png"), tr("&Annuler"), this);
     undoAct->setShortcut(QKeySequence(QKeySequence::Undo));
     undoAct->setStatusTip(tr("Annuler la dernière action"));
+    undoAct->setEnabled(false);
     connect(undoAct, &QAction::triggered, this, &MainWindow::undo);
 
     redoAct = new QAction(QIcon(":/img/redo.png"), tr("&Rétablir"), this);
     redoAct->setShortcut(QKeySequence(QKeySequence::Redo));
     redoAct->setStatusTip(tr("Rétablir la dernière modification"));
+    redoAct->setEnabled(false);
     connect(redoAct, &QAction::triggered, this, &MainWindow::redo);
 
     aboutAct = new QAction(tr("A &Propos..."), this);
@@ -162,8 +163,8 @@ void MainWindow::createActions()
     toggleVertexDockAct = vertexDock->toggleViewAction();
     toggleVertexDockAct->setText(tr("&Afficher les propriétés du sommet"));
 
-    // update graph in graphdockwidget
-    connect(mdi, &QMdiArea::subWindowActivated, this, &MainWindow::updateGraphDockWidget);
+    // update graph settings when changing tabs
+    connect(mdi, &QMdiArea::subWindowActivated, this, &MainWindow::initialiseGraphSettings);
 }
 
 /// @brief Create all application's menus
@@ -247,10 +248,10 @@ void MainWindow::newGraph()
 {
     QBoard *qBoard= new QBoard(vertexDockWidget);
     mdi->addSubWindow(qBoard);
-    qBoard->setWindowTitle("Graphe");
+    ++graphCounter;
+    qBoard->setWindowTitle(tr("Nouveau graphe ") + QString::number(graphCounter));
     qBoard->show();
-    // set right tool
-    updateSelectedTool(toolsActGroup->checkedAction());
+    initialiseGraphSettings();
 }
 
 /// @brief Save a graph
@@ -263,7 +264,10 @@ void MainWindow::saveGraph()
         QBoard* qBoard = (QBoard*)(qMDISubWindow->widget());
 
         QString path = QFileDialog::getSaveFileName(this, tr("Sauvegarder"), "", tr("Fichier Graph++ (*.gpp)"));
-        qBoard->saveToFile(path);
+        QFileInfo fileInfo(path);
+
+        qBoard->saveToFile(fileInfo.absoluteFilePath());
+        qBoard->setWindowTitle(fileInfo.fileName());
     }
 }
 
@@ -273,13 +277,15 @@ void MainWindow::openGraph()
 {
     QString path = QFileDialog::getOpenFileName(this, tr("Ouvrir"), "", tr("Fichier Graph++ (*.gpp)"));
     if(path != nullptr){
-        QBoard *qBoard= new QBoard(vertexDockWidget);
+        QFileInfo fileInfo(path);
+        QBoard *qBoard= new QBoard(vertexDockWidget, this);
         mdi->addSubWindow(qBoard);
-        qBoard->setWindowTitle(path);
-        qBoard->openFile(path);
+        qBoard->setWindowTitle(fileInfo.fileName());
+        qBoard->openFile(fileInfo.absoluteFilePath());
         qBoard->show();
-        // set right tool
-        updateSelectedTool(toolsActGroup->checkedAction());
+
+        ++graphCounter;
+        initialiseGraphSettings();
     }
 }
 
@@ -320,6 +326,11 @@ void MainWindow::undo()
     {
         QBoard* qBoard = (QBoard*)(qMDISubWindow->widget());
         qBoard->getQCaretaker()->undo();
+        redoAct->setEnabled(true);
+        if (!qBoard->getQCaretaker()->canUndo())
+        {
+            undoAct->setEnabled(false);
+        }
     }
 }
 
@@ -332,6 +343,11 @@ void MainWindow::redo()
     {
         QBoard* qBoard = (QBoard*)(qMDISubWindow->widget());
         qBoard->getQCaretaker()->redo();
+        undoAct->setEnabled(true);
+        if (!qBoard->getQCaretaker()->canRedo())
+        {
+            redoAct->setEnabled(false);
+        }
     }
 }
 
@@ -379,16 +395,46 @@ void MainWindow::highlightHamiltonianPath()
     }
 }
 
-/// @brief update the selected graph of the GraphDockWidget depending of the selected tab
+/// @brief Used to change settings depending of the current active sub window and
+/// changing graph settings like selected tool, current graph dock widget,
+/// vertex dock widget,...
+/// This function is call when changing tab, new graph, open graph...
 /// @author Plumey Simon
-void MainWindow::updateGraphDockWidget()
+void MainWindow::initialiseGraphSettings()
 {
     QMdiSubWindow* qMDISubWindow = this->mdi->activeSubWindow();
     if (qMDISubWindow != nullptr)
     {
+        // change graph and vertex docks widget
         QBoard* qBoard = (QBoard*)(qMDISubWindow->widget());
         graphDockWidget->setSelectedGraph(qBoard->graph);
         vertexDockWidget->setSelectedGraph(qBoard->graph);
+
+        // for undo-redo buttons
+        connect(qBoard->getQCaretaker(), &QCaretaker::backupAction, this, [=]
+        {
+            undoAct->setEnabled(true);
+        });
+
+        if (qBoard->getQCaretaker()->canRedo())
+        {
+            redoAct->setEnabled(true);
+        }
+        else
+        {
+            redoAct->setEnabled(false);
+        }
+
+        if (qBoard->getQCaretaker()->canUndo())
+        {
+            undoAct->setEnabled(true);
+        }
+        else
+        {
+            undoAct->setEnabled(false);
+        }
+        // set right tool
+        updateSelectedTool(toolsActGroup->checkedAction());
     }
 }
 
@@ -457,14 +503,66 @@ void MainWindow::updateSelectedTool(QAction* action)
 /// @author Plumey Simon
 void MainWindow::closeCurrentGraphe()
 {
-    mdi->closeActiveSubWindow();
+    QMdiSubWindow* activeSubWindow = mdi->activeSubWindow();
+    if (activeSubWindow) {
+        QMessageBox::StandardButton response = QMessageBox::question(
+                    this, tr("Confirmation - Fermeture d'onglet"),
+                    tr("Toute modification non enregistrée sera perdue! Voulez-vous vraiment fermer ce graphe ?"),
+                    QMessageBox::Yes | QMessageBox::No,
+                    QMessageBox::No
+                    );
+
+        if (response == QMessageBox::Yes) {
+            mdi->closeActiveSubWindow();
+            initialiseGraphSettings();
+        }
+    }
+}
+
+/// @brief Called when user quit the application
+/// @author Plumey Simon
+void MainWindow::closeEvent(QCloseEvent* event)
+{
+    QMdiSubWindow* activeSubWindow = mdi->activeSubWindow();
+
+    if (activeSubWindow) {
+        // Demander une confirmation à l'utilisateur
+        QMessageBox::StandardButton response = QMessageBox::question(
+                    this, tr("Confirmation - Fermeture d'application"),
+                    tr("Tout graphe non enregistré sera perdu! Voulez-vous vraiment quitter l'application ?"),
+                    QMessageBox::Yes | QMessageBox::No,
+                    QMessageBox::No
+                    );
+
+        if (response == QMessageBox::No) {
+            // Ignorer l'événement de fermeture
+            event->ignore();
+            return;
+        }
+    }
+
+    // Continuer le traitement de l'événement de fermeture
+    QMainWindow::closeEvent(event);
 }
 
 /// @brief close all graphs
 /// @author Plumey Simon
 void MainWindow::closeAllGraphe()
 {
-    mdi->closeAllSubWindows();
+    QMdiSubWindow* activeSubWindow = mdi->activeSubWindow();
+    if (activeSubWindow) {
+        QMessageBox::StandardButton response = QMessageBox::question(
+                    this, tr("Confirmation - Fermeture d'onglet"),
+                    tr("Toutes modifications non enregistrées seront perdues! Voulez-vous vraiment fermer TOUS les graphes ?"),
+                    QMessageBox::Yes | QMessageBox::No,
+                    QMessageBox::No
+                    );
+
+        if (response == QMessageBox::Yes) {
+            mdi->closeAllSubWindows();
+            initialiseGraphSettings();
+        }
+    }
 }
 
 /// @brief select next graph
@@ -472,6 +570,7 @@ void MainWindow::closeAllGraphe()
 void MainWindow::next()
 {
     mdi->activateNextSubWindow();
+    initialiseGraphSettings();
 }
 
 /// @brief select previous graph
@@ -479,4 +578,5 @@ void MainWindow::next()
 void MainWindow::prev()
 {
     mdi->activatePreviousSubWindow();
+    initialiseGraphSettings();
 }

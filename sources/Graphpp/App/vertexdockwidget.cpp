@@ -32,10 +32,10 @@ VertexDockWidget::VertexDockWidget(QWidget *parent) : QWidget(parent)
     textColorBtn = new SelectColorButton(propertyPanel);
     backgroundColorBtn = new SelectColorButton(propertyPanel);
     borderColorBtn = new SelectColorButton(propertyPanel);
-    QPushButton *applyBtn = new QPushButton("&Appliquer");
+    QPushButton *applyBtn = new QPushButton("&Appliquer", propertyPanel);
     connect(applyBtn, &QPushButton::clicked, this, &VertexDockWidget::updateVertex);
 
-    QFormLayout *layout = new QFormLayout();
+    QFormLayout *layout = new QFormLayout(this);
     layout->addRow(labelName, name);
     layout->addRow(labelInDegree, inDegree);
     layout->addRow(labelOutDegree, outDegree);
@@ -44,7 +44,7 @@ VertexDockWidget::VertexDockWidget(QWidget *parent) : QWidget(parent)
     layout->addRow(labelTextColor, textColorBtn);
     layout->addRow(labelBackgroundColor, backgroundColorBtn);
     layout->addRow(labelBorderColor, borderColorBtn);
-    layout->addRow(new QLabel(), applyBtn);
+    layout->addRow(new QLabel(this), applyBtn);
 
     this->setLayout(layout);
 }

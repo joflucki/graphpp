@@ -23,6 +23,8 @@ QBoard::QBoard(VertexDockWidget *vertexDockWidget, QWidget *parent)
 /// @author Plumey Simon
 QBoard::~QBoard()
 {
+    delete this->graph;
+    delete this->highlightedGraph;
 }
 
 /// @brief Paint event method. Called on every graph update.

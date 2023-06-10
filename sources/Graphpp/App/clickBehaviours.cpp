@@ -101,16 +101,16 @@ void QBoard::clickCycleGraph(QPointF clickPos)
 {
     // BUILDING MODAL
     // number of vertices
-    QLabel* nbVerticesLabel = new QLabel(tr("Choisissez le nombre de sommet (3-360):"),this);
+    QLabel* nbVerticesLabel = new QLabel(tr("Choisissez le nombre de sommet (3-100):"),this);
     QSpinBox* nbVerticesSpin = new QSpinBox(this);
-    nbVerticesSpin->setRange(3,360);
+    nbVerticesSpin->setRange(3,100);
     nbVerticesSpin->setValue(3);
     nbVerticesSpin->setSingleStep(1);
 
     // radius
-    QLabel* radiusLabel = new QLabel(tr("Choisissez le rayon du graphe (50-1000):"),this);
+    QLabel* radiusLabel = new QLabel(tr("Choisissez le rayon du graphe (50-500):"),this);
     QSpinBox* radiusSpin = new QSpinBox(this);
-    radiusSpin->setRange(50,1000);
+    radiusSpin->setRange(50,500);
     radiusSpin->setValue(200);
     radiusSpin->setSingleStep(1);
 
@@ -150,16 +150,16 @@ void QBoard::clickCompleteGraph(QPointF clickPos)
 {
     // BUILDING MODAL
     // number of vertices
-    QLabel* nbVerticesLabel = new QLabel(tr("Choisissez le nombre de sommet (3-100):"),this);
+    QLabel* nbVerticesLabel = new QLabel(tr("Choisissez le nombre de sommet (3-30):"),this);
     QSpinBox* nbVerticesSpin = new QSpinBox(this);
-    nbVerticesSpin->setRange(3,100);
+    nbVerticesSpin->setRange(3,30);
     nbVerticesSpin->setValue(3);
     nbVerticesSpin->setSingleStep(1);
 
     // radius
-    QLabel* radiusLabel = new QLabel(tr("Choisissez le rayon du graphe (50-1000):"),this);
+    QLabel* radiusLabel = new QLabel(tr("Choisissez le rayon du graphe (50-500):"),this);
     QSpinBox* radiusSpin = new QSpinBox(this);
-    radiusSpin->setRange(50,1000);
+    radiusSpin->setRange(50,500);
     radiusSpin->setValue(200);
     radiusSpin->setSingleStep(1);
 

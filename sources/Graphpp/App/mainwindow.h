@@ -32,7 +32,7 @@ private:
     QActionGroup *toolsActGroup;
     GraphDockWidget *graphDockWidget;
     VertexDockWidget *vertexDockWidget;
-
+    int graphCounter = 0;
 public:
     MainWindow();
 
@@ -49,11 +49,12 @@ private slots:
     void highlightMinimumSpanningTree();
     void highlightHamiltonianPath();
 
-    void updateGraphDockWidget();
+    void initialiseGraphSettings();
     void updateSelectedTool(QAction* action);
 
     void closeCurrentGraphe();
     void closeAllGraphe();
+    virtual void closeEvent(QCloseEvent* event) override;
     void next();
     void prev();
 
