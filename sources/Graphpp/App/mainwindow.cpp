@@ -62,11 +62,13 @@ void MainWindow::createActions()
     undoAct = new QAction(QIcon(":/img/undo.png"), tr("&Annuler"), this);
     undoAct->setShortcut(QKeySequence(QKeySequence::Undo));
     undoAct->setStatusTip(tr("Annuler la dernière action"));
+    undoAct->setEnabled(false);
     connect(undoAct, &QAction::triggered, this, &MainWindow::undo);
 
     redoAct = new QAction(QIcon(":/img/redo.png"), tr("&Rétablir"), this);
     redoAct->setShortcut(QKeySequence(QKeySequence::Redo));
     redoAct->setStatusTip(tr("Rétablir la dernière modification"));
+    redoAct->setEnabled(false);
     connect(redoAct, &QAction::triggered, this, &MainWindow::redo);
 
     aboutAct = new QAction(tr("A &Propos..."), this);
@@ -162,8 +164,8 @@ void MainWindow::createActions()
     toggleVertexDockAct = vertexDock->toggleViewAction();
     toggleVertexDockAct->setText(tr("&Afficher les propriétés du sommet"));
 
-    // update graph in graphdockwidget
-    connect(mdi, &QMdiArea::subWindowActivated, this, &MainWindow::updateGraphDockWidget);
+    // update graph settings when changing tabs
+    connect(mdi, &QMdiArea::subWindowActivated, this, &MainWindow::initialiseGraphSettings);
 }
 
 /// @brief Create all application's menus
@@ -249,8 +251,7 @@ void MainWindow::newGraph()
     mdi->addSubWindow(qBoard);
     qBoard->setWindowTitle("Graphe");
     qBoard->show();
-    // set right tool
-    updateSelectedTool(toolsActGroup->checkedAction());
+    initialiseGraphSettings();
 }
 
 /// @brief Save a graph
@@ -278,8 +279,8 @@ void MainWindow::openGraph()
         qBoard->setWindowTitle(path);
         qBoard->openFile(path);
         qBoard->show();
-        // set right tool
-        updateSelectedTool(toolsActGroup->checkedAction());
+
+        initialiseGraphSettings();
     }
 }
 
@@ -320,6 +321,12 @@ void MainWindow::undo()
     {
         QBoard* qBoard = (QBoard*)(qMDISubWindow->widget());
         qBoard->getQCaretaker()->undo();
+        redoAct->setEnabled(true);
+        if (!qBoard->getQCaretaker()->canUndo())
+        {
+            qDebug() << "gris undo" << Qt::endl;
+            undoAct->setEnabled(false);
+        }
     }
 }
 
@@ -332,6 +339,12 @@ void MainWindow::redo()
     {
         QBoard* qBoard = (QBoard*)(qMDISubWindow->widget());
         qBoard->getQCaretaker()->redo();
+        undoAct->setEnabled(true);
+        if (!qBoard->getQCaretaker()->canRedo())
+        {
+            qDebug() << "gris redo" << Qt::endl;
+            redoAct->setEnabled(false);
+        }
     }
 }
 
@@ -379,16 +392,46 @@ void MainWindow::highlightHamiltonianPath()
     }
 }
 
-/// @brief update the selected graph of the GraphDockWidget depending of the selected tab
+/// @brief Used to change settings depending of the current active sub window and
+/// changing graph settings like selected tool, current graph dock widget,
+/// vertex dock widget,...
+/// This function is call when changing tab, new graph, open graph...
 /// @author Plumey Simon
-void MainWindow::updateGraphDockWidget()
+void MainWindow::initialiseGraphSettings()
 {
     QMdiSubWindow* qMDISubWindow = this->mdi->activeSubWindow();
     if (qMDISubWindow != nullptr)
     {
+        // change graph and vertex docks widget
         QBoard* qBoard = (QBoard*)(qMDISubWindow->widget());
         graphDockWidget->setSelectedGraph(qBoard->graph);
         vertexDockWidget->setSelectedGraph(qBoard->graph);
+
+        // for undo-redo buttons
+        connect(qBoard->getQCaretaker(), &QCaretaker::backupAction, this, [=]
+        {
+            undoAct->setEnabled(true);
+        });
+
+        if (qBoard->getQCaretaker()->canRedo())
+        {
+            redoAct->setEnabled(true);
+        }
+        else
+        {
+            redoAct->setEnabled(false);
+        }
+
+        if (qBoard->getQCaretaker()->canUndo())
+        {
+            undoAct->setEnabled(true);
+        }
+        else
+        {
+            undoAct->setEnabled(false);
+        }
+        // set right tool
+        updateSelectedTool(toolsActGroup->checkedAction());
     }
 }
 
@@ -458,6 +501,7 @@ void MainWindow::updateSelectedTool(QAction* action)
 void MainWindow::closeCurrentGraphe()
 {
     mdi->closeActiveSubWindow();
+    initialiseGraphSettings();
 }
 
 /// @brief close all graphs
@@ -472,6 +516,7 @@ void MainWindow::closeAllGraphe()
 void MainWindow::next()
 {
     mdi->activateNextSubWindow();
+    initialiseGraphSettings();
 }
 
 /// @brief select previous graph
@@ -479,4 +524,5 @@ void MainWindow::next()
 void MainWindow::prev()
 {
     mdi->activatePreviousSubWindow();
+    initialiseGraphSettings();
 }

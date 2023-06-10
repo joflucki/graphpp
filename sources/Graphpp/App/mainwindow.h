@@ -49,7 +49,7 @@ private slots:
     void highlightMinimumSpanningTree();
     void highlightHamiltonianPath();
 
-    void updateGraphDockWidget();
+    void initialiseGraphSettings();
     void updateSelectedTool(QAction* action);
 
     void closeCurrentGraphe();
