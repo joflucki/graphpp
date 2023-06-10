@@ -74,13 +74,19 @@ Graph<T>::Graph()
     this->adjacencyList = std::unordered_map<T *, std::list<Edge<T> *>>();
 }
 
-/// @brief Deletes the current graph
+/// @brief Deletes the current graph AND ALL THE VERTICES/EDGES CONTAINED
 /// @author Jonas Flückiger
 /// @date 16.05.2023
 template <typename T>
 Graph<T>::~Graph()
 {
     // delete this->adjacencyList;
+    for(auto pair : this->adjacencyList){
+        for(auto edge : this->adjacencyList[pair.first]){
+            delete edge;
+        }
+        delete pair.first;
+    }
 }
 
 /// @brief Returns whether the graph is empty
@@ -1201,7 +1207,6 @@ Graph<T> *Graph<T>::getMinimumDistanceGraph(T *startingVertex)
 
 /// @brief Serializes a graph into the DOT format.
 ///
-/// The templated class will also be serialized using the out stream operator.
 /// @author Jonas Flückiger
 /// @date 26.05.2023
 template <typename T>
