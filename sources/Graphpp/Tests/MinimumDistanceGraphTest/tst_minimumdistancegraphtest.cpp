@@ -7,6 +7,7 @@
 using namespace std;
 
 /// @brief This class tests the minimum distance graph algorithm.
+///
 /// The tested graph is the complete graph K10, where each edge's weight is equal to the
 /// index of the source vertex multiplied by the index of the target vertex (indices range from 1 to 10).
 /// Meaning that the minimum distance graph of this graph, starting from any vertex, is composed only of the edges connected to the '1' vertex.
