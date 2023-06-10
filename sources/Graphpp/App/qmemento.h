@@ -11,6 +11,7 @@
 class QMemento
 {
 public:
+    QMemento(); // Default constructor for use in data structs
     QMemento(std::unordered_map<QVertex *, std::list<Edge<QVertex> *>> adjencyList);
     std::unordered_map<QVertex *, std::list<Edge<QVertex> *>> getAdjencyList();
 
