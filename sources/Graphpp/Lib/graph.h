@@ -80,7 +80,6 @@ Graph<T>::Graph()
 template <typename T>
 Graph<T>::~Graph()
 {
-    // delete this->adjacencyList;
     for(auto pair : this->adjacencyList){
         for(auto edge : this->adjacencyList[pair.first]){
             delete edge;

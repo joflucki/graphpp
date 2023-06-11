@@ -47,4 +47,16 @@ for(int i : vertices){
     }
     graph->addDoubleEdge(&vertices[i], &vertices[nextIndex]);
 }
+
+// Basic properties
+std::cout << graph->getNbVertices() << std::endl;
+std::cout << graph->getNbEdges() << std::endl;
+std::cout << graph->isOriented() << std::endl;
+std::cout << graph->isWeighted() << std::endl;
+
+// Algorithms
+Graph<int>* hamiltionianPath = graph->getHamiltonianPath();
+Graph<int>* shortestPathGraph = graph->getMinimumDistanceGraph(&vertices[3]);
+Graph<int>* minimumSpanningTree = graph->getMinimumSpanningTree();
+
 ```
