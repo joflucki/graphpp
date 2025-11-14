@@ -56,4 +56,4 @@ Below is a minimal example showing how to create a circular graph, query basic p
 
 # License
 
-The software was developed by Damien Tschan, Jonas Flückiger, and Simon Plumey, all rights reserved.
+The software was developed by [Damien Tschan](https://github.com/damientschan), [Jonas Flückiger](https://github.com/joflucki), and [Simon Plumey](https://github.com/Krucksy), all rights reserved.
