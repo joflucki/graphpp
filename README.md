@@ -9,7 +9,7 @@ Graph++ is a C++ library that provides a full‑featured toolbox for graph analy
 The repository is organized into three top‑level modules:
 |Module|Purpose|
 |------|-------|
-|Library| C++ library (graph.h, implementations, data structures, algorithms). Provides a clean API for creating, modifying and analysing graphs.|
+|Library| C++ library (graph.h, implementations, data structures, algorithms). Provides a clean API for creating, modifying and analyzing graphs.|
 |Application|Desktop GUI application (Windows 64‑bit) that builds on the library. Offers visual editing, layout customisation, interactive property display and algorithm execution using Qt.|
 |Tests|Unit‑test suite exercising the library’s functionality.|
 
